@@ -13,7 +13,10 @@ COPY Gemfile Gemfile.lock /app/
 
 # Bundlerをインストール
 RUN gem install bundler -v 2.2.3
-RUN gem install pg -- --with-pg-config=/usr/bin/pg_config
+RUN gem install pg -- \
+    --with-pg-config=/usr/bin/pg_config \
+    --with-pg-include=/usr/include/postgresql \
+    --with-pg-lib=/usr/lib
 
 
 # Gemfileの依存関係をインストール
