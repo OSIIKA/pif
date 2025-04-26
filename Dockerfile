@@ -12,6 +12,8 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -y \
 ENV PG_CONFIG=/usr/bin/pg_config
 # オプション: コンパイル時にインクルードパスを指定
 ENV PG_CPPFLAGS="-I/usr/include/postgresql"
+# ここで Bundler 用の環境変数も設定する
+ENV BUNDLE_BUILD__PG="--with-pg-config=$PG_CONFIG --with-pg-include=/usr/include/postgresql --with-pg-lib=/usr/lib/x86_64-linux-gnu"
 
 # アプリケーションの作業ディレクトリ
 WORKDIR /app
@@ -21,8 +23,8 @@ COPY Gemfile Gemfile.lock /app/
 
 # Bundlerをインストール
 RUN gem install bundler -v 2.2.3
-# Bundler のグローバル設定として pg 用ビルドオプションを登録
-RUN bundle config --global build.pg "--with-pg-config=${PG_CONFIG} --with-pg-include=/usr/include/postgresql --with-pg-lib=/usr/lib/x86_64-linux-gnu"
+# （※ bundle config のグローバル設定も有効ですが、環境変数がより確実に反映される場合もあります）
+RUN bundle config --global build.pg "$BUNDLE_BUILD__PG"
 
 
 # Gemfileの依存関係をインストール
