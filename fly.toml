@@ -5,6 +5,7 @@ app = "pif"
 
 [env]
     PORT = "8080"
+    PG_CONFIG = "/usr/bin/pg_config"
 
 [services]
     internal_port = 8080
