@@ -3,7 +3,7 @@ FROM ruby:3.2.2-slim
 
 # 必要なパッケージをインストール
 RUN apt-get update -qq && apt-get install --no-install-recommends -y \
-    build-essential libsqlite3-dev nodejs npm libpq-dev
+    build-essential libpq-dev postgresql-client
 
 # アプリケーションの作業ディレクトリ
 WORKDIR /app
