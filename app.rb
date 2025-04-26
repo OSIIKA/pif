@@ -4,7 +4,7 @@ require 'sinatra/reloader' if development?
 require './models'
 # セッション機能
 enable :sessions
-set :port, 4567 # 必要に応じてポートを調整
+set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は4567をデフォルトに設定
 puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#{settings.port} ーーーーーーーーーーーーーーーーーーーー"
 
 get '/' do
