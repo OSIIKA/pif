@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>紫鉄艦隊</title>
+  <link rel="icon" href="/img/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>紫鉄艦隊</h1>
+    </div>
+  </header>
+  <main>
+    <p>やあ、ストーリー画面さんだよ。</p>
+    <div class="message">
+      <div id="text">
+        <%= @text %>
+      </div>
+    </div>
+    <div class="form">
+      <form action="/story" method="get">
+        <div class="submit-button">
+          <input type="submit" value="次へ">
+        </div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

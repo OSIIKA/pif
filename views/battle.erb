@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>紫鉄艦隊</title>
+  <link rel="icon" href="/img/favicon.ico">
+  <link rel="stylesheet" href="/css/style.css">
+  
+</head>
+<body class="question-view">
+  <header>
+    
+  </header>
+  <main>
+    
+    <div class="unitss">
+      <div class="units">
+        <p>味方ユニット</p>
+        <% @my_units.each do |freet| %>
+          <div class="unit">
+            <div>
+              <div class="hp-bar">
+                <div class="hp-bar-fill" data-id="<%= freet['myfreet']['id'] %>" data-hp="<%= freet['myfreet']['hp'] %>" data-max-hp="<%= freet['myfreet']['max_hp'] %>"></div>
+              </div>
+            </div>
+            <p><%= freet['myfreet']['name'] %></p>
+            <p>Lv：<%= freet['level'] %>EXP：<%= freet['exp'] %></p>
+            <p>HP：<%= freet['myfreet']['hp'] %>/<%= freet['myfreet']['max_hp'] %></p>
+            <p>攻撃：<%= freet['myfreet']['atk'] %></p>
+            <p>情報：<%= freet['myfreet']['info'] %></p>
+          </div>
+        <% end %>
+      </div>
+      <div class="units">
+        <p>敵ユニット</p>
+        <% @enemy_units.each do |freet| %>
+          <div class="unit">
+            <div>
+              <div class="hp-bar">
+                <div class="hp-bar-fill" data-id="<%= freet['id'] %>" data-hp="<%= freet['hp'] %>" data-max-hp="<%= freet['max_hp'] %>"></div>
+              </div>
+            </div>
+            <p><%= freet['name'] %></p>
+            <p>HP：<%= freet['hp'] %>/<%= freet['max_hp'] %></p>
+            <p>攻撃：<%= freet['atk'] %></p>
+            <p>情報：<%= freet['info'] %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+    <form action="/battle/attack" method="post">
+      <select name="my_unit_id" id="">
+        <% @my_units.each do |my| %>
+          <!--name→value-->
+          <option value=<%= my['myfreet']['id'] %> ><%= my['myfreet']['name'] %></option>
+        <% end %>
+      </select>
+      <select name="enemy_unit_id" id="">
+        <% @enemy_units.each do |enemy| %>
+          <!--name→value-->
+          <option value=<%= enemy['id'] %> ><%= enemy['name'] %></option>
+        <% end %>
+      </select>
+      <input type="submit" value="攻撃">
+    </form>
+    <!--ここにフォームを作っていく-->
+    <!--攻撃するユニットと、攻撃を受けるユニットをそれぞれ選択する(Select)フォーム-->
+    <!--フォームは /battle/attack に POST リクエストを送信-->
+    <!--攻撃ユニットと被攻撃ユニットの ID が、それぞれ my_unit_id と enemy_unit_id というパラメータとして送信される-->
+    <!--フォームを送信することで攻撃が実装されるイメージ-->
+    
+  </main>
+  <script src="/js/battle.js"></script>
+</body>
+</html>

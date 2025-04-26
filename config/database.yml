@@ -1,0 +1,24 @@
+default_env: &default
+  adapter: postgresql
+  encoding: unicode
+  # 追加
+  pool: 5
+  username: osiika
+  password: your_password
+  host: localhost
+  port: 5432
+  # ここまで
+  database: s_login
+  # 追加してみました
+  database: myfreets
+  database: enemyfreets
+  database: users
+  database: battleunits
+  database: storys
+  database: user_myfreets
+
+development:
+  <<: *default
+
+production:
+  <<: *default

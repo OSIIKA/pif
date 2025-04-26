@@ -1,0 +1,101 @@
+/* スタート画面のボタンの設定1 */
+.index_button {
+  display: flex;
+  flex-direction: column; /* 縦方向に整列 */
+  gap: 50px;
+  margin-left: 50px;
+  margin-top: 400px;
+}
+/* スタート画面のボタンの設定2 */
+.index_button img {
+  width: 400px;
+  height: auto;
+}
+/* 新規・ログイン画面のロゴ */
+.title img {
+  width: 400px;
+  height: auto;
+}
+/* 新規・ログイン画面のフォームの設定 */
+.loginupform {
+  display: flex;
+  flex-direction: column; /* 縦方向に整列 */
+  gap: 20px;
+  width: 400px;
+  height: auto;
+}
+/* スタート画面のロゴ */
+.body {
+  background-image: url("/img/PIFPNG.png");
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+}
+
+.unitss {
+  display: flex;
+  justify-content: space-between; /* 左右に配置 */
+}
+
+.units {
+  width: 45%; /* 各ユニットの幅を調整 */
+}
+
+.unit {
+  border: 1px solid #ccc; /* ユニットの枠線 */
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9; /* 背景色 */
+}
+
+.hp-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #eee; /* 背景色 */
+  border: 1px solid #aaa; /* 枠線 */
+  border-radius: 10px; /* 丸みをつける */
+  overflow: hidden; /* はみ出しを防ぐ */
+}
+
+.hp-bar-fill {
+  height: 100%;
+  background-color: #f00; /* 赤色 */
+  width: 100%; /* 動的に設定される幅 */
+  transition: width 0.5s ease-in-out; /* アニメーション */
+}
+
+/* メッセージウィンドウのスタイル */
+.message {
+  border: 1px solid #ccc; /* ユニットの枠線 */
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9; /* 背景色 */
+  /*border-radius: 10px;          /* 角を丸くする */
+  /*padding: 15px;                /* 内側の余白を追加 */
+  /*background-color: #f9f9f9;    /* 背景色を調整 */
+  /*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+  /*font-size: 16px;              /* フォントサイズを調整 */
+  /*margin-bottom: 20px;          /* 下部に余白を追加 */
+}
+
+/* フォーム全体のスタイル */
+.form {
+  display: flex;                /* レイアウトを調整 */
+  justify-content: center;      /* 中央揃え */
+  margin-top: 10px;             /* 上部に余白を追加 */
+}
+
+/* ボタンのスタイル */
+.submit-button {
+  /*padding: 10px 20px;           /* 内側の余白を調整 */
+  /*border: none;                 /* 枠線を消去 */
+  /*border-radius: 5px;           /* 角を丸くする */
+  background-color: #4CAF50;    /* ボタンの背景色 */
+  /*color: white;                 /* ボタンのテキスト色 */
+  /*font-size: 16px;              /* フォントサイズを調整 */
+  /*cursor: pointer;              /* マウスポインターを変える */
+}
+
+.submit-button:hover {
+  background-color: #45a049;    /* ホバー時の色を変更 */
+}
