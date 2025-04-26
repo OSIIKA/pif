@@ -1,5 +1,4 @@
-[app]
-name = "pif"
+app = "pif"
 
 [build]
 builder = "paketobuildpacks/builder:base"
