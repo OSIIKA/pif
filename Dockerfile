@@ -1,5 +1,5 @@
 # ベースイメージ
-FROM ruby:3.2.3-slim
+FROM ruby:3.2.2-slim
 
 # 必要なパッケージをインストール
 RUN apt-get update -qq && apt-get install --no-install-recommends -y \
