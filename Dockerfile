@@ -7,11 +7,11 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -y \
     which pg_config && \
     ls /usr/include/postgresql && \
     ls /usr/lib
-# オプション: コンパイル時にインクルードパスを指定
-ENV PG_CPPFLAGS="-I/usr/include/postgresql"
 
 # PG_CONFIG のパスを環境変数に設定
 ENV PG_CONFIG=/usr/bin/pg_config
+# オプション: コンパイル時にインクルードパスを指定
+ENV PG_CPPFLAGS="-I/usr/include/postgresql"
 
 # アプリケーションの作業ディレクトリ
 WORKDIR /app
