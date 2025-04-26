@@ -12,7 +12,7 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock /app/
 
 # Bundlerをインストール
-RUN gem install bundler
+RUN gem install bundler -v 2.2.3
 
 # Gemfileの依存関係をインストール
 RUN bundle install
