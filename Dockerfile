@@ -7,6 +7,8 @@ RUN apt-get update -qq && apt-get install --no-install-recommends -y \
     which pg_config && \
     ls /usr/include/postgresql && \
     ls /usr/lib
+# オプション: コンパイル時にインクルードパスを指定
+ENV PG_CPPFLAGS="-I/usr/include/postgresql"
 
 # アプリケーションの作業ディレクトリ
 WORKDIR /app
@@ -19,7 +21,7 @@ RUN gem install bundler -v 2.2.3
 RUN gem install pg -- \
     --with-pg-config=/usr/bin/pg_config \
     --with-pg-include=/usr/include/postgresql \
-    --with-pg-lib=/usr/lib
+    --with-pg-lib=/usr/lib/x86_64-linux-gnu
 
 
 # Gemfileの依存関係をインストール
