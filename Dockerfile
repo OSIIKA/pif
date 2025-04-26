@@ -3,7 +3,10 @@ FROM ruby:3.2.2-slim
 
 # 必要なパッケージをインストール
 RUN apt-get update -qq && apt-get install --no-install-recommends -y \
-    build-essential libpq-dev postgresql-client
+    build-essential libpq-dev postgresql-client && \
+    which pg_config && \
+    ls /usr/include/postgresql && \
+    ls /usr/lib
 
 # アプリケーションの作業ディレクトリ
 WORKDIR /app
