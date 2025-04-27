@@ -2,6 +2,21 @@ require 'bundler/setup'
 Bundler.require
 require 'sinatra/reloader' if development?
 require './models'
+require 'sinatra'
+require 'sinatra/activerecord'
+
+configure :production do
+  # 本番環境では環境変数DATABASE_URLが設定されている前提
+  set :database, ENV['DATABASE_URL']
+end
+
+configure :development do
+  # ローカル開発ではローカルのPostgreSQLに接続
+  set :database, "postgres://localhost/your_local_db"# your_local_dbの部分は、自分のローカルデータベースの名前に変える必要がある
+end
+
+# 以下、Sinatra のルーティングやモデル定義
+
 # セッション機能
 enable :sessions
 set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は4567をデフォルトに設定
