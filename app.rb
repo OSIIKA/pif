@@ -2,18 +2,19 @@ require 'bundler/setup'
 Bundler.require
 require 'sinatra/reloader' if development?
 require './models'
-require 'sinatra'
-require 'sinatra/activerecord'
+# ここから19まで、ローカル環境での実行のため、一時的にコメントに変更、1年後の自分に押しつけ
+#require 'sinatra'
+#require 'sinatra/activerecord'
 
-configure :production do
+#configure :production do
   # 本番環境では環境変数DATABASE_URLが設定されている前提
-  set :database, ENV['DATABASE_URL']
-end
+  #set :database, ENV['DATABASE_URL']
+#end
 
-configure :development do
+#configure :development do
   # ローカル開発ではローカルのPostgreSQLに接続
-  set :database, "postgres://localhost/your_local_db"# your_local_dbの部分は、自分のローカルデータベースの名前に変える必要がある
-end
+  #set :database, "postgres://localhost/your_local_db"# your_local_dbの部分は、自分のローカルデータベースの名前に変える必要がある
+#end
 
 # 以下、Sinatra のルーティングやモデル定義
 
