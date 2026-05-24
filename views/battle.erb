@@ -61,7 +61,7 @@
     </div>
 
     
-    <form action="/battle/attack" method="post">
+    <form action="/battle/attack" method="post" class="battle-form">
       <select name="my_unit_id" id="">
         <% @my_units.each do |my| %>
           <!--name→value-->
@@ -74,7 +74,7 @@
           <option value=<%= enemy['id'] %> ><%= enemy['name'] %></option>
         <% end %>
       </select>
-      <input type="submit" value="攻撃">
+      <button type="submit" class="attack-button">攻撃</button>
     </form>
     <!--ここにフォームを作っていく-->
     <!--攻撃するユニットと、攻撃を受けるユニットをそれぞれ選択する(Select)フォーム-->
