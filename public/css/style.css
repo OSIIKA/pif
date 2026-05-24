@@ -88,20 +88,6 @@ html, body {
   transition: width 0.5s ease-in-out; /* アニメーション */
 }
 
-/* メッセージウィンドウのスタイル */
-.message {
-  border: 1px solid #ccc; /* ユニットの枠線 */
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #f9f9f9; /* 背景色 */
-  /*border-radius: 10px;          /* 角を丸くする */
-  /*padding: 15px;                /* 内側の余白を追加 */
-  /*background-color: #f9f9f9;    /* 背景色を調整 */
-  /*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
-  /*font-size: 16px;              /* フォントサイズを調整 */
-  /*margin-bottom: 20px;          /* 下部に余白を追加 */
-}
-
 /* フォーム全体のスタイル */
 .form {
   display: flex;                /* レイアウトを調整 */
@@ -281,6 +267,27 @@ html, body {
 
 .story-close-button:hover {
   background: #666;
+}
+/* メッセージウィンドウ（画面下固定） */
+.message-window {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(20, 20, 30, 0.85); /* 半透明の濃紺 */
+  color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  border-top: 2px solid #555;
+  font-size: 18px;
+  line-height: 1.6;
+  z-index: 1000;
+}
+
+/* メッセージテキスト */
+.message-text {
+  max-width: 90%;
+  margin: 0 auto;
 }
 
 /*  テスト用仮置き */
