@@ -1,0 +1,13 @@
+/* 新規登録画面のロゴ */
+.title img {
+  width: 400px;
+  height: auto;
+}
+/* 新規登録画面のフォームの設定 */
+.signupform {
+  display: flex;
+  flex-direction: column; /* 縦方向に整列 */
+  gap: 20px;
+  width: 400px;
+  height: auto;
+}

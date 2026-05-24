@@ -2,19 +2,7 @@ html, body {
   overflow: hidden;   /* スクロール禁止 */
   height: 100%;       /* 画面全体を固定 */
 }
-/* 新規・ログイン画面のロゴ */
-.title img {
-  width: 400px;
-  height: auto;
-}
-/* 新規・ログイン画面のフォームの設定 */
-.loginupform {
-  display: flex;
-  flex-direction: column; /* 縦方向に整列 */
-  gap: 20px;
-  width: 400px;
-  height: auto;
-}
+
 
 
 .unit-row {
