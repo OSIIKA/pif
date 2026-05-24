@@ -208,4 +208,16 @@ get '/story' do
 
   erb :story
 end
+get '/story/skip' do
+  episode = session[:episode]
+
+  # このエピソードの最大 step を取得
+  last_step = Story.where(episode: episode).maximum(:step)
+
+  # 次に読み込む step を「最終 step + 1」にする
+  session[:step] = last_step + 1
+
+  # story に飛ばす → 自動的に「次のステップが無い → /home」に戻る
+  redirect '/story'
+end
 
