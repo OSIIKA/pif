@@ -283,7 +283,14 @@ html, body {
   line-height: 1.6;
   z-index: 1000;
 }
-
+/* 話者名の表示 */
+.speaker-name {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: #ffd700; /* ゴールド（視認性が高い） */
+  text-shadow: 0 0 5px rgba(0,0,0,0.6);
+}
 /* メッセージテキスト */
 .message-text {
   max-width: 90%;

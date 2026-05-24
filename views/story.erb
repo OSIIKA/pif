@@ -14,17 +14,23 @@
   </header>
   <main>
     <div class="message-window">
+      <div class="speaker-name">
+        <%= @name %>
+      </div>
       <div class="message-text">
         <%= @text %>
       </div>
     </div>
-    <div class="form">
-      <form action="/story" method="get">
-        <div class="submit-button">
-          <input type="submit" value="次へ">
-        </div>
-      </form>
-    </div>
   </main>
+  <script>
+    document.addEventListener('click', function(e) {
+      // メッセージウィンドウ内のクリックは許可（次へ進む）
+      // ただし、特定の UI ボタンがある場合は除外したいならここで条件追加
+
+      // 次のメッセージへ
+      window.location.href = "/story";
+    });
+  </script>
+
 </body>
 </html>
