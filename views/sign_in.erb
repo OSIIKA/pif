@@ -8,18 +8,20 @@
     <link rel="stylesheet" href="/css/sign_in.css">
   </head>
   <body>
+    <div class="background">
+      <img src="/img/PIFPNGloginup.png">
+    </div>
     <div class="sign_form">
-      <div class="card">
-        <div class="title">
-          <img src="/img/PIFPNGloginup.png">
-        </div>
-        <form class="loginform" action="/users/login" method="post">
-          <input type="text" name="name" placeholder="ニックネーム">
-          <input type="password" name="password" placeholder="パスワード">
+      <form class="loginform" action="/users/login" method="post">
+        <input type="text" name="name" placeholder="ニックネーム">
+        <input type="password" name="password" placeholder="パスワード">
+        <div class="submit">
           <input type="submit" value="ログイン">
-        </form>
-        <p class="footer"><a href="/users/new">新規登録</a></p>
-      </div>
+        </div>
+      </form>
+      <p class="footer">
+        <a href="/users/new">新規登録</a>
+      </p>
     </div>
   </body>
 </html>
