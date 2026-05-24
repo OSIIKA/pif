@@ -1,0 +1,28 @@
+/* 出撃ボタン（右下固定） */
+.sortie-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: #7b3fe4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0,0,0,0.6);
+}
+
+.sortie-button:hover {
+  background: #9b63ff;
+}
+/* 出撃メニューのオーバーレイ全体 */
+.sortie-overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 と同じ */
+  background: rgba(0,0,0,0.7);
+  display: none;           /* 初期は非表示 */
+  justify-content: center; /* 中央寄せ */
+  align-items: center;
+  z-index: 2000;
+}
