@@ -13,41 +13,53 @@
   </header>
   <main>
     
-    <div class="unitss">
-      <div class="units">
-        <p>味方ユニット</p>
-        <% @my_units.each do |freet| %>
-          <div class="unit">
-            <div>
-              <div class="hp-bar">
-                <div class="hp-bar-fill" data-id="<%= freet['myfreet']['id'] %>" data-hp="<%= freet['myfreet']['hp'] %>" data-max-hp="<%= freet['myfreet']['max_hp'] %>"></div>
-              </div>
+    <div class="unit-row">
+      <% @my_units.each do |freet| %>
+        <div class="unit-card">
+
+          <!-- 艦画像（仮） -->
+          <img src="/img/ship_placeholder.png" class="unit-img">
+
+          <!-- 艦名 -->
+          <div class="unit-name"><%= freet['myfreet']['name'] %></div>
+
+          <!-- HPバー -->
+          <div class="hp-bar">
+            <div class="hp-bar-fill"
+              data-id="<%= freet['myfreet']['id'] %>"
+              data-hp="<%= freet['myfreet']['hp'] %>"
+              data-max-hp="<%= freet['myfreet']['max_hp'] %>">
             </div>
-            <p><%= freet['myfreet']['name'] %></p>
-            <p>Lv：<%= freet['level'] %>EXP：<%= freet['exp'] %></p>
-            <p>HP：<%= freet['myfreet']['hp'] %>/<%= freet['myfreet']['max_hp'] %></p>
-            <p>攻撃：<%= freet['myfreet']['atk'] %></p>
-            <p>情報：<%= freet['myfreet']['info'] %></p>
           </div>
-        <% end %>
-      </div>
-      <div class="units">
-        <p>敵ユニット</p>
-        <% @enemy_units.each do |freet| %>
-          <div class="unit">
-            <div>
-              <div class="hp-bar">
-                <div class="hp-bar-fill" data-id="<%= freet['id'] %>" data-hp="<%= freet['hp'] %>" data-max-hp="<%= freet['max_hp'] %>"></div>
-              </div>
-            </div>
-            <p><%= freet['name'] %></p>
-            <p>HP：<%= freet['hp'] %>/<%= freet['max_hp'] %></p>
-            <p>攻撃：<%= freet['atk'] %></p>
-            <p>情報：<%= freet['info'] %></p>
-          </div>
-        <% end %>
-      </div>
+
+          <!-- iボタン（詳細オーバーレイ用） -->
+          <button class="unit-info-button" data-unit="<%= freet.to_json %>">i</button>
+
+        </div>
+      <% end %>
     </div>
+    <div class="unit-row">
+      <% @enemy_units.each do |freet| %>
+        <div class="unit-card">
+
+          <img src="/img/ship_placeholder.png" class="unit-img">
+
+          <div class="unit-name"><%= freet['name'] %></div>
+
+          <div class="hp-bar">
+            <div class="hp-bar-fill"
+              data-id="<%= freet['id'] %>"
+              data-hp="<%= freet['hp'] %>"
+              data-max-hp="<%= freet['max_hp'] %>">
+            </div>
+          </div>
+
+          <button class="unit-info-button" data-unit="<%= freet.to_json %>">i</button>
+
+        </div>
+      <% end %>
+    </div>
+
     
     <form action="/battle/attack" method="post">
       <select name="my_unit_id" id="">

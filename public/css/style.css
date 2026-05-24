@@ -56,37 +56,67 @@ html, body {
   min-height: 100vh;             /* 画面の高さに合わせる */
 }
 
-.unitss {
+.unit-row {
   display: flex;
-  justify-content: space-between; /* 左右に配置 */
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.units {
-  width: 45%; /* 各ユニットの幅を調整 */
+.unit-card {
+  width: 110px;
+  height: 140px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 6px;
+  position: relative;
+  color: #fff;
+  font-size: 12px;
 }
 
-.unit {
-  border: 1px solid #ccc; /* ユニットの枠線 */
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #f9f9f9; /* 背景色 */
+.unit-img {
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.unit-name {
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: center;
 }
 
 .hp-bar {
   width: 100%;
-  height: 20px;
-  background-color: #eee; /* 背景色 */
-  border: 1px solid #aaa; /* 枠線 */
-  border-radius: 10px; /* 丸みをつける */
-  overflow: hidden; /* はみ出しを防ぐ */
+  height: 8px;
+  background: #333;
+  border-radius: 4px;
+  margin-top: 4px;
+  overflow: hidden;
 }
 
 .hp-bar-fill {
   height: 100%;
-  background-color: #f00; /* 赤色 */
-  width: 100%; /* 動的に設定される幅 */
-  transition: width 0.5s ease-in-out; /* アニメーション */
+  background: #e33;
+  width: 100%;
 }
+
+.unit-info-button {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: #555;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 
 /* フォーム全体のスタイル */
 .form {
