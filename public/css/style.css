@@ -116,6 +116,39 @@ html, body {
   font-size: 12px;
   cursor: pointer;
 }
+/* オーバーレイ全体 */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* オーバーレイの中身 */
+.overlay-content {
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  color: #fff;
+  position: relative;
+}
+
+/* 閉じるボタン */
+.overlay-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
 
 
 /* フォーム全体のスタイル */

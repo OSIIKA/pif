@@ -81,8 +81,15 @@
     <!--フォームは /battle/attack に POST リクエストを送信-->
     <!--攻撃ユニットと被攻撃ユニットの ID が、それぞれ my_unit_id と enemy_unit_id というパラメータとして送信される-->
     <!--フォームを送信することで攻撃が実装されるイメージ-->
-    
+    <!-- ▼ 詳細オーバーレイ -->
+    <div id="unit-detail-overlay" class="overlay">
+      <div class="overlay-content">
+        <button id="overlay-close" class="overlay-close">×</button>
+        <div id="unit-detail-body"></div>
+      </div>
+    </div>
   </main>
   <script src="/js/battle.js"></script>
+  <script src="/js/battle_detail.js"></script>
 </body>
 </html>
