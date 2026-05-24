@@ -1,19 +1,28 @@
 /* フォーム全体のスタイル */
 .sign_form {
-  display: flex;                /* レイアウトを調整 */
-  justify-content: center;      /* 中央揃え */
-  margin-top: 10px;             /* 上部に余白を追加 */
+  position: fixed;/* レイアウトを調整 */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  justify-content: center;/* 中央揃え */
+  margin-top: 10px;/* 上部に余白を追加 */
+  width: 400px;/* フォームの横幅を固定 */
+  background: rgba(255, 255, 255, 0.6);/* 半透明の白 */
+  padding: 20px 30px;/* 内側の余白 */
+  border-radius: 12px;/* 角丸 */
+  backdrop-filter: blur(4px);/* 背景を少しぼかす（対応ブラウザのみ） */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3); /* 視認性UP */
 }
 /* 背景画像 */
 .background img {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;      /* 画面幅いっぱい */
-  height: 100vh;     /* 画面高さいっぱい */
-  object-fit: cover; /* 画面全体を覆う */
-  z-index: -1;       /* UI の背面に配置 */
-  pointer-events: none; /* 背景なのでクリック不可にする */
+  width: 100vw;/* 画面幅いっぱい */
+  height: 100vh;/* 画面高さいっぱい */
+  object-fit: cover;/* 画面全体を覆う */
+  z-index: -1;/* UI の背面に配置 */
+  pointer-events: none;/* 背景なのでクリック不可にする */
 }
 /* ログイン画面のフォームの設定 */
 .loginform {
