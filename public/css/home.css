@@ -1,4 +1,34 @@
-/* 出撃ボタン（右下固定） */
+/* ユーザー情報1 */
+.user-info {
+  width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #1a2338, #0f1626);
+  border: 1px solid #3a4a6a;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  color: #e6e6e6;
+  text-align: center;
+}
+/* ユーザー情報2 */
+.user-info .user-name {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffd700; /* ゴールド */
+  margin-bottom: 10px;
+}
+/* ユーザー情報3 */
+.user-info .user-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  font-size: 18px;
+}
+/* ユーザー情報4 */
+.user-info .stat {
+  color: #a8c0ff;
+}
+/* 出撃ボタン1 */
 .sortie-button {
   position: fixed;
   bottom: 20px;
@@ -12,7 +42,7 @@
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0,0,0,0.6);
 }
-
+/* 出撃ボタン2 */
 .sortie-button:hover {
   background: #9b63ff;
 }
