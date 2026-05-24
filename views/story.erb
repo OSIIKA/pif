@@ -19,8 +19,15 @@
       <button class="story-ui-button" id="skip-button" onclick="location.href='/story/skip'">
         スキップ
       </button>
-      <button class="story-ui-button" id="log-button">ログ</button>
-      <button class="story-ui-button" id="auto-button">オート</button>
+      <button class="story-ui-button" id="log-button">
+        ログ
+      </button>
+      <form id="auto-form" action="/story/auto" method="post" style="display:inline;">
+        <input type="hidden" name="auto" id="auto-value" value="off">
+        <button type="submit" class="story-ui-button" id="auto-button">
+          <%= session[:auto] ? "オート中…" : "オート" %>
+        </button>
+      </form>
     </div>
     <!-- ログ機能 -->
     <div id="log-overlay" class="log-overlay">
@@ -60,6 +67,32 @@
       e.stopPropagation();
       document.getElementById('log-overlay').style.display = 'none';
     });
+    let autoMode = false;
+    let autoTimer = null;
+
+    // オートボタン（サーバーに auto=on/off を送る）
+    document.getElementById('auto-button').addEventListener('click', function(e) {
+      e.stopPropagation();
+
+      const autoNow = "<%= session[:auto] %>" === "true";
+      document.getElementById('auto-value').value = autoNow ? "off" : "on";
+    });
+
+
+    // ページ読み込み時にオート中なら自動進行
+    window.addEventListener('load', function() {
+      const autoNow = "<%= session[:auto] %>" === "true";
+
+      if (autoNow) {
+        setTimeout(() => {
+          // ログオーバーレイが開いている時は進まない
+          if (document.getElementById('log-overlay').style.display === 'flex') return;
+
+          window.location.href = "/story";
+        }, 1500); // ← 好みで調整
+      }
+    });
+
 
     document.addEventListener('click', function(e) {
       // メッセージウィンドウ内のクリックは許可（次へ進む）
@@ -67,7 +100,8 @@
       if (e.target.closest('.story-ui-button')) return;
       // ログオーバーレイが開いている時は進まない
       if (document.getElementById('log-overlay').style.display === 'flex') return;
-
+      // ★オート中はタップで進まない
+      if (autoMode) return;
       // 次のメッセージへ
       window.location.href = "/story";
     });

@@ -227,4 +227,7 @@ get '/story/skip' do
   # story に飛ばす → 自動的に「次のステップが無い → /home」に戻る
   redirect '/story'
 end
-
+post '/story/auto' do
+  session[:auto] = params[:auto] == "on"
+  redirect '/story'
+end
