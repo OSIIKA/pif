@@ -15,7 +15,7 @@
     
     <div class="unit-row">
       <% @my_units.each do |freet| %>
-        <div class="unit-card">
+        <div class="unit-card" id="unit-<%= freet['id'] || freet['myfreet']['id'] %>">
 
           <!-- 艦画像（仮） -->
           <img src="/img/ship_placeholder.png" class="unit-img">
@@ -40,7 +40,7 @@
     </div>
     <div class="unit-row">
       <% @enemy_units.each do |freet| %>
-        <div class="unit-card">
+        <div class="unit-card" id="unit-<%= freet['id'] %>">
 
           <img src="/img/ship_placeholder.png" class="unit-img">
 
@@ -91,5 +91,15 @@
   </main>
   <script src="/js/battle.js"></script>
   <script src="/js/battle_detail.js"></script>
+  <script>
+    <% if session[:last_attack] %>
+      playAttackAnimation(
+        <%= session[:last_attack][:attacker] %>,
+        <%= session[:last_attack][:defender] %>,
+        <%= session[:last_attack][:damage] %>
+      );
+      <% session[:last_attack] = nil %>
+    <% end %>
+  </script>
 </body>
 </html>

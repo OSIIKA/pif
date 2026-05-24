@@ -190,6 +190,53 @@ main {
 .attack-button:hover {
   background: #e55;
 }
+/* 攻撃ユニットが光る */
+.attack-flash {
+  animation: flash 0.2s ease-out;
+}
+
+@keyframes flash {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(2); }
+  100% { filter: brightness(1); }
+}
+
+/* 敵ユニットが揺れる */
+.hit-shake {
+  animation: shake 0.3s ease-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+/* ダメージ数字 */
+.damage-popup {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff4444;
+  font-size: 18px;
+  font-weight: bold;
+  animation: damage 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes damage {
+  0% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -40px); }
+}
+
+/* HP0 のユニットを灰色化 */
+.unit-dead {
+  filter: grayscale(100%) brightness(0.5);
+  opacity: 0.6;
+}
 
 /* フォーム全体のスタイル */
 .form {

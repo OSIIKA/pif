@@ -183,7 +183,11 @@ post '/battle/attack' do
   # 更新されたデータをセッションに保存
   session[:my_freets] = @my_units
   session[:enemy_freets] = @enemy_units
-
+  session[:last_attack] = {
+    attacker: attacker['myfreet']["id"],
+    defender: defender["id"],
+    damage: attacker['myfreet']["atk"]
+  }
   # バトル画面へリダイレクト
   redirect '/battle'
 end

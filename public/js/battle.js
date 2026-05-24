@@ -11,3 +11,24 @@ document.querySelectorAll('.hp-bar-fill').forEach(bar => {
     const maxHp = parseFloat(bar.getAttribute('data-max-hp'));
     updateHpBar(bar, hp, maxHp);
 });
+// 攻撃アニメーションを発火させる関数
+function playAttackAnimation(attackerId, defenderId, damage) {
+  const attacker = document.getElementById(`unit-${attackerId}`);
+  const defender = document.getElementById(`unit-${defenderId}`);
+
+  // 攻撃側を光らせる
+  attacker.classList.add("attack-flash");
+  setTimeout(() => attacker.classList.remove("attack-flash"), 200);
+
+  // 被弾側を揺らす
+  defender.classList.add("hit-shake");
+  setTimeout(() => defender.classList.remove("hit-shake"), 300);
+
+  // ダメージ数字を表示
+  const dmg = document.createElement("div");
+  dmg.className = "damage-popup";
+  dmg.textContent = `-${damage}`;
+  defender.appendChild(dmg);
+
+  setTimeout(() => dmg.remove(), 800);
+}
