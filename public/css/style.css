@@ -2,36 +2,6 @@ html, body {
   overflow: hidden;   /* スクロール禁止 */
   height: 100%;       /* 画面全体を固定 */
 }
-/* スタート画面の動画の設定1 */
-.title-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 60vw;   /* 画面幅の60%以内に収める */
-  max-height: 60vh;  /* 画面高さの60%以内に収める */
-}
-/* スタート画面の動画の設定2 */
-.title-video video {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* はみ出さずに収める */
-}
-/* スタート画面のボタンの設定1 */
-.index_button {
-  position: absolute;
-  bottom: 30px;   /* 画面下からの距離 */
-  right: 30px;    /* 画面右からの距離 */
-  display: flex;
-  flex-direction: row; /* 横並びにする */
-  gap: 20px;      /* ボタン同士の間隔 */
-}
-/* スタート画面のボタンの設定2 */
-.index_button img {
-  width: 250px;
-  height: auto;
-  filter: drop-shadow(0 0 10px rgba(0,0,0,0.7));
-}
 /* 新規・ログイン画面のロゴ */
 .title img {
   width: 400px;
