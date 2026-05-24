@@ -1,18 +1,19 @@
 # ===========================
 # 敵データ
 # ===========================
-Enemyfreet.create(name: "敵1", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
-Enemyfreet.create(name: "敵2", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
-Enemyfreet.create(name: "敵3", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
-Enemyfreet.create(name: "敵4", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
-Enemyfreet.create(name: "敵5", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
-Enemyfreet.create(name: "敵6", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
+# ステージ1の敵（2体）
+Enemyfreet.create(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ")
+Enemyfreet.create(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ")
+# ステージ2の敵（3体）
+Enemyfreet.create(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
+Enemyfreet.create(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
+Enemyfreet.create(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ")
 # ===========================
 # 味方データ
 # ===========================
-Myfreet.create(name: "味方1", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
-Myfreet.create(name: "味方2", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
-Myfreet.create(name: "味方3", hp: "100", max_hp: "100", atk: "25", info: "てんぷれーと")
+Myfreet.create(name: "味方1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
+Myfreet.create(name: "味方2", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
+Myfreet.create(name: "味方3", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
 # ===========================
 # ストーリーデータ
 # ===========================

@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2025_03_22_020509) do
   end
 
   create_table "enemyfreets", force: :cascade do |t|
+    t.integer "stage"
     t.string "name"
     t.integer "hp"
     t.integer "max_hp"
@@ -44,6 +45,7 @@ ActiveRecord::Schema.define(version: 2025_03_22_020509) do
     t.string "name"
     t.text "text", null: false
     t.integer "style", default: 0
+    t.integer "battle", default: 0
   end
 
   create_table "user_myfreets", force: :cascade do |t|

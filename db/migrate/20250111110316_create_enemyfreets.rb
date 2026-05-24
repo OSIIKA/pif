@@ -1,6 +1,7 @@
 class CreateEnemyfreets < ActiveRecord::Migration[6.1]
   def change
     create_table :enemyfreets do |t|
+      t.integer :stage
       t.string :name
       t.integer :hp
       t.integer :max_hp

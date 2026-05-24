@@ -119,24 +119,35 @@ end
 
 # バトル画面関係
 get '/battle' do
-    # 所持艦情報を表示する
-    @my_units = session[:my_freets]
-    @enemy_units = session[:enemy_freets]
-    # デバッグ用ログ
-    puts "デバッグ: @my_units => #{@my_units.inspect}"
-    puts "デバッグ: @enemy_units => #{@enemy_units.inspect}"
-    if @my_units.all? { |unit| unit['myfreet']['hp'] <= 0 }
-        redirect '/battle/lost'
-    elsif @enemy_units.all? { |unit| unit['hp'] <= 0 }
-        redirect '/battle/won'
-    end
-    # バトル画面を表示する
-    erb :battle
+  stage = session[:battle_stage]
+  # 味方ロード（ユーザーの所持艦）
+  if session[:my_freets].nil?
+    user_myfreets = UserMyfreet.where(user_id: session[:user])
+    session[:my_freets] = user_myfreets.map(&:as_json)
+  end
+  @my_units = session[:my_freets]
+  # 敵ロード（stage に応じて複数体）
+  if session[:enemy_freets].nil?
+    enemies = Enemyfreet.where(stage: stage)
+    session[:enemy_freets] = enemies.map(&:as_json)
+  end
+  @enemy_units = session[:enemy_freets]
+  # デバッグ用ログ
+  puts "デバッグ: @my_units => #{@my_units.inspect}"
+  puts "デバッグ: @enemy_units => #{@enemy_units.inspect}"
+  # 勝敗判定
+  if @my_units.all? { |unit| unit['myfreet']['hp'] <= 0 }
+    redirect '/battle/lost'
+  elsif @enemy_units.all? { |unit| unit['hp'] <= 0 }
+    redirect '/battle/won'
+  end
+  # バトル画面を表示する
+  erb :battle
 end
 
 get '/battle/lost' do
-    @finaresult="敗北"
-    erb :result
+  @finaresult="敗北"
+  erb :result
 end
 get '/battle/won' do
   @my_units = session[:my_freets]
