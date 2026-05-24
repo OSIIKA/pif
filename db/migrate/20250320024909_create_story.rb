@@ -6,6 +6,7 @@ class CreateStory < ActiveRecord::Migration[6.1]
       t.string  :name
       t.text    :text,    null: false
       t.integer :style,   default: 0
+      t.integer :battle,   default: 0
     end
   end
 end
