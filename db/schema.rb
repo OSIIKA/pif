@@ -39,9 +39,11 @@ ActiveRecord::Schema.define(version: 2025_03_22_020509) do
   end
 
   create_table "storys", force: :cascade do |t|
+    t.integer "episode", null: false
+    t.integer "step", null: false
     t.string "name"
-    t.integer "episode"
-    t.string "text"
+    t.text "text", null: false
+    t.integer "style", default: 0
   end
 
   create_table "user_myfreets", force: :cascade do |t|

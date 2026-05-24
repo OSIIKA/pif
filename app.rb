@@ -223,37 +223,27 @@ before do
 end
 
 post '/home/story' do
-  session[:story] = params[:story].to_i
-  if session[:story] == 0
-    session[:index] = 1
-  elsif session[:story] == 1
-    session[:index] = 15
-  end
+  session[:episode] = params[:story].to_i
+  session[:step] = 1
   redirect '/story'
 end
 
 get '/story' do
-  @story = session[:story]
-  if @story == 0
-    # @text = texts[session[:index] % 13] # 1～13までの範囲で繰り返し
-    if session[:index] >= 1 && session[:index] <= 13
-      @text = Story.where(id: session[:index]).first.text
-    else
-      redirect '/home'
-    end
-    
-  elsif @story == 1
-    # @text = texts[(session[:index] % 3) + 14] # 15～17までの範囲で繰り返し
-    # @text = Story.where(episode: 1).offset((session[:index] % 3) + 14).limit(1).first.text
-    if session[:index] >= 15 && session[:index] <= 17
-      @text = Story.where(id: session[:index]).first.text
-    else
-      redirect '/home'
-    end
+  episode = session[:episode]
+  step = session[:step]
+
+  story_data = Story.where(episode: episode, step: step).first
+
+  if story_data.nil?
+    # 次のステップが無い → ホームへ戻す
+    redirect '/home'
   else
-    @text = "ストーリーモードが選択されていません。"
+    @text = story_data.text
   end
-  session[:index] = (session[:index] + 1)
+
+  # 次へボタンを押した時に step を進める
+  session[:step] += 1
+
   erb :story
 end
 
