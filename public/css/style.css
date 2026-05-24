@@ -228,6 +228,60 @@ html, body {
 .sortie-close-button:hover {
   background: #666;
 }
+/* ストーリー選択オーバーレイ */
+.story-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2100; /* 出撃メニューより上 */
+}
+
+.story-overlay-content {
+  background: #1a2338;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 350px;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+/* ストーリーの各ボタン */
+.story-button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  background: #7b3fe4;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.story-button:hover {
+  background: #9b63ff;
+}
+
+/* 閉じるボタン */
+.story-close-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #444;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.story-close-button:hover {
+  background: #666;
+}
 
 /*  テスト用仮置き */
 

@@ -71,6 +71,16 @@
         <button id="sortie-close" class="sortie-close-button">閉じる</button>
       </div>
     </div>
+    <div id="story-overlay" class="story-overlay">
+      <div class="story-overlay-content">
+        <h2>ストーリー選択</h2>
+        <form action="/home/story" method="post">
+          <button type="submit" name="story" value="0" class="story-button">第0話（バトル）</button>
+          <button type="submit" name="story" value="1" class="story-button">第1話（バトル）</button>
+        </form>
+        <button id="story-close" class="story-close-button">閉じる</button>
+      </div>
+    </div>
     <button id="sortie-button" class="sortie-button">出撃</button>
   </main>
   <script src="/js/home.js"></script>

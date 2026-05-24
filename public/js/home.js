@@ -60,3 +60,26 @@ sortieMenuButtons.forEach(btn => {
     sortieOverlay.style.display = 'none';
   });
 });
+// ▼ ストーリー選択オーバーレイ
+const storyOverlay = document.getElementById('story-overlay');
+const storyClose = document.getElementById('story-close');
+
+// 出撃メニューの「ストーリー」ボタンを押したら表示
+sortieMenuButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+
+    if (mode === 'story') {
+      sortieOverlay.style.display = 'none';
+      storyOverlay.style.display = 'flex';
+    }
+  });
+});
+
+// ストーリー選択の閉じるボタン
+if (storyClose) {
+  storyClose.addEventListener('click', () => {
+    storyOverlay.style.display = 'none';   // ストーリー選択を閉じる
+    sortieOverlay.style.display = 'flex';  // 出撃メニューを再表示
+  });
+}
