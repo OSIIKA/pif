@@ -199,18 +199,31 @@ get '/story' do
 
   story_data = Story.where(episode: episode, step: step).first
 
+  # ストーリーが終わったらホームへ
   if story_data.nil?
-    # 次のステップが無い → ホームへ戻す
     redirect '/home'
-  else
-    @name = story_data.name
-    @text = story_data.text
-    # ログ保存
-    session[:log] ||= []
-    session[:log] << { name: @name, text: @text }
   end
 
-  # 次へボタンを押した時に step を進める
+  # ★ battle が 0 でない場合 → 戦闘へ遷移
+  if story_data.battle != 0
+    # 戦闘ステージ番号を保存
+    session[:battle_stage] = story_data.battle
+
+    # 次の step に進めてから戦闘へ
+    session[:step] += 1
+
+    redirect '/battle'
+  end
+
+  # ★ 通常の会話処理
+  @name = story_data.name
+  @text = story_data.text
+
+  # ログ保存
+  session[:log] ||= []
+  session[:log] << { name: @name, text: @text }
+
+  # 次の step へ
   session[:step] += 1
 
   erb :story

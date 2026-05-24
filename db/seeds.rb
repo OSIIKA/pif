@@ -21,11 +21,15 @@ episode0 = [
   ["システム", "＜紫星・磯秋より、紫星・Userへ、メッセージを送信します。＞"],
   ["磯秋", "「あなたはもう、こちらに向かっているのでしょうか…」"],
   ["システム", "＜時間切れになりました。メッセージを終了します。＞"],
+  ["System", "BattleStart", 1],
+  ["？？？", "てすと"],
+  ["System", "BattleStart", 2],
+  ["？？？", "てすと"]
   # ここに続きの文章を追加していく
 ]
 
-episode0.each_with_index do |(name, text), i|
-  Story.create(episode: 0, step: i+1, name: name, text: text, style: 0)
+episode0.each_with_index do |(name, text, battle), i|
+  Story.create(episode: 0, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
 end
 # 第1話
 episode1 = [
@@ -35,6 +39,6 @@ episode1 = [
   ["？？？", "てすと"]
 ]
 
-episode1.each_with_index do |(name, text), i|
-  Story.create(episode: 1, step: i+1, name: name, text: text, style: 0)
+episode1.each_with_index do |(name, text, battle), i|
+  Story.create(episode: 1, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
 end
