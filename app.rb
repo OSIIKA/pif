@@ -186,6 +186,10 @@ end
 post '/home/story' do
   session[:episode] = params[:story].to_i
   session[:step] = 1
+
+  # ★ログ初期化（ここが重要）
+  session[:log] = []
+
   redirect '/story'
 end
 
@@ -201,6 +205,9 @@ get '/story' do
   else
     @name = story_data.name
     @text = story_data.text
+    # ログ保存
+    session[:log] ||= []
+    session[:log] << { name: @name, text: @text }
   end
 
   # 次へボタンを押した時に step を進める

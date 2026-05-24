@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>紫鉄艦隊</title>
   <link rel="icon" href="/img/favicon.ico">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css?v=3">
 </head>
 <body>
   <header>
@@ -14,12 +14,30 @@
   </header>
   <main>
     <!-- ストーリー操作ボタン（右上固定） -->
+    <!-- スキップ機能 -->
     <div class="story-ui">
       <button class="story-ui-button" id="skip-button" onclick="location.href='/story/skip'">
         スキップ
       </button>
       <button class="story-ui-button" id="log-button">ログ</button>
       <button class="story-ui-button" id="auto-button">オート</button>
+    </div>
+    <!-- ログ機能 -->
+    <div id="log-overlay" class="log-overlay">
+      <div class="log-overlay-content">
+        <h2>ログ</h2>
+
+        <div class="log-list">
+          <% session[:log].each do |entry| %>
+            <div class="log-entry">
+              <div class="log-name"><%= entry[:name] %></div>
+              <div class="log-text"><%= entry[:text] %></div>
+            </div>
+          <% end %>
+        </div>
+
+        <button id="log-close" class="log-close-button">閉じる</button>
+      </div>
     </div>
     <div class="message-window">
       <div class="speaker-name">
@@ -31,12 +49,24 @@
     </div>
   </main>
   <script>
+    // ログボタンを押したらログオーバーレイを表示
+    document.getElementById('log-button').addEventListener('click', function(e) {
+      e.stopPropagation(); // 背景クリック扱いにしない
+      document.getElementById('log-overlay').style.display = 'flex';
+    });
+
+    // ログ閉じるボタン
+    document.getElementById('log-close').addEventListener('click', function(e) {
+      e.stopPropagation();
+      document.getElementById('log-overlay').style.display = 'none';
+    });
+
     document.addEventListener('click', function(e) {
       // メッセージウィンドウ内のクリックは許可（次へ進む）
       // UI ボタンを押したときは次へ進まない
-      if (e.target.closest('.story-ui-button')) {
-        return;
-      }
+      if (e.target.closest('.story-ui-button')) return;
+      // ログオーバーレイが開いている時は進まない
+      if (document.getElementById('log-overlay').style.display === 'flex') return;
 
       // 次のメッセージへ
       window.location.href = "/story";
