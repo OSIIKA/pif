@@ -5,119 +5,8 @@ html, body {
 
 
 
-.unit-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
 
-.unit-card {
-  width: 110px;
-  height: 140px;
-  background: #1a1a1a;
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 6px;
-  position: relative;
-  color: #fff;
-  font-size: 12px;
-}
 
-.unit-img {
-  width: 100%;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-.unit-name {
-  font-size: 12px;
-  margin-top: 4px;
-  text-align: center;
-}
-
-.hp-bar {
-  width: 100%;
-  height: 8px;
-  background: #333;
-  border-radius: 4px;
-  margin-top: 4px;
-  overflow: hidden;
-}
-
-.hp-bar-fill {
-  height: 100%;
-  background: #e33;
-  width: 100%;
-}
-
-.unit-info-button {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: none;
-  background: #555;
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-/* オーバーレイ全体 */
-.overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.7);
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-/* オーバーレイの中身 */
-.overlay-content {
-  background: #222;
-  padding: 20px;
-  border-radius: 8px;
-  width: 300px;
-  color: #fff;
-  position: relative;
-}
-
-/* 閉じるボタン */
-.overlay-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-}
-/* 下部固定UI */
-.battle-form {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 110px;
-  background: rgba(20,20,20,0.95);
-  border-top: 2px solid #444;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  z-index: 900;
-}
-
-/* main の下に余白を作る（固定UIと重ならないように） */
-main {
-  padding-bottom: 130px;
-}
 
 .battle-form select {
   padding: 6px;
@@ -220,7 +109,6 @@ main {
   color: #e6e6e6;
   text-align: center;
 }
-
 /* 名前（艦長名） */
 .user-info .user-name {
   font-size: 28px;
