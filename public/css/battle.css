@@ -110,3 +110,71 @@
 main {
   padding-bottom: 130px;
 }
+/* 攻撃ボタン1 */
+.attack-button {
+  padding: 8px 16px;
+  background: #c33;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+/* 攻撃ボタン2 */
+.attack-button:hover {
+  background: #e55;
+}
+/* 攻撃対象を選ぶフォーム */
+.battle-form select {
+  padding: 6px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+/* 攻撃ユニットが光る1 */
+.attack-flash {
+  animation: flash 0.2s ease-out;
+}
+/* 攻撃ユニットが光る2 */
+@keyframes flash {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(2); }
+  100% { filter: brightness(1); }
+}
+
+/* 敵ユニットが揺れる1 */
+.hit-shake {
+  animation: shake 0.3s ease-out;
+}
+/* 敵ユニットが揺れる2 */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+/* ダメージ数字1 */
+.damage-popup {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff4444;
+  font-size: 18px;
+  font-weight: bold;
+  animation: damage 0.8s ease-out forwards;
+  pointer-events: none;
+}
+/* ダメージ数字2 */
+@keyframes damage {
+  0% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -40px); }
+}
+
+/* HP0 のユニットを灰色化 */
+.unit-dead {
+  filter: grayscale(100%) brightness(0.5);
+  opacity: 0.6;
+}
