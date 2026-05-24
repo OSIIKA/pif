@@ -13,6 +13,12 @@
     </div>
   </header>
   <main>
+    <!-- ストーリー操作ボタン（右上固定） -->
+    <div class="story-ui">
+      <button class="story-ui-button" id="skip-button">スキップ</button>
+      <button class="story-ui-button" id="log-button">ログ</button>
+      <button class="story-ui-button" id="auto-button">オート</button>
+    </div>
     <div class="message-window">
       <div class="speaker-name">
         <%= @name %>
@@ -25,7 +31,10 @@
   <script>
     document.addEventListener('click', function(e) {
       // メッセージウィンドウ内のクリックは許可（次へ進む）
-      // ただし、特定の UI ボタンがある場合は除外したいならここで条件追加
+      // UI ボタンを押したときは次へ進まない
+      if (e.target.closest('.story-ui-button')) {
+        return;
+      }
 
       // 次のメッセージへ
       window.location.href = "/story";

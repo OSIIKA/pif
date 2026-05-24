@@ -283,6 +283,30 @@ html, body {
   line-height: 1.6;
   z-index: 1000;
 }
+/* ストーリー操作ボタン（右上固定） */
+.story-ui {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 3000;
+}
+
+.story-ui-button {
+  padding: 6px 12px;
+  background: rgba(50, 50, 70, 0.8);
+  border: 1px solid #888;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.story-ui-button:hover {
+  background: rgba(80, 80, 120, 0.9);
+}
+
 /* 話者名の表示 */
 .speaker-name {
   font-weight: bold;
