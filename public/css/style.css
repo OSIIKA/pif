@@ -1,15 +1,36 @@
+html, body {
+  overflow: hidden;   /* スクロール禁止 */
+  height: 100%;       /* 画面全体を固定 */
+}
+/* スタート画面の動画の設定1 */
+.title-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 60vw;   /* 画面幅の60%以内に収める */
+  max-height: 60vh;  /* 画面高さの60%以内に収める */
+}
+/* スタート画面の動画の設定2 */
+.title-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* はみ出さずに収める */
+}
 /* スタート画面のボタンの設定1 */
 .index_button {
+  position: absolute;
+  bottom: 30px;   /* 画面下からの距離 */
+  right: 30px;    /* 画面右からの距離 */
   display: flex;
-  flex-direction: column; /* 縦方向に整列 */
-  gap: 50px;
-  margin-left: 50px;
-  margin-top: 400px;
+  flex-direction: row; /* 横並びにする */
+  gap: 20px;      /* ボタン同士の間隔 */
 }
 /* スタート画面のボタンの設定2 */
 .index_button img {
-  width: 400px;
+  width: 250px;
   height: auto;
+  filter: drop-shadow(0 0 10px rgba(0,0,0,0.7));
 }
 /* 新規・ログイン画面のロゴ */
 .title img {
@@ -27,9 +48,12 @@
 /* スタート画面のロゴ */
 .body {
   background-image: url("/img/PIFPNG.png");
-  height: 100vh;
+  background-attachment: fixed; /* 背景を固定 */
+  background-size: cover;        /* 画面にフィット */
+  background-position: center;   /* 中央に配置 */
+  background-repeat: no-repeat;  /* 繰り返さない */
   width: 100%;
-  position: fixed;
+  min-height: 100vh;             /* 画面の高さに合わせる */
 }
 
 .unitss {
@@ -99,3 +123,37 @@
 .submit-button:hover {
   background-color: #45a049;    /* ホバー時の色を変更 */
 }
+/* ユーザー情報の外枠 */
+.user-info {
+  width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #1a2338, #0f1626);
+  border: 1px solid #3a4a6a;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  color: #e6e6e6;
+  text-align: center;
+}
+
+/* 名前（艦長名） */
+.user-info .user-name {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffd700; /* ゴールド */
+  margin-bottom: 10px;
+}
+
+/* Lv と Exp の横並び */
+.user-info .user-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  font-size: 18px;
+}
+
+.user-info .stat {
+  color: #a8c0ff;
+}
+/*  テスト用仮置き */
+

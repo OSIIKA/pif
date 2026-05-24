@@ -3,18 +3,21 @@ Bundler.require
 require 'sinatra/reloader' if development?
 require './models'
 # ここから19まで、ローカル環境での実行のため、一時的にコメントに変更、1年後の自分に押しつけ
-#require 'sinatra'
-#require 'sinatra/activerecord'
+require 'sinatra'
+require 'sinatra/activerecord'
+
+set :public_folder, 'public'
+set :views, 'views'
 
 #configure :production do
   # 本番環境では環境変数DATABASE_URLが設定されている前提
   #set :database, ENV['DATABASE_URL']
 #end
 
-#configure :development do
+configure :development do
   # ローカル開発ではローカルのPostgreSQLに接続
-  #set :database, "postgres://localhost/your_local_db"# your_local_dbの部分は、自分のローカルデータベースの名前に変える必要がある
-#end
+  set :database, "postgres://postgres:YAMATO2199@localhost:5433/pif_development"# 自分のローカルデータベースの名前に変更完了
+end
 
 # 以下、Sinatra のルーティングやモデル定義
 
@@ -38,7 +41,11 @@ post '/users/new' do
     user = User.create(name: params[:name], mail: params[:mail], password: params[:password], level: 1, exp: 0)
     if user.persisted?
       # ユーザーが正常に保存された場合にユニットを関連付ける
-      default_units = [Myfreet.find(1), Myfreet.find(2), Myfreet.find(3)] # ユニット1とユニット2をデフォルトとして関連付け
+      default_units = [1, 2, 3].map do |i|
+        Myfreet.find_or_create_by(id: i) do |f|
+          f.name = "ユニット#{i}"
+        end
+      end
       default_units.each do |unit|
         UserMyfreet.create(user_id: user.id, myfreet_id: unit.id, level: 1, exp: 0)
       end

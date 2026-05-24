@@ -4,21 +4,27 @@
   <meta charset="UTF-8">
   <title>紫鉄艦隊</title>
   <link rel="icon" href="/img/favicon.ico">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css?v=1">
 </head>
-<body class="question-view">
+<body>
   <header>
     
   </header>
   <main>
-    <p></p>
-    <div class="signinup">
+    <div class="user-info">
       <% if @user %>
-        <p><%= @user.name %>　Lv:<%= @user.level %>　Exp:<%= @user.exp %></p>
+        <div class="user-name">
+          <%= @user.name %>
+        </div>
+        <div class="user-stats">
+          <span class="stat">Lv:<%= @user.level %></span>
+          <span class="stat">Exp:<%= @user.exp %></span>
+        </div>
       <% else %>
         <p>ログインしてください</p>
       <% end %>
     </div>
+
     
     <form action="/home/freet" method="post">
       <input type="text" name="name" placeholder="艦名">

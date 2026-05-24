@@ -3,22 +3,15 @@ default_env: &default
   encoding: unicode
   # 追加
   pool: 5
-  username: osiika
-  password: your_password
+  username: postgres
+  password: YAMATO2199
   host: localhost
-  port: 5432
-  # ここまで
-  database: s_login
-  # 追加してみました
-  database: myfreets
-  database: enemyfreets
-  database: users
-  database: battleunits
-  database: storys
-  database: user_myfreets
+  port: 5433
 
 development:
   <<: *default
+  database: pif_development
 
 production:
   <<: *default
+  database: pif_production
