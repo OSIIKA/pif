@@ -1,3 +1,13 @@
+/* スタート画面のロゴ */
+body {
+  background-image: url("/img/PIFPNG.png");
+  background-attachment: fixed; /* 背景を固定 */
+  background-size: cover;        /* 画面にフィット */
+  background-position: center;   /* 中央に配置 */
+  background-repeat: no-repeat;  /* 繰り返さない */
+  width: 100%;
+  min-height: 100vh;             /* 画面の高さに合わせる */
+}
 /* スタート画面の動画の設定1 */
 .title-video {
   position: absolute;
