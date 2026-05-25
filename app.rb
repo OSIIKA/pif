@@ -5,6 +5,7 @@ require './models'
 # ここから19まで、ローカル環境での実行のため、一時的にコメントに変更、1年後の自分に押しつけ
 require 'sinatra'
 require 'sinatra/activerecord'
+Dir.glob('./app/models/*.rb').each { |file| require file }
 
 set :public_folder, 'public'
 set :views, 'views'
