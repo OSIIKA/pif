@@ -1,6 +1,6 @@
-class CreateEnemyfreets < ActiveRecord::Migration[6.1]
+class CreateAllfreets < ActiveRecord::Migration[6.1]
   def change
-    create_table :enemyfreets do |t|
+    create_table :allfreets do |t|
       t.integer :stage
       t.string :name
       t.integer :hp
