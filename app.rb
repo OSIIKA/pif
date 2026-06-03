@@ -44,6 +44,8 @@ end
 
 # ログイン・新規登録・トップページ以外のすべてのアクセスで、自動的に関所を通す
 before do
+  session[:index]||= 1
+  session[:story]||= 0
   # パスが以下に一致する場合「以外」は、すべてログインチェックを実行
   unless request.path_info == '/' || 
          request.path_info.start_with?('/users/new') || 
@@ -222,12 +224,6 @@ post '/battle/attack' do
   }
   # バトル画面へリダイレクト
   redirect '/battle'
-end
-
-
-before do
-  session[:index]||= 1
-  session[:story]||= 0
 end
 
 post '/home/story' do
