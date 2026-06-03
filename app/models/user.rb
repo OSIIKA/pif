@@ -9,5 +9,6 @@ class User < ActiveRecord::Base
   # メールアドレスのチェック
   validates :mail, presence: true, uniqueness: true, format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i }
   # パスワードのチェック
-  validates :password, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
+  # 新規登録時であり、かつ「外部認証のID（uid）がない」または「パスワードが直接入力されている」場合のみ、6文字以上の制限をかける
+  validates :password, length: { minimum: 6 }, if: -> { new_record? && (password.present? || uid.nil?) }, on: :create
 end
