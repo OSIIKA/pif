@@ -61,6 +61,7 @@ end
 # 新規登録・ログイン関係
 get '/users/new' do
     # 新規登録画面を表示する
+    @user = User.new # 👈 空のユーザーを用意しておく（画面側でのエラー防止）
     erb :sign_up
 end
 post '/users/new' do
@@ -79,7 +80,7 @@ post '/users/new' do
       session[:user] = @user.id
       redirect '/home'
     else
-      redirect '/users/new'
+      erb :sign_up
     end
 end
 get '/users/login' do
@@ -95,7 +96,7 @@ post '/users/login' do
     else
       # エラーメッセージを変数に入れて、ログイン画面をそのまま再描画する
       @error = "ユーザー名またはパスワードが正しくありません"
-      redirect '/users/login'
+      erb :sign_in
     end
 end
 

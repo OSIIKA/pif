@@ -12,6 +12,11 @@
       <img src="/img/PIFPNGloginup.png">
     </div>
     <div class="sign_form">
+      <% if @error %>
+        <div class="error-message" style="color: #ff4d4f; font-size: 0.9em; margin-bottom: 15px; text-align: center;">
+          ⚠️ <%= @error %>
+        </div>
+      <% end %>
       <form class="loginform" action="/users/login" method="post">
         <input type="text" name="name" placeholder="ニックネーム">
         <input type="password" name="password" placeholder="パスワード">
