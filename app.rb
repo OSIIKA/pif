@@ -118,7 +118,6 @@ get '/home' do
 end
 
 post '/home/levelup' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   unit_id = params[:unit_id] # レベルアップ対象のユニットID
   user_myfreet = UserMyfreet.find(unit_id) # 対象ユニットを取得
   # バグり散らかしている現場（今はそれどころでは無い）
@@ -134,13 +133,11 @@ post '/home/levelup' do
 end
 
 post '/home/freet' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   Myfreet.create(name: params[:name], hp: params[:hp], atk: params[:atk], info: params[:info])
   redirect '/home'
 end
 
 post '/home/battle' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   session[:story] = params[:story].to_i
   # データベースの値をセッションに保存
   if session[:story] == 0
@@ -154,7 +151,6 @@ end
 
 # バトル画面関係
 get '/battle' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   stage = session[:battle_stage]
   # 味方ロード（ユーザーの所持艦）
   if session[:my_freets].nil?
@@ -182,12 +178,10 @@ get '/battle' do
 end
 
 get '/battle/lost' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   @finaresult="敗北"
   erb :result
 end
 get '/battle/won' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   @my_units = session[:my_freets]
   @enemy_units = session[:enemy_freets]
   @finaresult="勝利"
@@ -206,7 +200,6 @@ end
 
 #バトル画面で自分のキャラと相手のキャラを選択して攻撃を実行する際に行う処理
 post '/battle/attack' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   # 攻撃と被攻撃のユニットをセッションから取得
   @my_units = session[:my_freets]
   @enemy_units = session[:enemy_freets]
@@ -238,7 +231,6 @@ before do
 end
 
 post '/home/story' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   session[:episode] = params[:story].to_i
   session[:step] = 1
 
@@ -249,7 +241,6 @@ post '/home/story' do
 end
 
 get '/story' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   episode = session[:episode]
   step = session[:step]
 
@@ -285,7 +276,6 @@ get '/story' do
   erb :story
 end
 get '/story/skip' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   episode = session[:episode]
 
   # このエピソードの最大 step を取得
