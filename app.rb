@@ -284,7 +284,6 @@ get '/story/skip' do
   redirect '/story'
 end
 post '/story/auto' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   session[:auto] = params[:auto] == "on"
   redirect '/story'
 end

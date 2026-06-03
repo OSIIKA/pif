@@ -13,9 +13,18 @@
         <div class="title">
           <img src="/img/PIFPNGloginup.png">
         </div>
+        <% if @user && @user.errors.any? %>
+          <div class="error-messages" style="color: #ff4d4f; font-size: 0.9em; margin-bottom: 15px;">
+            <ul style="list-style: none; padding: 0;">
+              <% @user.errors.full_messages.each do |message| %>
+                <li>⚠️ <%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
         <form class="signupform" action="/users/new" method="post">
           <input type="text" name="name" placeholder="ニックネーム">
-          <input type="text" name="mail" placeholder="メールアドレス">
+          <input type="email" name="mail" placeholder="メールアドレス">
           <input type="password" name="password" placeholder="パスワード">
           <input type="submit" value="新規登録">
         </form>
