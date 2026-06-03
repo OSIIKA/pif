@@ -24,8 +24,23 @@ end
 
 # セッション機能
 enable :sessions
+# 環境変数から鍵を取得し、無ければ開発用の仮の鍵を使う
+set :session_secret, ENV.fetch('SESSION_SECRET', 'this_is_a_secret_key_for_development_only_12345')
 set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は4567をデフォルトに設定
 puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#{settings.port} ーーーーーーーーーーーーーーーーーーーー"
+
+# 共通で使えるメソッド（ヘルパー）を定義
+helpers do
+  # 現在ログインしているユーザー情報を取得
+  def current_user
+    @current_user ||= User.find_by(id: session[:user]) if session[:user]
+  end
+
+  # ログインしていなければログイン画面に強制送還
+  def authenticate!
+    redirect '/users/login' unless current_user
+  end
+end
 
 get '/' do
   erb :index
@@ -71,8 +86,15 @@ post '/users/login' do
     end
 end
 
+# ログアウト処理
+get '/users/logout' do
+  session.clear # セッション情報をすべて消去
+  redirect '/users/login'
+end
+
 # ホーム画面関係
 get '/home' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
     # ホーム画面を表示する
     if session[:user]
         # ユーザーを表示する
@@ -87,6 +109,7 @@ get '/home' do
 end
 
 post '/home/levelup' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   unit_id = params[:unit_id] # レベルアップ対象のユニットID
   user_myfreet = UserMyfreet.find(unit_id) # 対象ユニットを取得
   # バグり散らかしている現場（今はそれどころでは無い）
@@ -120,6 +143,7 @@ end
 
 # バトル画面関係
 get '/battle' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   stage = session[:battle_stage]
   # 味方ロード（ユーザーの所持艦）
   if session[:my_freets].nil?
@@ -200,6 +224,7 @@ before do
 end
 
 post '/home/story' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   session[:episode] = params[:story].to_i
   session[:step] = 1
 
@@ -210,6 +235,7 @@ post '/home/story' do
 end
 
 get '/story' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   episode = session[:episode]
   step = session[:step]
 
