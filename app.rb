@@ -6,6 +6,9 @@ require './models'
 require 'sinatra'
 require 'sinatra/activerecord'
 Dir.glob('./app/models/*.rb').each { |file| require file }
+require 'omniauth'
+require 'omniauth-google-oauth2'
+require 'omniauth-twitter2'
 
 set :public_folder, 'public'
 set :views, 'views'
@@ -28,6 +31,21 @@ enable :sessions
 set :session_secret, ENV.fetch('SESSION_SECRET', 'this_is_a_secret_key_for_development_only_12345')
 set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は4567をデフォルトに設定
 puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#{settings.port} ーーーーーーーーーーーーーーーーーーーー"
+
+# OmniAuthミドルウェアの設定を追加
+use OmniAuth::Builder do
+  # ⚠️ 鍵（IDとシークレット）はセキュリティのため環境変数から読み込みます
+  
+  # Googleログインの設定
+  provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], {
+    scope: 'email, profile' # ユーザーのメールアドレスとプロフィールを取得する設定
+  }
+
+  # X（Twitter）ログインの設定
+  provider :twitter2, ENV['TWITTER_CLIENT_ID'], ENV['TWITTER_CLIENT_SECRET'], {
+    scope: 'users.read tweet.read' # ユーザー情報を読み取る最小限の権限
+  }
+end
 
 # 共通で使えるメソッド（ヘルパー）を定義
 helpers do
