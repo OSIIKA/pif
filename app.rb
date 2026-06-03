@@ -34,6 +34,7 @@ set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は
 puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#{settings.port} ーーーーーーーーーーーーーーーーーーーー"
 
 # OmniAuthミドルウェアの設定を追加
+OmniAuth.config.allowed_request_methods = [:post, :get] # 👈 この行を追加！
 use OmniAuth::Builder do
   # ⚠️ 鍵（IDとシークレット）はセキュリティのため環境変数から読み込みます
   
