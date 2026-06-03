@@ -9,5 +9,5 @@ class User < ActiveRecord::Base
   # メールアドレスのチェック
   validates :mail, presence: true, uniqueness: true, format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i }
   # パスワードのチェック
-  validates :password, length: { minimum: 6 }, if: -> { new_record
+  validates :password, length: { minimum: 6 }, if: -> { new_record? || !password.nil? }
 end
