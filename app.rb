@@ -42,6 +42,16 @@ helpers do
   end
 end
 
+# ログイン・新規登録・トップページ以外のすべてのアクセスで、自動的に関所を通す
+before do
+  # パスが以下に一致する場合「以外」は、すべてログインチェックを実行
+  unless request.path_info == '/' || 
+         request.path_info.start_with?('/users/new') || 
+         request.path_info.start_with?('/users/login')
+    authenticate!
+  end
+end
+
 get '/' do
   erb :index
 end
@@ -94,7 +104,6 @@ end
 
 # ホーム画面関係
 get '/home' do
-  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
     # ホーム画面を表示する
     if session[:user]
         # ユーザーを表示する
@@ -125,11 +134,13 @@ post '/home/levelup' do
 end
 
 post '/home/freet' do
-    Myfreet.create(name: params[:name], hp: params[:hp], atk: params[:atk], info: params[:info])
-    redirect '/home'
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
+  Myfreet.create(name: params[:name], hp: params[:hp], atk: params[:atk], info: params[:info])
+  redirect '/home'
 end
 
 post '/home/battle' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   session[:story] = params[:story].to_i
   # データベースの値をセッションに保存
   if session[:story] == 0
@@ -171,10 +182,12 @@ get '/battle' do
 end
 
 get '/battle/lost' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   @finaresult="敗北"
   erb :result
 end
 get '/battle/won' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   @my_units = session[:my_freets]
   @enemy_units = session[:enemy_freets]
   @finaresult="勝利"
@@ -193,6 +206,7 @@ end
 
 #バトル画面で自分のキャラと相手のキャラを選択して攻撃を実行する際に行う処理
 post '/battle/attack' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   # 攻撃と被攻撃のユニットをセッションから取得
   @my_units = session[:my_freets]
   @enemy_units = session[:enemy_freets]
@@ -271,6 +285,7 @@ get '/story' do
   erb :story
 end
 get '/story/skip' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   episode = session[:episode]
 
   # このエピソードの最大 step を取得
@@ -283,6 +298,7 @@ get '/story/skip' do
   redirect '/story'
 end
 post '/story/auto' do
+  authenticate! # 👈 これを1行書くだけで、未ログイン者は弾かれる
   session[:auto] = params[:auto] == "on"
   redirect '/story'
 end
