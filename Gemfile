@@ -10,3 +10,9 @@ gem "pg", "~> 1.5.9"
 gem "rake", "~>13.0"
 gem "sinatra-activerecord", "~>2.0"
 gem 'sqlite3' # SQLiteを使用する場合
+# 外部認証（OAuth）用の共通ライブラリ
+gem 'omniauth'
+# Googleログイン用の拡張ライブラリ
+gem 'omniauth-google-oauth2'
+# X（Twitter）ログイン用の拡張ライブラリ（OAuth 2.0対応版）
+gem 'omniauth-twitter2'
