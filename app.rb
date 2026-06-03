@@ -64,10 +64,9 @@ get '/users/new' do
     erb :sign_up
 end
 post '/users/new' do
-    # 新規登録をする
-    # user = Users.create(name: params[:name], mail: params[:mail], password: params[:password], password_confirmation: params[:password_confirmation])
-    user = User.create(name: params[:name], mail: params[:mail], password: params[:password], level: 1, exp: 0)
-    if user.persisted?
+    # 新規登録をする（create ではなく new にして @user に格納する）
+    @user = User.new(name: params[:name], mail: params[:mail], password: params[:password], password_confirmation: params[:password_confirmation], level: 1, exp: 0)
+    if @user.save
       # ユーザーが正常に保存された場合にユニットを関連付ける
       default_units = [1, 2, 3].map do |i|
         Myfreet.find_or_create_by(id: i) do |f|
@@ -75,9 +74,9 @@ post '/users/new' do
         end
       end
       default_units.each do |unit|
-        UserMyfreet.create(user_id: user.id, myfreet_id: unit.id, level: 1, exp: 0)
+        UserMyfreet.create(user_id: @user.id, myfreet_id: unit.id, level: 1, exp: 0)
       end
-      session[:user] = user.id
+      session[:user] = @user.id
       redirect '/home'
     else
       redirect '/users/new'
@@ -88,13 +87,15 @@ get '/users/login' do
     erb :sign_in
 end
 post '/users/login' do
-    # ログインをする
-    user = User.find_by(name: params[:name])
+  # ログインをする
+  user = User.find_by(name: params[:name])
     if user && user.authenticate(params[:password])
-        session[:user] = user.id
-        redirect '/home'
+      session[:user] = user.id
+      redirect '/home'
     else
-        redirect '/users/login'
+      # エラーメッセージを変数に入れて、ログイン画面をそのまま再描画する
+      @error = "ユーザー名またはパスワードが正しくありません"
+      redirect '/users/login'
     end
 end
 
