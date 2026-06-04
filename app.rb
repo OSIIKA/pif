@@ -238,20 +238,7 @@ end
 
 # ======= 👆 ここまで 👆 =======
 
-# ホーム画面関係
-get '/home' do
-    # ホーム画面を表示する
-    if session[:user]
-        # ユーザーを表示する
-        @user=User.find(session[:user])
-        # 所持艦情報を表示する
-        @freets = @user.user_myfreets.includes(:myfreet).as_json(include: :myfreet) # 中間テーブルと関連データを取得
-        session[:my_freets] = @freets.as_json
-        puts @freets.as_json.inspect
-    end
-    
-    erb :home
-end
+
 
 post '/home/levelup' do
   unit_id = params[:unit_id] # レベルアップ対象のユニットID

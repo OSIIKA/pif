@@ -85,6 +85,31 @@
       </div>
     </div>
     <button id="sortie-button" class="sortie-button">出撃</button>
+    <div style="max-width: 600px; margin: 30px auto; padding: 20px; background-color: #141414; border: 1px solid #333; border-radius: 8px; color: #fff;">
+      <h3>💬 日本語全体チャット</h3>
+
+      <div style="height: 250px; overflow-y: auto; background-color: #000; padding: 10px; border-radius: 4px; border: 1px solid #222; margin-bottom: 15px;">
+        <% if @global_chats.empty? %>
+          <p style="color: #555; text-align: center; margin-top: 100px;">まだ発言はありません。最初のメッセージをどうぞ！</p>
+        <% else %>
+          <% @global_chats.each do |chat| %>
+            <div style="margin-bottom: 8px; font-size: 14px; line-height: 1.4;">
+              <span style="color: #52c41a; font-weight: bold;"><%= chat.user.name %></span>
+              <span style="color: #666; font-size: 11px; margin-left: 5px;"><%= chat.created_at.strftime('%m/%d %H:%M') %></span>
+              <div style="color: #ddd; margin-left: 10px; word-wrap: break-word;"><%= chat.body %></div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <form action="/home/chat" method="post" style="display: flex; gap: 10px;">
+        <input type="text" name="chat_body" placeholder="メッセージを入力（最大100文字）" maxlength="100" required 
+              style="flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+        <button type="submit" style="padding: 10px 20px; background-color: #1890ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+          送信
+        </button>
+      </form>
+    </div>
   </main>
   <script src="/js/home.js"></script>
 </body>
