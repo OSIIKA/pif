@@ -30,5 +30,5 @@ post '/home/chat' do
   )
 
   # 書き込みが終わったら、ホーム画面にリダイレクトして最新のチャットを表示
-  redirect '/home'
+  redirect '/home?chat=open'
 end
