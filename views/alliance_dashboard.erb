@@ -1,0 +1,17 @@
+<div style="max-width: 600px; margin: 40px auto; padding: 20px; color: #fff; background-color: #1a233a; border-radius: 8px; border: 1px solid #2b416d;">
+  <h2>🛡️ 同盟マイページ</h2>
+  <h1 style="color: #bae7ff;"><%= @alliance.name %></h1>
+  
+  <p>盟主: <strong><%= @alliance.leader.name %></strong> | レベル: <%= @alliance.level %> | EXP: <%= @alliance.exp %></p>
+
+  <hr style="border-color: #2b416d; margin: 20px 0;">
+
+  <h3>👥 所属メンバー一覧</h3>
+  <ul>
+    <% @alliance.users.each do |member| %>
+      <li><%= member.name %> (Lv: <%= member.level %>)</li>
+    <% end %>
+  </ul>
+
+  <p style="margin-top: 30px;"><a href="/home" style="color: #adc6ff;">🔙 ホームに戻る</a></p>
+</div>
