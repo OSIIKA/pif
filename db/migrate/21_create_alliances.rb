@@ -1,6 +1,7 @@
 class CreateAlliances < ActiveRecord::Migration[6.1]
   def change
     create_table :alliances do |t|
+      t.string :join_type, default: 'public', null: false
       t.string :name, null: false
       t.integer :leader_id, null: false
       t.text :description
