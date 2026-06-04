@@ -7,6 +7,7 @@ class CreateUsers < ActiveRecord::Migration[6.1]
       t.integer :level, default: 1, null: false
       t.integer :exp, default: 0, null: false
       t.integer :alliance_id
+      t.integer :alliance_role, default: 0, null: false # 0: 一般, 1: 副盟主, 2: 盟主
       t.integer :user_lank_id, default: 1, null: false
       # t.string :info
       t.string :uid
