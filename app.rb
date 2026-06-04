@@ -127,6 +127,58 @@ get '/users/logout' do
   redirect '/users/login'
 end
 
+# ======= 👇 ここからGoogleログインのお出迎えコードを追加 👇 =======
+
+# Googleからデータを持って帰ってきたときの受付窓口
+get '/auth/google_oauth2/callback' do
+  auth = request.env['omniauth.auth'] # Googleから届いたユーザー情報（名前やメールなど）
+  
+  # すでにこのGoogleアカウントで登録されているユーザーを探す。いなければ新しく準備する。
+  user = User.find_or_initialize_by(provider: auth.provider, uid: auth.uid)
+  
+  # まだデータベースに保存されていない「ご新規さん」の場合の処理
+  if user.new_record?
+    user.name = auth.info.name
+    user.mail = auth.info.email
+    
+    # 💡 パスワード認証用の仕組み（has_secure_password）を突破するために、仮のランダムパスワードをセット
+    temporary_password = SecureRandom.hex(16)
+    user.password = temporary_password
+    user.password_confirmation = temporary_password
+    
+    user.level = 1
+    user.exp = 0
+    
+    if user.save
+      # 新規登録成功時に、初期ユニット（1, 2, 3）をプレゼントする処理（既存の新規登録と同じ）
+      default_units = [1, 2, 3].map do |i|
+        Myfreet.find_or_create_by(id: i) do |f|
+          f.name = "ユニット#{i}"
+        end
+      end
+      default_units.each do |unit|
+        UserMyfreet.create(user_id: user.id, myfreet_id: unit.id, level: 1, exp: 0)
+      end
+    else
+      # もし万が一保存に失敗したら、ターミナルに理由を書いてログイン画面に戻す
+      puts "Googleユーザーの保存に失敗しました: #{user.errors.full_messages}"
+      redirect '/users/login'
+      return
+    end
+  end
+  
+  # ログイン状態にしてホーム画面へドン！
+  session[:user] = user.id
+  redirect '/home'
+end
+
+# Googleログイン自体を途中でキャンセルしたり失敗したときの逃げ道
+get '/auth/failure' do
+  redirect '/users/login'
+end
+
+# ======= 👆 ここまで 👆 =======
+
 # ホーム画面関係
 get '/home' do
     # ホーム画面を表示する
