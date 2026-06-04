@@ -89,3 +89,24 @@ post '/alliance/chat' do
   # 連続で喋れるように「?chat=open」をつけて同盟ページに戻すおもてなし
   redirect '/alliance?chat=open'
 end
+
+# 📝 controllers/alliance_controller.rb
+
+# 同盟脱退の処理
+post '/alliance/leave' do
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+
+  @alliance = @user.alliance
+  redirect '/alliance' if @alliance.nil?
+
+  # 💡 盟主の防衛策：自分が盟主なら脱退させずにエラーを返す
+  if @alliance.leader_id == @user.id
+    session[:error] = "盟主は同盟を脱退できません。解散するか、他メンバーに盟主を譲渡してください。"
+    redirect '/alliance'
+  else
+    # 一般メンバーなら安全に無所属（nil）にしてホーム画面へお見送り
+    @user.update(alliance_id: nil)
+    redirect '/home'
+  end
+end
