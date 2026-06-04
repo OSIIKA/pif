@@ -247,6 +247,20 @@ get '/home' do
     erb :home
 end
 
+get '/alliance' do
+  # 💡 ログインしているユーザーのデータを取得（セッション管理の仕様に合わせて調整してください）
+  @user = User.find_by(id: session[:user_id])
+  redirect '/users/new' if @user.nil? # ログインしていなければ登録画面へ
+
+  # 💡 ユーザーが同盟に所属しているかどうかで、表示する中身を完全に切り替える
+  if @user.alliance.nil?
+    erb :alliance_none # 未所属画面（同盟の結成・検索）
+  else
+    @alliance = @user.alliance
+    erb :alliance_dashboard # 所属済み画面（同盟のマイページ）
+  end
+end
+
 post '/home/levelup' do
   unit_id = params[:unit_id] # レベルアップ対象のユニットID
   user_myfreet = UserMyfreet.find(unit_id) # 対象ユニットを取得

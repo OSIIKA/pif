@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   has_secure_password
   # 既存のリレーション（そのまま残します）
   belongs_to :user_lank, foreign_key: :level, optional: true
+  # ユーザーはどこかの同盟に所属する（無所属もOKにするため optional: true）
+  belongs_to :alliance, optional: true
   # セキュリティシステムとバリデーションの追加
   # ユーザー名のチェック
   validates :name, presence: true, allow_blank: false, uniqueness: true
