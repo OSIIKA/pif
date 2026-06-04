@@ -254,6 +254,8 @@ get '/alliance' do
 
   # 💡 ユーザーが同盟に所属しているかどうかで、表示する中身を完全に切り替える
   if @user.alliance.nil?
+    # 👇 この1行を追加！世の中のすべての同盟を取得して画面に渡す
+    @alliances = Alliance.all
     erb :alliance_none # 未所属画面（同盟の結成・検索）
   else
     @alliance = @user.alliance
@@ -287,6 +289,27 @@ post '/alliance/create' do
     # 万が一、同盟名が重複していたり空欄だった場合はエラーを持って未所属画面を再表示
     @error = alliance.errors.full_messages.join(', ')
     erb :alliance_none
+  end
+end
+
+post '/alliance/join' do
+  # 1. ログインしているユーザー（2人目）を取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+
+  # 2. 画面から送られてきた同盟IDを使って、対象の同盟を探す
+  alliance = Alliance.find_by(id: params[:alliance_id])
+
+  if alliance
+    # 💡 ユーザーの所属同盟IDを、見つかった同盟のIDで更新する！
+    @user.update(alliance_id: alliance.id)
+    
+    # 所属状態になったので、リロードすれば自動的に「同盟マイページ」へ切り替わる
+    redirect '/alliance'
+  else
+    # 万が一、同盟が解散されていたりして見つからなかった場合
+    session[:error] = "指定された同盟が見つかりませんでした。"
+    redirect '/alliance'
   end
 end
 
