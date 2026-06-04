@@ -70,7 +70,8 @@ before do
   # パスが以下に一致する場合「以外」は、すべてログインチェックを実行
   unless request.path_info == '/' || 
          request.path_info.start_with?('/users/new') || 
-         request.path_info.start_with?('/users/login')
+         request.path_info.start_with?('/users/login') ||
+         request.path_info.start_with?('/auth/')
     authenticate!
   end
 end
