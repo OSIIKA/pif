@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   # bcryptとpassword_digestを連動させる魔法の1行
   has_secure_password
+  # ユーザーはたくさんのチャット発言を持つ
+  has_many :chats, dependent: :destroy
   # 既存のリレーション（そのまま残します）
   belongs_to :user_lank, foreign_key: :level, optional: true
   # ユーザーはどこかの同盟に所属する（無所属もOKにするため optional: true）

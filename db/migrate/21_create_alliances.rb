@@ -6,7 +6,7 @@ class CreateAlliances < ActiveRecord::Migration[6.1]
       t.text :description
       t.integer :level, default: 1, null: false
       t.integer :exp, default: 0, null: false
-
+      t.text :notice # 同盟の告知内容
       t.timestamps
     end
 

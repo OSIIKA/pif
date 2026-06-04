@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 21) do
+ActiveRecord::Schema.define(version: 22) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,17 @@ ActiveRecord::Schema.define(version: 21) do
     t.integer "hp"
     t.integer "atk"
     t.string "info"
+  end
+
+  create_table "chats", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "body", null: false
+    t.string "category", null: false
+    t.integer "alliance_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["alliance_id"], name: "index_chats_on_alliance_id"
+    t.index ["category"], name: "index_chats_on_category"
   end
 
   create_table "myfreets", force: :cascade do |t|
@@ -85,8 +96,8 @@ ActiveRecord::Schema.define(version: 21) do
     t.integer "exp", default: 0, null: false
     t.integer "alliance_id"
     t.integer "user_lank_id", default: 1, null: false
-    t.string "provider"
     t.string "uid"
+    t.string "provider"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
