@@ -12,11 +12,19 @@ class Chat < ActiveRecord::Base
   private
 
   def cleanup_old_chats
-    # 同盟チャットの場合のみ発動
     if category == 'alliance' && alliance_id.present?
-      # 🌟 その同盟のチャットが200件を超えていたら、古いもの（200件からあふれた分）を特定して全消去！
+      # 🛡️ 同盟チャットの場合：各同盟ごとに最新200件を残す
       allowed_count = 200
       chats_to_delete = Chat.where(alliance_id: alliance_id, category: 'alliance')
+                            .order(created_at: :desc)
+                            .offset(allowed_count)
+      
+      chats_to_delete.delete_all if chats_to_delete.any?
+
+    elsif category == 'global'
+      # 🛡️ 全体チャットの場合：ゲーム全体で最新500件を残す（件数は自由に調整OK）
+      allowed_count = 500
+      chats_to_delete = Chat.where(category: 'global')
                             .order(created_at: :desc)
                             .offset(allowed_count)
       
