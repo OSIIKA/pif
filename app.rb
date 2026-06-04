@@ -182,6 +182,56 @@ end
 
 # ======= 👆 ここまで 👆 =======
 
+# ======= 👇 ここからX（Twitter）ログインのお出迎えコードを追加 👇 =======
+
+# Xからデータを持って帰ってきたときの受付窓口
+get '/auth/twitter2/callback' do
+  auth = request.env['omniauth.auth'] # Xから届いたユーザー情報
+  
+  # すでにこのXアカウントで登録されているユーザーを探す。いなければ新しく準備する。
+  user = User.find_or_initialize_by(provider: auth.provider, uid: auth.uid)
+  
+  # まだデータベースに保存されていない「ご新規さん」の場合の処理
+  if user.new_record?
+    # Xの表示名（無ければ @ユーザー名）を取得
+    user.name = auth.info.name || auth.info.nickname
+    
+    # 💡 安全装置：Xからメールアドレスが取れなかった場合は、一意の仮アドレスを自動生成
+    user.mail = auth.info.email || "twitter_#{auth.uid}@example.com"
+    
+    # パスワード認証用の仕組みを突破するために、仮のランダムパスワードをセット
+    temporary_password = SecureRandom.hex(16)
+    user.password = temporary_password
+    user.password_confirmation = temporary_password
+    
+    user.level = 1
+    user.exp = 0
+    
+    if user.save
+      # 新規登録成功時に、初期ユニット（1, 2, 3）をプレゼントする処理
+      default_units = [1, 2, 3].map do |i|
+        Myfreet.find_or_create_by(id: i) do |f|
+          f.name = "ユニット#{i}"
+        end
+      end
+      default_units.each do |unit|
+        UserMyfreet.create(user_id: user.id, myfreet_id: unit.id, level: 1, exp: 0)
+      end
+    else
+      # もし保存に失敗したら、セッションにエラー内容を詰めて新規登録画面に戻す
+      session[:error] = "Xアカウントでの登録に失敗しました: #{user.errors.full_messages.join(', ')}"
+      redirect '/users/new'
+      return
+    end
+  end
+  
+  # ログイン状態にしてホーム画面へドン！
+  session[:user] = user.id
+  redirect '/home'
+end
+
+# ======= 👆 ここまで 👆 =======
+
 # ホーム画面関係
 get '/home' do
     # ホーム画面を表示する
