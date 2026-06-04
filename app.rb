@@ -261,6 +261,35 @@ get '/alliance' do
   end
 end
 
+post '/alliance/create' do
+  # 1. ログインしているユーザーを取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+
+  # 2. フォームから届いた名前で、新しい同盟のデータを準備
+  # 盟主（leader_id）には、作った本人のIDを叩き込みます
+  alliance = Alliance.new(
+    name: params[:alliance_name],
+    leader_id: @user.id,
+    level: 1,
+    exp: 0
+  )
+
+  # 3. データベースへの保存に挑戦
+  if alliance.save
+    # 💡 結成に成功したら、作った本人の「所属同盟ID」も更新してあげる
+    @user.update(alliance_id: alliance.id)
+    
+    # 完了したら同盟ページ（再読み込み）へ戻る
+    # 次は所属状態になっているので、自動的に「ダッシュボード画面」に切り替わります！
+    redirect '/alliance'
+  else
+    # 万が一、同盟名が重複していたり空欄だった場合はエラーを持って未所属画面を再表示
+    @error = alliance.errors.full_messages.join(', ')
+    erb :alliance_none
+  end
+end
+
 post '/home/levelup' do
   unit_id = params[:unit_id] # レベルアップ対象のユニットID
   user_myfreet = UserMyfreet.find(unit_id) # 対象ユニットを取得
