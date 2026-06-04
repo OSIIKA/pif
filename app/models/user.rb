@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   belongs_to :user_lank, foreign_key: :level, optional: true
   # セキュリティシステムとバリデーションの追加
   # ユーザー名のチェック
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, allow_blank: false, uniqueness: true
   # メールアドレスのチェック
   validates :mail, presence: true, uniqueness: true, format: { with: /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i }
   # パスワードのチェック

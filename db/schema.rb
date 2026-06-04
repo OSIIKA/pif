@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 16) do
+ActiveRecord::Schema.define(version: 21) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,18 @@ ActiveRecord::Schema.define(version: 16) do
     t.integer "max_hp"
     t.integer "atk"
     t.string "info"
+  end
+
+  create_table "alliances", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "leader_id", null: false
+    t.text "description"
+    t.integer "level", default: 1, null: false
+    t.integer "exp", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["leader_id"], name: "index_alliances_on_leader_id"
+    t.index ["name"], name: "index_alliances_on_name", unique: true
   end
 
   create_table "battleunits", force: :cascade do |t|
@@ -66,11 +78,13 @@ ActiveRecord::Schema.define(version: 16) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.string "mail"
     t.string "password_digest"
-    t.integer "level"
-    t.integer "exp"
+    t.integer "level", default: 1, null: false
+    t.integer "exp", default: 0, null: false
+    t.integer "alliance_id"
+    t.integer "user_lank_id", default: 1, null: false
     t.string "provider"
     t.string "uid"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
