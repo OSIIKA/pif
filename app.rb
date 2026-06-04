@@ -83,6 +83,7 @@ end
 # 新規登録・ログイン関係
 get '/users/new' do
     # 新規登録画面を表示する
+    @error = session.delete(:error) # セッションからエラーを取り出し、同時に中身を消去（リロードで消えるようにする）
     @user = User.new # 👈 空のユーザーを用意しておく（画面側でのエラー防止）
     erb :sign_up
 end
@@ -107,6 +108,7 @@ post '/users/new' do
 end
 get '/users/login' do
     # ログイン画面を表示する
+    @error = session.delete(:error) # セッションからエラーを取り出し、同時に中身を消去（リロードで消えるようにする）
     erb :sign_in
 end
 post '/users/login' do
@@ -161,9 +163,9 @@ get '/auth/google_oauth2/callback' do
         UserMyfreet.create(user_id: user.id, myfreet_id: unit.id, level: 1, exp: 0)
       end
     else
-      # もし万が一保存に失敗したら、ターミナルに理由を書いてログイン画面に戻す
-      puts "Googleユーザーの保存に失敗しました: #{user.errors.full_messages}"
-      redirect '/users/login'
+      # 💡 変更：ターミナルに出すだけでなく、セッションにエラー内容を詰めて「新規登録画面」に戻す
+      session[:error] = "Googleアカウントでの登録に失敗しました: #{user.errors.full_messages.join(', ')}"
+      redirect '/users/new'
       return
     end
   end
@@ -175,7 +177,9 @@ end
 
 # Googleログイン自体を途中でキャンセルしたり失敗したときの逃げ道
 get '/auth/failure' do
-  redirect '/users/login'
+  # 💡 変更：こちらもエラーメッセージを持って「新規登録画面」に戻す
+  session[:error] = "Google認証がキャンセルされたか、失敗しました。"
+  redirect '/users/new'
 end
 
 # ======= 👆 ここまで 👆 =======
