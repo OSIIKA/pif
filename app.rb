@@ -415,3 +415,13 @@ post '/story/auto' do
   session[:auto] = params[:auto] == "on"
   redirect '/story'
 end
+
+# 利用規約ページ
+get '/terms' do
+  erb :terms
+end
+
+# プライバシーポリシーページ
+get '/privacy' do
+  erb :privacy
+end
