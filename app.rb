@@ -8,7 +8,7 @@ require 'sinatra/activerecord'
 Dir.glob('./app/models/*.rb').each { |file| require file }
 require 'omniauth'
 require 'omniauth-google-oauth2'
-require 'omniauth-twitter2'
+require 'omniauth/twitter2'
 
 set :public_folder, 'public'
 set :views, 'views'
