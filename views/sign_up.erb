@@ -13,6 +13,9 @@
         <div class="title">
           <img src="/img/PIFPNGloginup.png">
         </div>
+        <div id="terms-error-message" style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; text-align: center; border: 1px solid #f5c6cb; font-size: 14px; font-weight: bold; display: none;">
+            ⚠️ 利用規約とプライバシーポリシーへの同意が必要です。
+        </div>
         <% if @error %>
           <div style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; text-align: center; border: 1px solid #f5c6cb; font-size: 14px; font-weight: bold;">
             ⚠️ <%= @error %>
@@ -57,5 +60,6 @@
         <p class="footer"><a href="/users/login">ログイン</a></p>
       </div>
     </div>
+    <script src="/js/sign_up.js"></script>
   </body>
 </html>
