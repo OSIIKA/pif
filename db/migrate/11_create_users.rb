@@ -6,6 +6,8 @@ class CreateUsers < ActiveRecord::Migration[6.1]
       t.string :password_digest, null: false # 必須: password_digestに変更
       t.integer :level
       t.integer :exp
+      t.integer :alliance_id, null: false
+      t.integer :user_lank_id, null: false
       # t.string :info
       # t.integer :user
     end
