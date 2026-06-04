@@ -8,8 +8,7 @@ require 'sinatra/activerecord'
 Dir.glob('./app/models/*.rb').each { |file| require file }
 require 'omniauth'
 require 'omniauth-google-oauth2'
-#twitter設定が完了したらコメントアウトを解除
-#require 'omniauth-twitter2'
+require 'omniauth-twitter2'
 
 set :public_folder, 'public'
 set :views, 'views'
@@ -44,10 +43,9 @@ use OmniAuth::Builder do
   }
 
   # X（Twitter）ログインの設定
-  #twitter設定が完了したらコメントアウトを解除
-  #provider :twitter2, ENV['TWITTER_CLIENT_ID'], ENV['TWITTER_CLIENT_SECRET'], {
-  #  scope: 'users.read tweet.read' # ユーザー情報を読み取る最小限の権限
-  #}
+  provider :twitter2, ENV['TWITTER_CLIENT_ID'], ENV['TWITTER_CLIENT_SECRET'], {
+    scope: 'users.read tweet.read' # ユーザー情報を読み取る最小限の権限
+  }
 end
 
 # 共通で使えるメソッド（ヘルパー）を定義
