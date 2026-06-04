@@ -9,7 +9,8 @@ class CreateUsers < ActiveRecord::Migration[6.1]
       t.integer :alliance_id
       t.integer :user_lank_id, default: 1, null: false
       # t.string :info
-      # t.integer :user
+      t.string :uid
+      t.string :provider
     end
     # add_index :users, :mail, unique: true
   end
