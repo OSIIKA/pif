@@ -249,7 +249,7 @@ end
 
 get '/alliance' do
   # 💡 ログインしているユーザーのデータを取得（セッション管理の仕様に合わせて調整してください）
-  @user = User.find_by(id: session[:user_id])
+  @user = User.find_by(id: session[:user])
   redirect '/users/new' if @user.nil? # ログインしていなければ登録画面へ
 
   # 💡 ユーザーが同盟に所属しているかどうかで、表示する中身を完全に切り替える
