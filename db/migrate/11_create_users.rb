@@ -1,13 +1,13 @@
 class CreateUsers < ActiveRecord::Migration[6.1]
   def change
     create_table :users do |t|
-      t.string :name
+      t.string :name, null: false
       t.string :mail
       t.string :password_digest, null: false # 必須: password_digestに変更
-      t.integer :level
-      t.integer :exp
-      t.integer :alliance_id, null: false
-      t.integer :user_lank_id, null: false
+      t.integer :level, default: 1, null: false
+      t.integer :exp, default: 0, null: false
+      t.integer :alliance_id
+      t.integer :user_lank_id, default: 1, null: false
       # t.string :info
       # t.integer :user
     end
