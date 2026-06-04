@@ -10,6 +10,11 @@ get '/alliance' do
     erb :alliance_none # 未所属画面（同盟の結成・検索）
   else
     @alliance = @user.alliance
+    # 💡 [追記] この同盟のチャット最新30件を古い順（時系列順）で取得
+    @alliance_chats = Chat.where(alliance_id: @alliance.id, category: 'alliance')
+                          .order(created_at: :desc)
+                          .limit(30)
+                          .reverse
     erb :alliance_dashboard # 所属済み画面（同盟のマイページ）
   end
 end
@@ -62,4 +67,25 @@ post '/alliance/join' do
     session[:error] = "指定された同盟が見つかりませんでした。"
     redirect '/alliance'
   end
+end
+
+# 💡 [新規追加] 同盟チャットの投稿を受け付ける窓口
+post '/alliance/chat' do
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+  
+  # 無所属の不正ポストをガード
+  redirect '/alliance' if @user.alliance_id.nil?
+
+  # 同盟IDを紐づけてチャットを保存
+  # 保存された瞬間に、chat.rb側の「同盟ごと200件お掃除ロジック」が自動発動！
+  Chat.create(
+    user_id: @user.id,
+    alliance_id: @user.alliance_id,
+    body: params[:chat_body],
+    category: 'alliance'
+  )
+
+  # 連続で喋れるように「?chat=open」をつけて同盟ページに戻すおもてなし
+  redirect '/alliance?chat=open'
 end
