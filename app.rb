@@ -5,10 +5,16 @@ require './models'
 # ここから19まで、ローカル環境での実行のため、一時的にコメントに変更、1年後の自分に押しつけ
 require 'sinatra'
 require 'sinatra/activerecord'
-Dir.glob('./app/models/*.rb').each { |file| require file }
+Dir.glob(File.expand_path('../app/models/*.rb', __FILE__)).each do |file|
+  require file
+end
 require 'omniauth'
 require 'omniauth-google-oauth2'
 require 'omniauth/twitter2'
+# 💡 「app.rbがあるフォルダ」を基準に、コントローラーをすべて一括で読み込む
+Dir.glob(File.expand_path('../controllers/*_controller.rb', __FILE__)).each do |file|
+  require file
+end
 
 set :public_folder, 'public'
 set :views, 'views'
