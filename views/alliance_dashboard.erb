@@ -122,7 +122,7 @@
   <div id="confirm-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); z-index: 2100; justify-content: center; align-items: center;">
     <div style="max-width: 400px; width: 85%; padding: 25px; background-color: #1a1a1a; border: 1px solid #ff4d4f; border-radius: 8px; color: #fff; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.7);">
       <h3 style="margin-top: 0; color: #ff4d4f;">⚠️ 最終確認</h3>
-      <p style="margin-bottom: 25px; font-size: 14px; line-height: 1.5; color: #ddd;">
+      <p id="confirm-text" style="margin-bottom: 25px; font-size: 14px; line-height: 1.5; color: #ddd;">
         本当にこの同盟を脱退しますか？<br>
         <span style="font-size: 12px; color: #888;">（脱退すると同盟チャットの履歴などは見られなくなります）</span>
       </p>
@@ -132,8 +132,8 @@
           いいえ
         </button>
         
-        <form action="/alliance/leave" method="post" style="flex: 1; margin: 0;">
-          <button type="submit" style="width: 100%; padding: 10px; background-color: #ff4d4f; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+        <form id="confirm-form" action="/alliance/leave" method="post" style="flex: 1; margin: 0;">
+          <button id="confirm-submit-btn" type="submit" style="width: 100%; padding: 10px; background-color: #ff4d4f; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
             はい、脱退します
           </button>
           </form>
