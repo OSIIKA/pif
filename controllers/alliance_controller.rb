@@ -108,3 +108,32 @@ post '/alliance/leave' do
     redirect '/home'
   end
 end
+
+# 💡 追加：同盟解散処理（POST）
+post '/alliance/disband' do
+  # 1. ログインユーザーのチェック
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+
+  # 2. ユーザーが所属している同盟を取得
+  alliance = Alliance.find_by(id: @user.alliance_id)
+
+  # 安全のためのガード：本当に盟主か、かつメンバーが自分1人だけかをサーバー側でもチェック
+  if @user.alliance_role == 4 && alliance && alliance.users.count == 1
+    
+    # 💡 処理A：盟主自身の同盟情報をリセット（無所属、役職0にする）
+    @user.update(
+      alliance_id: nil,
+      alliance_role: 0
+    )
+
+    # 💡 処理B：同盟データをデータベースから完全に削除
+    alliance.destroy
+
+    # 解散完了！未所属用のページへリダイレクト
+    redirect '/alliance'
+  else
+    # 万が一、条件を満たしていないのにアクセスされた場合は何もせずマイページに戻す
+    redirect '/alliance'
+  end
+end
