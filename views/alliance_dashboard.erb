@@ -83,8 +83,21 @@
       </div>
 
       <div id="tab-leader" class="tab-content" style="display: block; min-height: 150px;">
-        <p style="color: #aaa;">🔒 盟主専用コマンド（開発中・保留）</p>
-        <p style="font-size: 13px; color: #666;">※ここには盟主だけに向けた特別な設定画面を表示する予定です。</p>
+        <h4 style="color: #ff4d4f; margin-top: 0; margin-bottom: 12px;">👑 盟主専用コマンド</h4>
+        
+        <% if @alliance.users.count == 1 %>
+          <p style="font-size: 13px; color: #aaa; margin-bottom: 15px;">現在メンバーはあなただけです。同盟を完全に解散することができます。</p>
+          <form action="/alliance/disband" method="post" onsubmit="return confirm('本当に同盟を解散しますか？この操作は取り消せません。');" style="margin: 0;">
+            <button type="submit" style="background-color: #ff4d4f; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s;">
+              💥 同盟を解散する
+            </button>
+          </form>
+        <% else %>
+          <p style="color: #ff4d4f; font-size: 13px; background: #222; padding: 10px; border-radius: 4px; border: 1px solid #5c2223; margin: 0; line-height: 1.5;">
+            ⚠️ 他にメンバーが所属しているため解散できません。<br>
+            解散するには、他のメンバーを全員脱退させるか、盟主を譲渡してください。
+          </p>
+        <% end %>
       </div>
 
       <div id="tab-main" class="tab-content" style="display: none; min-height: 150px;">
