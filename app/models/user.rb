@@ -15,20 +15,19 @@ class User < ActiveRecord::Base
   # パスワードのチェック
   # 新規登録時であり、かつ「外部認証のID（uid）がない」または「パスワードが直接入力されている」場合のみ、6文字以上の制限をかける
   validates :password, length: { minimum: 6 }, if: -> { new_record? && (password.present? || uid.nil?) }, on: :create
-end
-
-# 💡 追加：同盟内の役職名を数字から判定して返す
-def alliance_role_name
-  case self.alliance_role
-  when 4
-    "👑 盟主"
-  when 3
-    "⚔️ 副盟主"
-  when 2
-    "🛡️ メンバー"
-  when 1
-    "✉️ 申請中"
-  else
-    "無所属"
+  # 💡 追加：同盟内の役職名を数字から判定して返す
+  def alliance_role_name
+    case self.alliance_role
+    when 4
+      "👑 盟主"
+    when 3
+      "⚔️ 副盟主"
+    when 2
+      "🛡️ メンバー"
+    when 1
+      "✉️ 申請中"
+    else
+      "無所属"
+    end
   end
 end
