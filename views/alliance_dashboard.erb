@@ -22,8 +22,10 @@
   <h3>👥 所属メンバー一覧</h3>
   <ul>
     <% @alliance.users.each do |member| %>
-      <li><%= member.name %> (Lv: <%= member.level %>)</li>
-    <% end %>
+      <li>
+        <strong>[<%= member.alliance_role_name %>]</strong> 
+        <%= member.name %> (Lv: <%= member.level %>)
+      </li>    <% end %>
   </ul>
 
   <p style="margin-top: 30px;">
