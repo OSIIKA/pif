@@ -7,6 +7,19 @@
   <h3>🛠️ 新しい同盟を結成する</h3>
   <form action="/alliance/create" method="post">
     <input type="text" name="alliance_name" placeholder="同盟名を入力（最大12文字）" required style="padding: 8px; width: 70%; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff;">
+    <div style="margin: 15px 0; text-align: left;">
+      <label style="display: block; margin-bottom: 5px; color: #aaa; font-size: 14px;">加入制限</label>
+      <div style="display: flex; gap: 20px;">
+        <label style="cursor: pointer; font-size: 14px; color: #fff;">
+          <input type="radio" name="join_type" value="public" checked style="margin-right: 5px;">
+          🔓 自由参加 <span style="font-size: 12px; color: #666;">（誰でも即加入可能）</span>
+        </label>
+        <label style="cursor: pointer; font-size: 14px; color: #fff;">
+          <input type="radio" name="join_type" value="approval" style="margin-right: 5px;">
+          🔒 要申請 <span style="font-size: 12px; color: #666;">（盟主の承認が必要）</span>
+        </label>
+      </div>
+    </div>
     <button type="submit" style="padding: 8px 16px; background-color: #1890ff; color: #fff; border: none; border-radius: 4px; cursor: pointer;">結成</button>
   </form>
   <hr style="border-color: #333; margin: 20px 0;">
