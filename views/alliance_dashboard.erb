@@ -88,8 +88,9 @@
         <% if @alliance.users.count == 1 %>
           <p style="font-size: 13px; color: #aaa; margin-bottom: 15px;">現在メンバーはあなただけです。同盟を完全に解散することができます。</p>
           <form action="/alliance/disband" method="post" onsubmit="return confirm('本当に同盟を解散しますか？この操作は取り消せません。');" style="margin: 0;">
-            <button type="submit" style="background-color: #ff4d4f; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s;">
-              💥 同盟を解散する
+            <p style="font-size: 13px; color: #aaa; margin-bottom: 15px;">現在メンバーはあなただけです。同盟を完全に解散することができます。</p>
+            <button type="button" id="open-disband-overlay-btn" style="background-color: #ff4d4f; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s;">
+                💥 同盟を解散する
             </button>
           </form>
         <% else %>
