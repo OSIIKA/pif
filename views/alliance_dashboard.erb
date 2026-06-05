@@ -83,18 +83,28 @@
       </div>
 
       <div id="tab-leader" class="tab-content" style="display: block; min-height: 150px;">
-        <h4 style="color: #ff4d4f; margin-top: 0; margin-bottom: 12px;">👑 盟主専用コマンド</h4>
         
-        <% if @alliance.users.count == 1 %>
-          <p style="font-size: 13px; color: #aaa; margin-bottom: 15px;">現在メンバーはあなただけです。同盟を完全に解散することができます。</p>
-          <button type="button" id="open-disband-overlay-btn" style="background-color: #ff4d4f; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s;">
-            💥 同盟を解散する
-          </button>
-        <% else %>
-          <p style="color: #ff4d4f; font-size: 13px; background: #222; padding: 10px; border-radius: 4px; border: 1px solid #5c2223; margin: 0; line-height: 1.5;">
-            ⚠️ 他にメンバーが所属しているため解散できません。<br>
-            解散するには、他のメンバーを全員脱退させるか、盟主を譲渡してください。
-          </p>
+        <h4 style="color: #aaa; margin-top: 0; margin-bottom: 12px;">ℹ️ 同盟紹介</h4>
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+          ※ここには同盟の説明やイベント参加状況、宣戦布告状態などが全員向けに表示されます。
+        </p>
+        
+        <% if @user.alliance_role == 4 %>
+          <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #333;">
+            <h5 style="color: #ff4d4f; margin-top: 0; margin-bottom: 10px;">👑 盟主専用コマンド</h5>
+            
+            <% if @alliance.users.count == 1 %>
+              <p style="font-size: 13px; color: #aaa; margin-bottom: 15px;">現在メンバーはあなただけです。同盟を完全に解散することができます。</p>
+              <button type="button" id="open-disband-overlay-btn" style="background-color: #ff4f4f; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: background 0.2s;">
+                💥 同盟を解散する
+              </button>
+            <% else %>
+              <p style="color: #ff4d4f; font-size: 13px; background: #222; padding: 10px; border-radius: 4px; border: 1px solid #5c2223; margin: 0; line-height: 1.5;">
+                ⚠️ 他にメンバーが所属しているため解散できません。<br>
+                解散するには、他のメンバーを全員脱退させるか、盟主を譲渡してください。
+              </p>
+            <% end %>
+          </div>
         <% end %>
       </div>
 
