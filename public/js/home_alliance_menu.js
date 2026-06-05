@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // ==========================================
   if (menuOpenBtn && menuOverlay) {
     menuOpenBtn.addEventListener("click", function() {
-      menuOverlay.style.display = "block";
+      menuOverlay.style.display = "flex";
     });
   }
 
