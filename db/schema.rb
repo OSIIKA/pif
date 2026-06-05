@@ -25,11 +25,13 @@ ActiveRecord::Schema.define(version: 22) do
   end
 
   create_table "alliances", force: :cascade do |t|
+    t.string "join_type", default: "public", null: false
     t.string "name", null: false
     t.integer "leader_id", null: false
     t.text "description"
     t.integer "level", default: 1, null: false
     t.integer "exp", default: 0, null: false
+    t.text "notice"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["leader_id"], name: "index_alliances_on_leader_id"
@@ -52,6 +54,13 @@ ActiveRecord::Schema.define(version: 22) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["alliance_id"], name: "index_chats_on_alliance_id"
     t.index ["category"], name: "index_chats_on_category"
+  end
+
+  create_table "member_lanks", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "text"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "myfreets", force: :cascade do |t|
@@ -95,6 +104,7 @@ ActiveRecord::Schema.define(version: 22) do
     t.integer "level", default: 1, null: false
     t.integer "exp", default: 0, null: false
     t.integer "alliance_id"
+    t.integer "alliance_role", default: 0, null: false
     t.integer "user_lank_id", default: 1, null: false
     t.string "uid"
     t.string "provider"
