@@ -201,7 +201,7 @@
                 <details style="margin-bottom: 10px;" open>
                   <summary style="cursor: pointer; font-weight: bold; color: #d9534f;">
                     ⏳ 参加申請中
-                    <% if show_badge?(:alliance_request) %>
+                    <% if User.exists?(alliance_id: @user.alliance_id, alliance_role: 1) %>
                       <span style="display: inline-block; width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%; margin-left: 5px; vertical-align: middle;"></span>
                     <% end %>
                   </summary>
