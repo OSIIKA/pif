@@ -82,4 +82,15 @@ document.addEventListener("DOMContentLoaded", function() {
       confirmOverlay.style.display = 'none';
     });
   }
+  // ==========================================
+  // ❌ 7. メンバー追放確認画面の処理（開閉）
+  // ==========================================
+  function openKickModal(userId, userName) {
+    document.getElementById('kickTargetId').value = userId;
+    document.getElementById('kickTargetName').innerText = userName;
+    document.getElementById('kickModal').style.display = 'flex';
+    }
+  function closeKickModal() {
+    document.getElementById('kickModal').style.display = 'none';
+  }
 });
