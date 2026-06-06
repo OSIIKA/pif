@@ -115,6 +115,26 @@ post '/alliance/reject' do
   redirect '/alliance'
 end
 
+post '/alliance/promote' do
+  # 1. ログイン中のユーザーを取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+  
+  # 🚨 権限チェック：盟主（4）以外からのアクセスは即弾く
+  redirect '/alliance' if @user.alliance_role != 4
+
+  # 2. 変更対象のメンバーを取得
+  target_user = User.find_by(id: params[:user_id])
+
+  # 🚨 安全確認：同じ同盟、かつ現在の役職が「通常メンバー(2)」の場合のみ
+  if target_user && target_user.alliance_id == @user.alliance_id && target_user.alliance_role == 2
+    # ⚔️ 副盟主（3）に昇格！
+    target_user.update(alliance_role: 3)
+  end
+
+  redirect '/alliance'
+end
+
 # 💡 [新規追加] 同盟チャットの投稿を受け付ける窓口
 post '/alliance/chat' do
   @user = User.find_by(id: session[:user])
