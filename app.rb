@@ -65,21 +65,40 @@ helpers do
   def authenticate!
     redirect '/users/login' unless current_user
   end
-  # 🔴 同盟の申請赤ポチを表示するかどうかを全画面共通で判定するメソッド
-  def show_alliance_badge?
-    # 1. ログインしていなければ当然表示しない
+  # 🔴 進化した汎用赤ポチ判定メソッド（調べたい種類をシンボルで受け取る）
+  # 使い方例： show_badge?(:alliance_request) や show_badge?(:new_event)
+  def show_badge?(type)
     current_user = User.find_by(id: session[:user])
     return false if current_user.nil?
 
-    # 2. 盟主（4）または副盟主（3）以外は、申請を管理しないので表示しない
-    return false if current_user.alliance_role < 3
+    case type
+    # ---------------------------------------------------------
+    # ① 同盟の加入申請（盟主・副盟主のみ、一度見たら消える）
+    # ---------------------------------------------------------
+    when :alliance_request
+      return false if current_user.alliance_role < 3
+      # 申請者が存在し、かつ、まだ「見たよ（既読）」というセッションがなければ true
+      has_applicant = User.exists?(alliance_id: current_user.alliance_id, alliance_role: 1)
+      has_applicant && !session[:seen_alliance_request]
 
-    # 3. 自分の同盟に、役職が「1（申請中）」のユーザーが1人でもいるかチェック
-    has_applicant = User.exists?(alliance_id: current_user.alliance_id, alliance_role: 1)
+    # ---------------------------------------------------------
+    # ② 同盟告知の変更（全メンバー対象、一度見たら消える）※将来用
+    # ---------------------------------------------------------
+    when :alliance_notice
+      # 将来、告知が更新されたら session[:seen_alliance_notice] を消すようにして、
+      # ここで「まだ見ていなければ true」にする、といった柔軟な追加がいつでも可能！
+      !session[:seen_alliance_notice]
 
-    # 4. 【まずはシンプルに】申請中の人がいれば「出す（true）」、いなければ「出さない（false）」
-    # （ステップ3でここに「一度見たら消す」の柔軟な条件を肉付けします！）
-    has_applicant
+    # ---------------------------------------------------------
+    # ③ 全体イベントの公開（全員対象）※将来用
+    # ---------------------------------------------------------
+    when :new_event
+      # ここにイベント用の条件をいつでも生やせます
+      false
+
+    else
+      false
+    end
   end
 end
 
