@@ -65,6 +65,22 @@ helpers do
   def authenticate!
     redirect '/users/login' unless current_user
   end
+  # 🔴 同盟の申請赤ポチを表示するかどうかを全画面共通で判定するメソッド
+  def show_alliance_badge?
+    # 1. ログインしていなければ当然表示しない
+    current_user = User.find_by(id: session[:user])
+    return false if current_user.nil?
+
+    # 2. 盟主（4）または副盟主（3）以外は、申請を管理しないので表示しない
+    return false if current_user.alliance_role < 3
+
+    # 3. 自分の同盟に、役職が「1（申請中）」のユーザーが1人でもいるかチェック
+    has_applicant = User.exists?(alliance_id: current_user.alliance_id, alliance_role: 1)
+
+    # 4. 【まずはシンプルに】申請中の人がいれば「出す（true）」、いなければ「出さない（false）」
+    # （ステップ3でここに「一度見たら消す」の柔軟な条件を肉付けします！）
+    has_applicant
+  end
 end
 
 # ログイン・新規登録・トップページ以外のすべてのアクセスで、自動的に関所を通す
