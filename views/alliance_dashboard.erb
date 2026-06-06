@@ -212,7 +212,22 @@
                 </details>
 
               </div>
-            <% end %>
+        <% end %>
+        <div id="kickModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center;">
+          <div style="background-color: white; padding: 25px; border-radius: 8px; width: 320px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-family: sans-serif;">
+            <h3 style="margin-top: 0; color: #d9534f; font-size: 1.3em;">⚠️ メンバーの追放</h3>
+            <p style="color: #333; margin: 20px 0; line-height: 1.5;">
+              <strong id="kickTargetName" style="color: #111;"></strong> を<br>同盟から追放しますか？
+            </p>
+            <div style="display: flex; justify-content: center; gap: 12px; margin-top: 10px;">
+              <form action="/alliance/kick" method="post" style="margin: 0;">
+                <input type="hidden" name="user_id" id="kickTargetId" value="">
+                <button type="submit" style="background-color: #d9534f; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold;">追放する</button>
+              </form>
+              <button type="button" onclick="closeKickModal()" style="background-color: #aaaaaa; color: white; border: none; padding: 8px 18px; border-radius: 4px; cursor: pointer; font-weight: bold;">戻る</button>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
