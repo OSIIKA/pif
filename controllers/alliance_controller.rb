@@ -56,7 +56,7 @@ post '/alliance/join' do
 
   if alliance
     # 💡 ユーザーの所属同盟IDを、見つかった同盟のIDで更新する！
-    @user.update(alliance_id: alliance.id)
+    @user.update(alliance_id: alliance.id, alliance_role: 2) # 役職は「2（一般メンバー）」にする
     
     # 所属状態になったので、リロードすれば自動的に「同盟マイページ」へ切り替わる
     redirect '/alliance'
@@ -104,7 +104,7 @@ post '/alliance/leave' do
     redirect '/alliance'
   else
     # 一般メンバーなら安全に無所属（nil）にしてホーム画面へお見送り
-    @user.update(alliance_id: nil)
+    @user.update(alliance_id: nil, alliance_role: 0)
     redirect '/home'
   end
 end
