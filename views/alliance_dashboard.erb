@@ -98,7 +98,7 @@
         <button class="tab-btn" data-tab="manage" style="flex: 1; padding: 8px; border: none; cursor: pointer; font-weight: bold; font-size: 12px; border-radius: 4px;">
           管理・脱退など
           <% if @user.alliance_role >= 3 %>
-            <% if show_badge?(:alliance_request) %>
+            <% if User.exists?(alliance_id: @user.alliance_id, alliance_role: 1) %>
               <span style="display: inline-block; width: 8px; height: 8px; background-color: #ff4d4f; border-radius: 50%; margin-left: 5px; vertical-align: middle;"></span>
             <% end %>
           <% end %>
