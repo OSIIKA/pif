@@ -77,6 +77,44 @@ post '/alliance/join' do
   end
 end
 
+# 🟢 追記：参加申請を「許可」する処理
+post '/alliance/approve' do
+  # 1. ログインしている役職3以上の偉い人（盟主・副盟主）を取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+  # 🚨 セキュリティ：副盟主未満（2以下）なら不正アクセスとして弾く
+  redirect '/alliance' if @user.alliance_role < 3
+
+  # 2. 画面から送られてきた user_id を使って、申請中のユーザーを探す
+  target_user = User.find_by(id: params[:user_id])
+  
+  # 安全確認：ユーザーが存在し、かつ自分と同じ同盟への「申請中（ロール1）」である場合のみ処理
+  if target_user && target_user.alliance_id == @user.alliance_id && target_user.alliance_role == 1
+    # 🌟 ロールを「2（通常メンバー）」に引き上げる！
+    target_user.update(alliance_role: 2)
+  end
+
+  redirect '/alliance'
+end
+
+# 🟢 追記：参加申請を「拒否」する処理
+post '/alliance/reject' do
+  # 1. ログインしている役職3以上の偉い人を取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+  redirect '/alliance' if @user.alliance_role < 3
+
+  # 2. 対象の申請中ユーザーを探す
+  target_user = User.find_by(id: params[:user_id])
+  
+  if target_user && target_user.alliance_id == @user.alliance_id && target_user.alliance_role == 1
+    # 🌟 同盟の紐付けを解除し、ロールも「0（無所属）」に突き落とす！
+    target_user.update(alliance_id: nil, alliance_role: 0)
+  end
+
+  redirect '/alliance'
+end
+
 # 💡 [新規追加] 同盟チャットの投稿を受け付ける窓口
 post '/alliance/chat' do
   @user = User.find_by(id: session[:user])
