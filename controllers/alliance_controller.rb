@@ -155,6 +155,29 @@ post '/alliance/demote' do
   redirect '/alliance'
 end
 
+post '/alliance/kick' do
+  # 1. ログイン中のユーザーを取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+  
+  # 🚨 権限チェック：副盟主以上（3以上）でなければ即弾く
+  redirect '/alliance' if @user.alliance_role < 3
+
+  # 2. 追放対象のメンバーを取得
+  target_user = User.find_by(id: params[:user_id])
+
+  if target_user && target_user.alliance_id == @user.alliance_id
+    # 🚨 安全確認：自分より下の役職のメンバーのみ追放可能に！
+    # （盟主4なら3と2、副盟主3なら2のみを許可する超安全設計です）
+    if @user.alliance_role > target_user.alliance_role
+      # 💥 同盟の紐付けを解除し、ロールを「0（無所属）」に戻す
+      target_user.update(alliance_id: nil, alliance_role: 0)
+    end
+  end
+
+  redirect '/alliance'
+end
+
 # 💡 [新規追加] 同盟チャットの投稿を受け付ける窓口
 post '/alliance/chat' do
   @user = User.find_by(id: session[:user])
