@@ -55,8 +55,14 @@ post '/alliance/join' do
   alliance = Alliance.find_by(id: params[:alliance_id])
 
   if alliance
-    # 💡 ユーザーの所属同盟IDを、見つかった同盟のIDで更新する！
-    @user.update(alliance_id: alliance.id, alliance_role: 2) # 役職は「2（一般メンバー）」にする
+    # 🟢 変更：同盟のタイプ（join_type）によって、初期ロールを自動で振り分ける
+    if alliance.join_type == 'approval'
+      # 要申請なら、ロール「1」（参加申請中）で紐付ける
+      @user.update(alliance_id: alliance.id, alliance_role: 1)
+    else
+      # 自由参加なら、今まで通りロール「2」（通常メンバー）で即時加入
+      @user.update(alliance_id: alliance.id, alliance_role: 2)
+    end
     
     # 所属状態になったので、リロードすれば自動的に「同盟マイページ」へ切り替わる
     redirect '/alliance'
