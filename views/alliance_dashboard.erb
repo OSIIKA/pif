@@ -130,6 +130,64 @@
             🏃 同盟から脱退する
           </button>
         </div>
+        <% if @user.alliance_role >= 3 %>
+          <div style="margin-top: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #fcfcfc;">
+            <h4 style="margin-top: 0; color: #333; border-bottom: 2px solid #5cb85c; padding-bottom: 5px;">👑 役職別メンバー管理（副盟主以上限定）</h4>
+
+            <details style="margin-bottom: 10px;">
+              <summary style="cursor: pointer; font-weight: bold; color: #111;">👑 盟主 ▼</summary>
+              <ul style="margin: 5px 0 5px 20px; list-style-type: none; padding-left: 0;">
+                <% @alliance.users.select { |m| m.alliance_role == 4 }.each do |member| %>
+                  <li><%= member.name %> (Lv: <%= member.level %>)</li>
+                <% end %>
+              </ul>
+            </details>
+
+            <details style="margin-bottom: 10px;">
+              <summary style="cursor: pointer; font-weight: bold; color: #333;">⚔️ 副盟主 ▼</summary>
+              <ul style="margin: 5px 0 5px 20px; list-style-type: none; padding-left: 0;">
+                <% @alliance.users.select { |m| m.alliance_role == 3 }.each do |member| %>
+                  <li><%= member.name %> (Lv: <%= member.level %>)</li>
+                <% end %>
+              </ul>
+            </details>
+
+            <details style="margin-bottom: 10px;">
+              <summary style="cursor: pointer; font-weight: bold; color: #555;">👥 通常メンバー ▼</summary>
+              <ul style="margin: 5px 0 5px 20px; list-style-type: none; padding-left: 0;">
+                <% @alliance.users.select { |m| m.alliance_role == 2 }.each do |member| %>
+                  <li><%= member.name %> (Lv: <%= member.level %>)</li>
+                <% end %>
+              </ul>
+            </details>
+
+            <details style="margin-bottom: 10px;" open> <summary style="cursor: pointer; font-weight: bold; color: #d9534f;">⏳ 参加申請中 ▼</summary>
+              <ul style="margin: 5px 0 5px 20px; list-style-type: none; padding-left: 0;">
+                <% pending_members = @alliance.users.select { |m| m.alliance_role == 1 } %>
+                <% if pending_members.empty? %>
+                  <li style="color: #888; font-style: italic;">現在、新しい申請はありません。</li>
+                <% else %>
+                  <% pending_members.each do |member| %>
+                    <li style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                      <span><%= member.name %> (Lv: <%= member.level %>)</span>
+              
+                      <form action="/alliance/approve" method="post" style="margin: 0;">
+                        <input type="hidden" name="user_id" value="<%= member.id %>">
+                        <button type="submit" style="background-color: #5cb85c; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 0.85em;">許可</button>
+                      </form>
+
+                      <form action="/alliance/reject" method="post" style="margin: 0;">
+                        <input type="hidden" name="user_id" value="<%= member.id %>">
+                        <button type="submit" style="background-color: #d9534f; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 0.85em;">拒否</button>
+                      </form>
+                    </li>
+                  <% end %>
+                <% end %>
+              </ul>
+            </details>
+
+          </div>
+        <% end %>
       </div>
 
     </div>
