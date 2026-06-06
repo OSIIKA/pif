@@ -174,10 +174,7 @@
                           </form>
                         <% end %>
                         <% if @user.alliance_role >= 3 %>
-                          <form action="/alliance/kick" method="post" style="margin: 0;" onsubmit="return confirm('<%= member.name %> を同盟から追放しますか？');">
-                            <input type="hidden" name="user_id" value="<%= member.id %>">
-                            <button type="submit" style="background-color: #d9534f; color: white; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.8em;">追放</button>
-                          </form>
+                          <button type="button" onclick="openKickModal(<%= member.id %>, '<%= member.name %>')" style="background-color: #d9534f; color: white; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.8em;">追放</button>
                         <% end %>
                       </li>
                     <% end %>
