@@ -1,4 +1,9 @@
 # ===========================
+# ユーザー（システム）データ
+# ===========================
+User.create(name: "システム", email: "system@example.com", password: "system_secure_password_1234", password_confirmation: "system_secure_password_1234", level: 1, exp: 0, alliance_id: nil, alliance_role: 0)
+
+# ===========================
 # 敵データ
 # ===========================
 # ステージ1の敵（2体）
