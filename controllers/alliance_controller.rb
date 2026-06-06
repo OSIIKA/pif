@@ -5,12 +5,16 @@ get '/alliance' do
 
   # 💡 ユーザーが同盟に所属しているかどうかで、表示する中身を完全に切り替える
   if @user.alliance.nil?
-    # 👇 この1行を追加！世の中のすべての同盟を取得して画面に渡す
+    # 👇 世の中のすべての同盟を取得して画面に渡す
     @alliances = Alliance.all
     erb :alliance_none # 未所属画面（同盟の結成・検索）
+  # 🟢 追記：もし役職が「1（参加申請中）」なら、専用の待機画面を表示してガードする！
+  elsif @user.alliance_role == 1
+    @alliance = @user.alliance # 画面に「〇〇同盟に申請中」と出すために情報を取得
+    erb :alliance_pending      # 👈 新しい待機画面を呼び出す
   else
     @alliance = @user.alliance
-    # 💡 [追記] この同盟のチャット最新30件を古い順（時系列順）で取得
+    # 💡 この同盟のチャット最新30件を古い順（時系列順）で取得
     @alliance_chats = Chat.where(alliance_id: @alliance.id, category: 'alliance')
                           .order(created_at: :desc)
                           .limit(30)
