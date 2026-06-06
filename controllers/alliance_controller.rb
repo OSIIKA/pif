@@ -19,6 +19,8 @@ get '/alliance' do
                           .order(created_at: :desc)
                           .limit(30)
                           .reverse
+    # 🔴 追記：管理画面を開いたので、現在の申請者数を「確認済み」としてセッションに記憶する
+    session[:last_checked_request_count] = User.where(alliance_id: @user.alliance_id, alliance_role: 1).count
     erb :alliance_dashboard # 所属済み画面（同盟のマイページ）
   end
 end

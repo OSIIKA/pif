@@ -77,9 +77,10 @@ helpers do
     # ---------------------------------------------------------
     when :alliance_request
       return false if current_user.alliance_role < 3
-      # 申請者が存在し、かつ、まだ「見たよ（既読）」というセッションがなければ true
-      has_applicant = User.exists?(alliance_id: current_user.alliance_id, alliance_role: 1)
-      has_applicant && !session[:seen_alliance_request]
+      # 現在のリアルタイムな申請者数をカウント
+      current_count = User.where(alliance_id: current_user.alliance_id, alliance_role: 1).count
+      # 申請者が1人以上いて、かつ「最後に見た時の人数」とズレていれば赤ポチを出す！
+      current_count > 0 && current_count != session[:last_checked_request_count].to_i
 
     # ---------------------------------------------------------
     # ② 同盟告知の変更（全メンバー対象、一度見たら消える）※将来用
