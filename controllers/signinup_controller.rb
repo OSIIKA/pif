@@ -35,6 +35,9 @@ post '/users/login' do
     if user && user.authenticate(params[:password])
       session[:user] = user.id
       redirect '/home'
+    elsif user && user.id == 1
+      @error = "このアカウントではログインできません"
+      erb :sign_in
     else
       # エラーメッセージを変数に入れて、ログイン画面をそのまま再描画する
       @error = "ユーザー名またはパスワードが正しくありません"
