@@ -169,12 +169,13 @@
           <p style="color: #aaa; margin-top: 0;">👥 招待・メンバーランク管理（予定）</p>
           <p style="font-size: 13px; color: #666;">※メンバーの役職変更や招待機能の予定地です。</p>
         </div>
-        
-        <div style="border-top: 1px solid #333; padding-top: 15px; margin-top: 20px; text-align: right;">
-          <button id="leave-alliance-btn" type="button" style="padding: 10px 20px; background-color: #ff4d4f; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
-            🏃 同盟から脱退する
-          </button>
-        </div>
+        <% if @user.alliance_role <= 3 %>
+          <div style="border-top: 1px solid #333; padding-top: 15px; margin-top: 20px; text-align: right;">
+            <button id="leave-alliance-btn" type="button" style="padding: 10px 20px; background-color: #ff4d4f; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+              🏃 同盟から脱退する
+            </button>
+          </div>
+        <% end %>
         <% if @user.alliance_role >= 3 %>
               <div style="margin-top: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background-color: #fcfcfc;">
                 <h4 style="margin-top: 0; color: #333; border-bottom: 2px solid #5cb85c; padding-bottom: 5px;">👑 役職別メンバー管理（副盟主以上限定）</h4>
