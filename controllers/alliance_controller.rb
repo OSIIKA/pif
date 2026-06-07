@@ -228,6 +228,13 @@ post '/alliance/leave' do
     session[:error] = "盟主は同盟を脱退できません。解散するか、他メンバーに盟主を譲渡してください。"
     redirect '/alliance'
   else
+    # 🔴 追加：同盟を抜ける前に、チャットへ「脱退ログ」を自動投稿（ID: 1 = システムユーザー）
+    Chat.create!(
+      user_id: 1,
+      category: "alliance",
+      alliance_id: @alliance.id, # 👈 キープしてある@allianceのIDを使うので絶対に安全！
+      body: "#{@user.name}さんが脱退しました"
+    )
     # 一般メンバーなら安全に無所属（nil）にしてホーム画面へお見送り
     @user.update(alliance_id: nil, alliance_role: 0)
     redirect '/home'
