@@ -14,8 +14,16 @@
   <main>
     <div class="user-info">
       <% if @user %>
-        <div class="user-name">
-          <%= @user.name %>
+        <div class="user-name" style="display: flex; align-items: center; gap: 10px;">
+          <span id="name-text" style="font-size: 1.2em; font-weight: bold; color: #fff;"><%= @user.name %></span>
+          
+          <form id="name-edit-form" action="/users/update_name" method="post" style="display: none; align-items: center; gap: 5px; margin: 0;">
+            <input type="text" name="name" value="<%= @user.name %>" required maxlength="20" style="background: #222; color: #fff; border: 1px solid #555; padding: 5px 10px; border-radius: 4px; font-size: 1em;">
+            <button type="submit" style="background-color: #1890ff; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold;">保存</button>
+            <button type="button" id="cancel-name-btn" style="background-color: #555; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">取消</button>
+          </form>
+
+          <button type="button" id="edit-name-btn" style="background: transparent; border: none; color: #1890ff; cursor: pointer; font-size: 0.9em; padding: 0;">[編集]</button>
         </div>
         <div class="user-stats">
           <span class="stat">Lv:<%= @user.level %></span>

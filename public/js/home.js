@@ -1,3 +1,22 @@
+const nameText = document.getElementById('name-text');
+const editBtn = document.getElementById('edit-name-btn');
+const editForm = document.getElementById('name-edit-form');
+const cancelBtn = document.getElementById('cancel-name-btn');
+
+// 編集モードへ切り替え
+editBtn.addEventListener('click', () => {
+  nameText.style.display = 'none';
+  editBtn.style.display = 'none';
+  editForm.style.display = 'inline-flex';
+});
+
+// キャンセルして元に戻す
+cancelBtn.addEventListener('click', () => {
+  nameText.style.display = 'inline';
+  editBtn.style.display = 'inline';
+  editForm.style.display = 'none';
+});
+
 // ▼ ユニット一覧の表示/非表示
 const toggleUnitsButton = document.getElementById('toggle-units');
 const unitsDiv = document.querySelector('.units');

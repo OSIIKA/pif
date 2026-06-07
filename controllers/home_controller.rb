@@ -16,6 +16,26 @@ get '/home' do
   erb :home
 end
 
+post '/users/update_name' do
+  # 1. ログインチェック（お馴染みの安全装置）
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+
+  # 2. 画面から送られてきた名前を取得し、前後の余計な空白を排除
+  new_name = params[:name].to_s.strip
+
+  # 3. バリデーション（空文字チェック ＆ 文字数制限など）
+  if new_name.present? && new_name.length <= 20
+    @user.update(name: new_name)
+    session[:success] = "ユーザーネームを変更しました！"
+  else
+    session[:error] = "ユーザーネームは1文字以上、20文字以内で入力してください。"
+  end
+
+  # 4. ホーム画面（あるいは元の画面）へリダイレクト
+  redirect '/home' # 💡 もしホームのURLが '/home' でなければ、実際のルートに合わせて書き換えてください
+end
+
 # 💡 [新規追加] ホーム画面からのチャット投稿を受け付ける窓口
 post '/home/chat' do
   @user = User.find_by(id: session[:user])
