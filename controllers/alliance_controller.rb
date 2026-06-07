@@ -71,18 +71,15 @@ post '/alliance/join' do
       # 要申請なら、ロール「1」（参加申請中）で紐付ける
       @user.update(alliance_id: alliance.id, alliance_role: 1)
     else
-      # 安全確認：ユーザーが存在し、かつ自分と同じ同盟への「申請中（ロール1）」である場合のみ処理
-      if target_user && target_user.alliance_id == @user.alliance_id && target_user.alliance_role == 1
-        # 🌟 ロールを「2（通常メンバー）」に引き上げる！
-        target_user.update(alliance_role: 2)
-        # 🟢 追加：チャットに「参加ログ」を自動投稿（ID: 1 = システムユーザー）
-        Chat.create!(
-          user_id: 1,
-          category: "alliance",
-          alliance_id: @user.alliance_id,
-          body: "#{target_user.name}さんが参加しました"
-        )
-      end
+      # 🌟 自由参加なら、即座にロール「2」（通常メンバー）として同盟に紐付ける！
+      @user.update(alliance_id: alliance.id, alliance_role: 2)        # 🌟 ロールを「2（通常メンバー）」に引き上げる！
+      # 🟢 チャットに「参加ログ」を自動投稿（ID: 1 = システムユーザー）
+      Chat.create!(
+        user_id: 1,
+        category: "alliance",
+        alliance_id: alliance.id, # 👈 確実に加入した同盟のIDを指定
+        body: "#{@user.name}さんが参加しました"
+      )
     end
     
     # 所属状態になったので、リロードすれば自動的に「同盟マイページ」へ切り替わる
