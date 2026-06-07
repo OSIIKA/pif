@@ -99,6 +99,13 @@ post '/alliance/approve' do
   if target_user && target_user.alliance_id == @user.alliance_id && target_user.alliance_role == 1
     # 🌟 ロールを「2（通常メンバー）」に引き上げる！
     target_user.update(alliance_role: 2)
+    # 🟢 追加：チャットに「参加ログ」を自動投稿（ID: 1 = システムユーザー）
+    Chat.create!(
+      user_id: 1,
+      category: "alliance",
+      alliance_id: @user.alliance_id,
+      body: "#{target_user.name}さんが参加しました"
+    )
   end
 
   redirect '/alliance'
