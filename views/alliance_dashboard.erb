@@ -75,6 +75,18 @@
                   <%= chat.body %>
                   <span style="float: right; color: #888; font-size: 10px;"><%= chat.created_at.strftime('%m/%d %H:%M') %></span>
                 </div>
+              <% elsif chat.body.include?("昇格しました") %>
+                <div style="background-color: #e6f7ff; color: #0050b3; padding: 8px 12px; margin-bottom: 8px; border-radius: 4px; font-size: 12px; border-left: 4px solid #1890ff;">
+                  <span style="font-weight: bold; color: #1890ff; margin-right: 8px;">[システム]</span>
+                  <%= chat.body %>
+                  <span style="float: right; color: #888; font-size: 10px;"><%= chat.created_at.strftime('%m/%d %H:%M') %></span>
+                </div>
+              <% elsif chat.body.include?("降格しました") %>
+                <div style="background-color: #fffbe6; color: #ad6800; padding: 8px 12px; margin-bottom: 8px; border-radius: 4px; font-size: 12px; border-left: 4px solid #faad14;">
+                  <span style="font-weight: bold; color: #faad14; margin-right: 8px;">[システム]</span>
+                  <%= chat.body %>
+                  <span style="float: right; color: #888; font-size: 10px;"><%= chat.created_at.strftime('%m/%d %H:%M') %></span>
+                </div>
               <% end %>
             <% else %>
               <div style="margin-bottom: 10px; font-size: 14px; line-height: 1.4;">

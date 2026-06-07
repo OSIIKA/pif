@@ -151,6 +151,13 @@ post '/alliance/promote' do
   if target_user && target_user.alliance_id == @user.alliance_id && target_user.alliance_role == 2
     # ⚔️ 副盟主（3）に昇格！
     target_user.update(alliance_role: 3)
+    # 🟢 追加：チャットに「昇格ログ」を自動投稿（ID: 1 = システムユーザー）
+    Chat.create!(
+      user_id: 1,
+      category: "alliance",
+      alliance_id: @user.alliance_id, # 盟主（自分）と同じ同盟ID
+      body: "#{target_user.name}さんが昇格しました"
+    )
   end
 
   redirect '/alliance'
@@ -171,6 +178,13 @@ post '/alliance/demote' do
   if target_user && target_user.alliance_id == @user.alliance_id && target_user.alliance_role == 3
     # 👥 通常メンバー（2）に降格
     target_user.update(alliance_role: 2)
+    # 🟢 追加：チャットに「降格ログ」を自動投稿（ID: 1 = システムユーザー）
+    Chat.create!(
+      user_id: 1,
+      category: "alliance",
+      alliance_id: @user.alliance_id,
+      body: "#{target_user.name}さんが降格しました"
+    )
   end
 
   redirect '/alliance'
