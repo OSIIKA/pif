@@ -5,8 +5,10 @@
 User.find_or_create_by!(id: 1) do |u|
   u.name = "システム"
   u.mail = "system@example.com" # 👈 email から mail に修正
-  u.password = "system_secure_password_1234"
-  u.password_confirmation = "system_secure_password_1234"
+  # 👈 毎回、絶対に予測不可能なランダムな文字列（64文字）を生成して設定
+  random_pass = SecureRandom.hex(32) 
+  u.password = random_pass
+  u.password_confirmation = random_pass
   u.level = 1
   u.exp = 0
   u.alliance_id = nil
