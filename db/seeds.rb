@@ -14,29 +14,22 @@ User.find_or_create_by!(id: 1) do |u|
   u.alliance_id = nil
   u.alliance_role = 0
 end
-# ==========================================
-# 🚨 PostgreSQLの自動採番カウンター（シーケンス）を現在の最大IDに同期する
-# ==========================================
-if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
-  # usersテーブルのカウンターを、現在の最大ID（1）の次（2）に強制進業する
-  ActiveRecord::Base.connection.execute("SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1))")
-end
 # ===========================
 # 敵データ
 # ===========================
 # ステージ1の敵（2体）
-Enemyfreet.create(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ")
-Enemyfreet.create(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ")
+Enemyfreet.find_or_create_by!(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ")
+Enemyfreet.find_or_create_by!(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ")
 # ステージ2の敵（3体）
-Enemyfreet.create(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
-Enemyfreet.create(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
-Enemyfreet.create(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ")
+Enemyfreet.find_or_create_by!(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
+Enemyfreet.find_or_create_by!(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
+Enemyfreet.find_or_create_by!(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ")
 # ===========================
-# 味方データ
+# 敵・味方データ
 # ===========================
-Myfreet.create(name: "味方1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
-Myfreet.create(name: "味方2", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
-Myfreet.create(name: "味方3", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
+Allfreet.find_or_create_by!(name: "味方1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
+Allfreet.find_or_create_by!(name: "味方2", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
+Allfreet.find_or_create_by!(name: "味方3", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと")
 # ===========================
 # ストーリーデータ
 # ===========================
@@ -65,4 +58,16 @@ episode1 = [
 
 episode1.each_with_index do |(name, text, battle), i|
   Story.create(episode: 1, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
+end
+# ==========================================
+# 🚨 PostgreSQLの自動採番カウンター（シーケンス）を現在の最大IDに同期する
+# ==========================================
+if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
+  # usersテーブルのカウンターを、現在の最大ID（1）の次（2）に強制進業する
+  ActiveRecord::Base.connection.execute("SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1))")
+  # 他のテーブルも同様に必要に応じてシーケンスをリセットする
+  ActiveRecord::Base.connection.execute("SELECT setval('myfreets_id_seq', COALESCE((SELECT MAX(id) FROM myfreets), 1))")
+  ActiveRecord::Base.connection.execute("SELECT setval('enemyfreets_id_seq', COALESCE((SELECT MAX(id) FROM enemyfreets), 1))")
+  ActiveRecord::Base.connection.execute("SELECT setval('allfreets_id_seq', COALESCE((SELECT MAX(id) FROM allfreets), 1))")
+  ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
 end
