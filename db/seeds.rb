@@ -14,6 +14,13 @@ User.find_or_create_by!(id: 1) do |u|
   u.alliance_id = nil
   u.alliance_role = 0
 end
+# ==========================================
+# 🚨 PostgreSQLの自動採番カウンター（シーケンス）を現在の最大IDに同期する
+# ==========================================
+if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
+  # usersテーブルのカウンターを、現在の最大ID（1）の次（2）に強制進業する
+  ActiveRecord::Base.connection.execute("SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1))")
+end
 # ===========================
 # 敵データ
 # ===========================

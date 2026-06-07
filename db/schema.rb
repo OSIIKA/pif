@@ -56,13 +56,6 @@ ActiveRecord::Schema.define(version: 22) do
     t.index ["category"], name: "index_chats_on_category"
   end
 
-  create_table "member_lanks", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "text"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "myfreets", force: :cascade do |t|
     t.string "name"
     t.integer "hp"
