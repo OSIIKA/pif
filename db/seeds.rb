@@ -1,8 +1,17 @@
 # ===========================
 # ユーザー（システム）データ
 # ===========================
-User.create(name: "システム", email: "system@example.com", password: "system_secure_password_1234", password_confirmation: "system_secure_password_1234", level: 1, exp: 0, alliance_id: nil, alliance_role: 0)
-
+# すでに存在する場合はスキップし、なければ ID: 1で作成する
+User.find_or_create_by!(id: 1) do |u|
+  u.name = "システム"
+  u.mail = "system@example.com" # 👈 email から mail に修正
+  u.password = "system_secure_password_1234"
+  u.password_confirmation = "system_secure_password_1234"
+  u.level = 1
+  u.exp = 0
+  u.alliance_id = nil
+  u.alliance_role = 0
+end
 # ===========================
 # 敵データ
 # ===========================
