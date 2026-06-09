@@ -51,7 +51,7 @@ end
 
 # 📄 コントローラーの末尾などに追記
 post '/gacha/roll_ten' do
-  @user = User.find(session[:user_id])
+  @user = User.find(session[:user])
 
   # 通常ガチャの出現確率が0より大きい候補を集める
   candidates = Allfreet.where("normal > 0")
