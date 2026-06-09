@@ -67,7 +67,6 @@ if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
   ActiveRecord::Base.connection.execute("SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1))")
   # 他のテーブルも同様に必要に応じてシーケンスをリセットする
   ActiveRecord::Base.connection.execute("SELECT setval('myfreets_id_seq', COALESCE((SELECT MAX(id) FROM myfreets), 1))")
-  ActiveRecord::Base.connection.execute("SELECT setval('enemyfreets_id_seq', COALESCE((SELECT MAX(id) FROM enemyfreets), 1))")
   ActiveRecord::Base.connection.execute("SELECT setval('allfreets_id_seq', COALESCE((SELECT MAX(id) FROM allfreets), 1))")
   ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
 end
