@@ -48,3 +48,44 @@ post '/gacha/roll' do
   # 結果（@rolled_ship）を持った状態で、もう一度ガチャ画面を描画する
   erb :gacha
 end
+
+# 📄 コントローラーの末尾などに追記
+post '/gacha/roll_ten' do
+  @user = User.find(session[:user_id])
+
+  # 通常ガチャの出現確率が0より大きい候補を集める
+  candidates = Allfreet.where("normal > 0")
+  total_weight = candidates.sum(:normal)
+
+  # 🟢 10隻の結果を格納するための空の「配列（バケツ）」を用意する
+  @rolled_ships = []
+
+  # 🟢 10回連続で抽選を回す！
+  10.times do
+    random_point = rand(total_weight)
+    selected_ship = nil
+    current_weight = 0
+
+    candidates.each do |ship|
+      current_weight += ship.normal
+      if random_point < current_weight
+        selected_ship = ship
+        break
+      end
+    end
+
+    # 当選した艦を、この回の結果として配列に追加する
+    @rolled_ships << selected_ship
+
+    # プレイヤーの所持艦隊（データベース）に保存する
+    UserMyfreet.create(
+      user_id: @user.id,
+      myfreet_id: selected_ship.id,
+      level: 1,
+      exp: 0
+    )
+  end
+
+  # ガチャ画面を再描画（このとき @rolled_ships に10隻分のデータが入った状態になります）
+  erb :gacha
+end
