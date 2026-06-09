@@ -5,7 +5,7 @@ get '/home' do
     # ユーザーを表示する
     @user=User.find(session[:user])
     # 所持艦情報を表示する
-    @freets = @user.user_myfreets.includes(:myfreet).as_json(include: :myfreet) # 中間テーブルと関連データを取得
+    @freets = @user.user_myfreets.includes(:allfreet).as_json(include: :allfreet) # 中間テーブルと関連データを取得
     session[:my_freets] = @freets.as_json
     puts @freets.as_json.inspect
     # 💡 [追記] 全体チャットの最新30件を、古い順（時系列順）で取得して画面に渡す

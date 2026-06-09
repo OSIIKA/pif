@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   has_secure_password
   # ユーザーはたくさんのチャット発言を持つ
   has_many :chats, dependent: :destroy
+  # ユーザーはたくさんの自分のフリートを持つ
+  has_many :user_myfreets, dependent: :destroy
   # 既存のリレーション（そのまま残します）
   belongs_to :user_lank, foreign_key: :level, optional: true
   # ユーザーはどこかの同盟に所属する（無所属もOKにするため optional: true）
