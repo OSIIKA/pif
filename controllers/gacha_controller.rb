@@ -13,71 +13,46 @@ post '/gacha/roll' do
   @user = User.find_by(id: session[:user])
   redirect '/users/new' if @user.nil?
 
-  # 1. 通常ガチャの出現確率（normal）が0より大きい艦をすべて取得
-  candidates = Allfreet.where("normal > 0")
+  # ❶ 画面から送られてきた「ガチャの種類」と「回数」を受け取る
+  gacha_type = params[:gacha_type] # "normal" または "rare"
+  roll_count = params[:roll_count].to_i # 1 または 10
 
-  # 2. 全候補のウェイト（normal）の合計値を計算
-  total_weight = candidates.sum(:normal)
-
-  # 3. 0 から 総ウェイト未満 の間でランダムな数字（ダイス）を決める
-  random_point = rand(total_weight)
-
-  # 4. ダイスの目がどの艦のウェイト枠に落ちるかを計算して決定
-  @rolled_ship = nil
-  current_weight = 0
-
-  candidates.each do |ship|
-    current_weight += ship.normal
-    if random_point < current_weight
-      @rolled_ship = ship
-      break
-    end
+  # ❷ ガチャの種類に応じて、データベースから持ってくる候補を切り替える
+  #   大倉さんの設計通り、rare>0 なら自動的に味方2・3だけが選ばれます！
+  if gacha_type == "rare"
+    candidates = Allfreet.where("rare > 0")
+    total_weight = candidates.sum(:rare)
+  else
+    candidates = Allfreet.where("normal > 0")
+    total_weight = candidates.sum(:normal)
   end
 
-  # 5. 【重要】引いた艦をユーザーの所持艦隊（UserMyfreet）に新しく保存する
-  # (前回の列名のズレを考慮して「myfreet_id」に当選したIDを入れます)
-  UserMyfreet.create(
-    user_id: @user.id,
-    myfreet_id: @rolled_ship.id,
-    level: 1,
-    exp: 0
-  )
+  # 万が一、候補が空なら安全のために戻す
+  redirect '/gacha' if candidates.empty?
 
-  # ガチャ画面を再描画して、引いた艦の情報を表示する
+  # ❸ 結果を格納する配列（バケツ）を用意
+  results = []
 
-  # 結果（@rolled_ship）を持った状態で、もう一度ガチャ画面を描画する
-  erb :gacha
-end
-
-# 📄 コントローラーの末尾などに追記
-post '/gacha/roll_ten' do
-  @user = User.find(session[:user])
-
-  # 通常ガチャの出現確率が0より大きい候補を集める
-  candidates = Allfreet.where("normal > 0")
-  total_weight = candidates.sum(:normal)
-
-  # 🟢 10隻の結果を格納するための空の「配列（バケツ）」を用意する
-  @rolled_ships = []
-
-  # 🟢 10回連続で抽選を回す！
-  10.times do
+  # ❹ 画面から指定された回数（1回 または 10回）だけループを回す！
+  roll_count.times do
     random_point = rand(total_weight)
     selected_ship = nil
     current_weight = 0
 
     candidates.each do |ship|
-      current_weight += ship.normal
+      # ガチャの種類によって足す重みのカラムを切り替える
+      weight = (gacha_type == "rare") ? ship.rare : ship.normal
+      current_weight += weight
+
       if random_point < current_weight
         selected_ship = ship
         break
       end
     end
 
-    # 当選した艦を、この回の結果として配列に追加する
-    @rolled_ships << selected_ship
+    results << selected_ship
 
-    # プレイヤーの所持艦隊（データベース）に保存する
+    # データベースへの保存
     UserMyfreet.create(
       user_id: @user.id,
       myfreet_id: selected_ship.id,
@@ -86,6 +61,14 @@ post '/gacha/roll_ten' do
     )
   end
 
-  # ガチャ画面を再描画（このとき @rolled_ships に10隻分のデータが入った状態になります）
+  # ❺ 【ここがポイント】結果の表示分け
+  # 単発（1回）なら、今まで通り単発用変数に。10連なら10連用変数に入れます。
+  if roll_count == 1
+    @rolled_ship = results.first
+  else
+    @rolled_ships = results
+  end
+
+  # 共通の結果表示画面（gacha.erb）を呼び出す
   erb :gacha
 end
