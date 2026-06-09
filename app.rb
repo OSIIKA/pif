@@ -1,7 +1,6 @@
 require 'bundler/setup'
 Bundler.require
 require 'sinatra/reloader' if development?
-require './models'
 # ここから19まで、ローカル環境での実行のため、一時的にコメントに変更、1年後の自分に押しつけ
 require 'sinatra'
 require 'sinatra/activerecord'
