@@ -64,11 +64,11 @@
     <div class="units" style="display: none;">
       <% @freets.each do |freet| %>
         <div class="unit">
-          <p><%= freet['myfreet']['name'] %></p>
+          <p><%= freet['allfreet']['name'] %></p>
           <p>Lv：<%= freet['level'] %>Exp：<%= freet['exp'] %></p>
-          <p>HP：<%= freet['myfreet']['hp'] %></p>
-          <p>攻撃：<%= freet['myfreet']['atk'] %></p>
-          <p>情報：<%= freet['myfreet']['info'] %></p>
+          <p>HP：<%= freet['allfreet']['max_hp'] %></p>
+          <p>攻撃：<%= freet['allfreet']['atk'] %></p>
+          <p>情報：<%= freet['allfreet']['info'] %></p>
           <form action="/home/levelup" method="post">
             <input type="hidden" name="unit_id" value="<%= freet['id'] %>">
             <button type="submit">レベルアップ</button>
