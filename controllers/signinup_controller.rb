@@ -78,7 +78,7 @@ get '/auth/google_oauth2/callback' do
     if user.save
       # 新規登録成功時に、初期ユニット（1, 2, 3）をプレゼントする処理（既存の新規登録と同じ）
       default_units = [1, 2, 3].map do |i|
-        Myfreet.find_or_create_by(id: i) do |f|
+        Allfreet.find_or_create_by(id: i) do |f|
           f.name = "ユニット#{i}"
         end
       end
@@ -135,7 +135,7 @@ get '/auth/twitter2/callback' do
     if user.save
       # 新規登録成功時に、初期ユニット（1, 2, 3）をプレゼントする処理
       default_units = [1, 2, 3].map do |i|
-        Myfreet.find_or_create_by(id: i) do |f|
+        Allfreet.find_or_create_by(id: i) do |f|
           f.name = "ユニット#{i}"
         end
       end
