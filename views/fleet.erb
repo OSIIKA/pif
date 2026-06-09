@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>艦隊管理 - 紫鉄艦隊</title>
+</head>
+<body style="background: #141414; color: #fff; padding: 20px; font-family: sans-serif;">
+
+    <h1>⚓ 艦隊管理運用（所持一覧）</h1>
+    <p>司令官: <strong><%= @user.name %></strong> が現在保有している戦力一覧です。</p>
+
+    <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+      
+      <% if @my_ships.any? %>
+        <% @my_ships.each do |my_freet| %>
+          <div style="background: #222; border: 1px solid #444; border-top: 4px solid #096dd9; padding: 15px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+            
+            <div style="display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 8px;">
+              <span style="color: #deff9a; font-weight: bold;">[<%= my_freet.allfreet.rarity_text %>]</span>
+              <span style="color: #096dd9; font-weight: bold;">Lv. <%= my_freet.level %></span>
+            </div>
+
+            <div style="font-size: 1.15em; font-weight: bold; margin-bottom: 12px; color: #fff;">
+              <%= my_freet.allfreet.name %>
+            </div>
+
+            <div style="font-size: 0.9em; color: #ccc; line-height: 1.5; background: #1a1a1a; padding: 8px; border-radius: 4px;">
+              <div>❤️ HP: <%= my_freet.allfreet.max_hp %></div>
+              <div>⚔️ 攻撃: <%= my_freet.allfreet.atk %></div>
+              <div style="font-size: 0.8em; color: #888; margin-top: 5px; border-top: 1px solid #333; padding-top: 5px;">
+                <%= my_freet.allfreet.info %>
+              </div>
+            </div>
+
+          </div>
+        <% end %>
+      <% else %>
+        <p style="color: #666;">まだ艦船を所持していません。ガチャで作戦を展開しましょう！</p>
+      <% end %>
+
+    </div>
+
+    <br><br>
+    <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+    <a href="/home" style="color: #1890ff; text-decoration: none;">➔ ホームに戻る</a>
+
+</body>
+</html>
