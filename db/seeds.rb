@@ -18,12 +18,12 @@ end
 # 敵データ
 # ===========================
 # ステージ1の敵（2体）
-Enemyfreet.find_or_create_by!(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ")
-Enemyfreet.find_or_create_by!(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ")
+Allfreet.find_or_create_by!(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ")
+Allfreet.find_or_create_by!(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ")
 # ステージ2の敵（3体）
-Enemyfreet.find_or_create_by!(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
-Enemyfreet.find_or_create_by!(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
-Enemyfreet.find_or_create_by!(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ")
+Allfreet.find_or_create_by!(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
+Allfreet.find_or_create_by!(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ")
+Allfreet.find_or_create_by!(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ")
 # ===========================
 # 敵・味方データ
 # ===========================
