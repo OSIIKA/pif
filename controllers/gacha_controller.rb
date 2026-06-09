@@ -13,8 +13,37 @@ post '/gacha/roll' do
   @user = User.find_by(id: session[:user])
   redirect '/users/new' if @user.nil?
 
-  # 📊 大倉さんがSeedsに登録したAllfreetから、ランダムに1件を神の悪戯（.sample）で抽出！
-  @rolled_ship = Allfreet.all.sample
+  # 1. 通常ガチャの出現確率（normal）が0より大きい艦をすべて取得
+  candidates = Allfreet.where("normal > 0")
+
+  # 2. 全候補のウェイト（normal）の合計値を計算
+  total_weight = candidates.sum(:normal)
+
+  # 3. 0 から 総ウェイト未満 の間でランダムな数字（ダイス）を決める
+  random_point = rand(total_weight)
+
+  # 4. ダイスの目がどの艦のウェイト枠に落ちるかを計算して決定
+  @rolled_ship = nil
+  current_weight = 0
+
+  candidates.each do |ship|
+    current_weight += ship.normal
+    if random_point < current_weight
+      @rolled_ship = ship
+      break
+    end
+  end
+
+  # 5. 【重要】引いた艦をユーザーの所持艦隊（UserMyfreet）に新しく保存する
+  # (前回の列名のズレを考慮して「myfreet_id」に当選したIDを入れます)
+  UserMyfreet.create(
+    user_id: @user.id,
+    myfreet_id: @rolled_ship.id,
+    level: 1,
+    exp: 0
+  )
+
+  # ガチャ画面を再描画して、引いた艦の情報を表示する
 
   # 結果（@rolled_ship）を持った状態で、もう一度ガチャ画面を描画する
   erb :gacha
