@@ -36,31 +36,32 @@ Allfreet.find_or_create_by!(name: "味方3", hp: 100, max_hp: 100, atk: 25, info
 # ストーリーデータ
 # ===========================
 # 第0話
-episode0 = [
-  ["システム", "＜紫星・磯秋より、紫星・Userへ、メッセージを送信します。＞"],
-  ["磯秋", "「あなたはもう、こちらに向かっているのでしょうか…」"],
-  ["システム", "＜時間切れになりました。メッセージを終了します。＞"],
-  ["System", "BattleStart", 1],
-  ["？？？", "てすと"],
-  ["System", "BattleStart", 2],
-  ["？？？", "てすと"]
+#episode0 = [
+#  ["システム", "＜紫星・磯秋より、紫星・Userへ、メッセージを送信します。＞"],
+#  ["磯秋", "「あなたはもう、こちらに向かっているのでしょうか…」"],
+#  ["システム", "＜時間切れになりました。メッセージを終了します。＞"],
+#  ["System", "BattleStart", 1],
+#  ["？？？", "てすと"],
+#  ["System", "BattleStart", 2],
+#  ["？？？", "てすと"]
   # ここに続きの文章を追加していく
-]
+#]
 
-episode0.each_with_index do |(name, text, battle), i|
-  Story.create(episode: 0, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
-end
+#episode0.each_with_index do |(name, text, battle), i|
+#  Story.create(episode: 0, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
+#end
 # 第1話
-episode1 = [
-  ["ナレーション", "＜集結編第1話　未知の通信システム＞"],
-  ["？？？", "てすと"],
-  ["？？？", "てすと"],
-  ["？？？", "てすと"]
-]
+#episode1 = [
+#  ["ナレーション", "＜集結編第1話　未知の通信システム＞"],
+#  ["？？？", "てすと"],
+#  ["？？？", "てすと"],
+#  ["？？？", "てすと"]
+#  # ここに続きの文章を追加していく
+#]
 
-episode1.each_with_index do |(name, text, battle), i|
-  Story.create(episode: 1, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
-end
+#episode1.each_with_index do |(name, text, battle), i|
+#  Story.create(episode: 1, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
+#end
 # ==========================================
 # 🚨 PostgreSQLの自動採番カウンター（シーケンス）を現在の最大IDに同期する
 # ==========================================
@@ -70,5 +71,5 @@ if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
   # 他のテーブルも同様に必要に応じてシーケンスをリセットする
   ActiveRecord::Base.connection.execute("SELECT setval('myfreets_id_seq', COALESCE((SELECT MAX(id) FROM myfreets), 1))")
   ActiveRecord::Base.connection.execute("SELECT setval('allfreets_id_seq', COALESCE((SELECT MAX(id) FROM allfreets), 1))")
-  ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
+#  ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
 end
