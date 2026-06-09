@@ -5,8 +5,49 @@
     <title>ガチャ - 紫鉄艦隊</title>
 </head>
 <body style="background: #141414; color: #fff; padding: 20px; font-family: sans-serif;">
-    <h1>🎲 ガチャ画面（開発中）</h1>
-    <p>無事にここまでたどり着きました！骨組み成功です。</p>
-    <a href="/home" style="color: #1890ff;">➔ ホームに戻る</a>
+
+    <h1>🎲 ガチャシステム</h1>
+    <p style="color: #aaa;">司令官: <strong><%= @user.name %></strong> の艦隊へ、新たな戦力を補給します。</p>
+
+    <form action="/gacha/roll" method="post" style="margin: 25px 0;">
+      <button type="submit" style="padding: 12px 30px; background-color: #1890ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: background 0.2s;">
+        🚀 ガチャを1回引く（Allfreetから召喚）
+      </button>
+    </form>
+
+    <hr style="border: 0; border-top: 1px solid #333; margin: 30px 0;">
+
+    <% if @rolled_ship %>
+      <div style="background: #222; border: 2px solid #deff9a; padding: 25px; border-radius: 8px; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <h2 style="color: #deff9a; margin-top: 0; letter-spacing: 1px;">🎉 艦船 召喚成功！</h2>
+        
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+          <tr style="border-bottom: 1px solid #334155;">
+            <td style="padding: 10px 5px; color: #888; font-weight: bold; width: 30%;">艦船名</td>
+            <td style="padding: 10px 5px; font-size: 1.2em; font-weight: bold; color: #fff;"><%= @rolled_ship.name %></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #334155;">
+            <td style="padding: 10px 5px; color: #888; font-weight: bold;">現在のHP</td>
+            <td style="padding: 10px 5px; color: #a3e635;"><%= @rolled_ship.hp %> / <%= @rolled_ship.max_hp %></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #334155;">
+            <td style="padding: 10px 5px; color: #888; font-weight: bold;">攻撃力 (ATK)</td>
+            <td style="padding: 10px 5px; color: #ff4d4f; font-weight: bold;"><%= @rolled_ship.atk %></td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 5px; color: #888; font-weight: bold;">艦船情報</td>
+            <td style="padding: 10px 5px; color: #ddd; font-size: 0.95em; line-height: 1.4;"><%= @rolled_ship.info %></td>
+          </tr>
+        </table>
+      </div>
+    <% else %>
+      <div style="border: 1px dashed #444; padding: 30px; text-align: center; color: #666; border-radius: 6px; max-width: 450px;">
+        上のボタンを押すと、登録されたマスターデータからランダムに1隻が選出されます。
+      </div>
+    <% end %>
+
+    <br><br>
+    <a href="/home" style="color: #1890ff; text-decoration: none; font-size: 0.95em;">➔ ホームに戻る</a>
+
 </body>
 </html>
