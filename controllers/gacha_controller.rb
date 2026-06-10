@@ -3,8 +3,10 @@ get '/gacha' do
   # ログインしているユーザーを確保（安全装置）
   @user = User.find_by(id: session[:user])
   redirect '/users/new' if @user.nil?
+  # 🟢 ここを追記：URLの ?type= の文字を読み取る（指定がなければ "normal" にする）
+  @gacha_type = params[:type] || "normal"
   # 最初はまだ引いていないので、結果は空っぽ
-    @rolled_ship = nil
+  @rolled_ship = nil
   # views/gacha.erb を読み込んで画面に表示する
   erb :gacha
 end
@@ -96,7 +98,8 @@ def execute_gacha(gacha_type, roll_count, bonus_active)
   else
     @rolled_ships = results
   end
-
+  # 🟢 ここを追記：ガチャを引いた後も、選んでいたガチャの種類を画面に覚えさせる
+  @gacha_type = gacha_type
   # 共通の結果表示画面（gacha.erb）を呼び出す
   erb :gacha
 end

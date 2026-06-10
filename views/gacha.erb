@@ -8,16 +8,23 @@
 
     <h1>🎲 ガチャシステム</h1>
 
-    <form action="/gacha/roll" method="post" class="gacha-1-form">
-      <button type="submit" class="gacha-1-form button">
-        🚀 ガチャを1回引く（Allfreetから召喚）
-      </button>
-    </form>
-    <form action="/gacha/roll_ten" method="post" class="gacha-10-form">
-      <button type="submit" class="gacha-10-form button">
-        🔥 10連ガチャを引く
-      </button>
-    </form>
+    <div style="display: flex; gap: 15px; margin: 25px 0;">
+  
+      <form action="/gacha/<%= @gacha_type %>" method="post" style="margin: 0;">
+        <input type="hidden" name="roll_count" value="1">
+        <button type="submit" style="padding: 12px 25px; background-color: #1890ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+          🚀 ガチャを1回引く
+        </button>
+      </form>
+
+      <form action="/gacha/<%= @gacha_type %>" method="post" style="margin: 0;">
+        <input type="hidden" name="roll_count" value="10">
+        <button type="submit" style="padding: 12px 25px; background-color: #722ed1; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
+          🔥 10連ガチャを引く
+        </button>
+      </form>
+
+    </div>
 
     <hr class="hr">
 
@@ -29,15 +36,13 @@
         </h3>
         
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <button style="padding: 10px; background: #1890ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; text-align: left; cursor: pointer;">
-            🔵 通常ガチャ
-          </button>
-          
-          <form action="/gacha/roll_rare" method="post" style="margin-bottom: 10px;">
-            <button type="submit" style="width: 100%; padding: 12px; background-color: #d4b106; color: #fff; border: none; border-radius: 4px; font-weight: bold; text-align: left; cursor: pointer;">
-              🟡 レアガチャ起動
-            </button>
-          </form>
+          <a href="/gacha?type=normal" style="display: block; width: 100%; padding: 12px; background-color: <%= @gacha_type == 'normal' ? '#1890ff' : '#222' %>; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; margin-bottom: 10px; box-sizing: border-box;">
+            🔵 通常ガチャ <%= @gacha_type == 'normal' ? '◀選択中' : '' %>
+          </a>
+
+          <a href="/gacha?type=rare" style="display: block; width: 100%; padding: 12px; background-color: <%= @gacha_type == 'rare' ? '#d4b106' : '#222' %>; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; margin-bottom: 10px; box-sizing: border-box;">
+            🟡 レアガチャ起動 <%= @gacha_type == 'rare' ? '◀選択中' : '' %>
+          </a>
           
           <button style="padding: 10px; background: #262626; color: #aaa; border: 1px solid #434343; border-radius: 4px; font-weight: bold; text-align: left; cursor: not-allowed;">
             🔥 期間限定ガチャ (準備中)
