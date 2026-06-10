@@ -4,27 +4,26 @@
     <meta charset="UTF-8">
     <title>ガチャ - 紫鉄艦隊</title>
 </head>
-<body style="background: #141414; color: #fff; padding: 20px; font-family: sans-serif;">
+<body>
 
     <h1>🎲 ガチャシステム</h1>
-    <p style="color: #aaa;">司令官: <strong><%= @user.name %></strong> の艦隊へ、新たな戦力を補給します。</p>
 
-    <form action="/gacha/roll" method="post" style="margin: 25px 0;">
-      <button type="submit" style="padding: 12px 30px; background-color: #1890ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: background 0.2s;">
+    <form action="/gacha/roll" method="post" class="gacha-1-form">
+      <button type="submit" class="gacha-1-form button">
         🚀 ガチャを1回引く（Allfreetから召喚）
       </button>
     </form>
-    <form action="/gacha/roll_ten" method="post" style="margin: 0;">
-      <button type="submit" style="padding: 12px 25px; background-color: #722ed1; color: #fff; border: none; border-radius: 4px; font-weight: bold; font-size: 1em; cursor: pointer;">
+    <form action="/gacha/roll_ten" method="post" class="gacha-10-form">
+      <button type="submit" class="gacha-10-form button">
         🔥 10連ガチャを引く
       </button>
     </form>
 
     <hr class="hr">
 
-    <div style="display: flex; gap: 30px; align-items: flex-start; max-width: 900px;">
+    <div class="gacha">
 
-      <div style="flex: 1; min-width: 220px; background: #1f1f1f; border: 1px solid #333; padding: 20px; border-radius: 8px;">
+      <div class="gacha-types">
         <h3 style="margin-top: 0; margin-bottom: 15px; color: #1890ff; border-bottom: 1px solid #333; padding-bottom: 8px; font-size: 1em; letter-spacing: 1px;">
           🛸 作戦（ガチャ）選択
         </h3>
@@ -54,7 +53,7 @@
         </div>
       </div>
 
-      <div style="flex: 2;">
+      <div class="gacha-cards">
 
         <% if @rolled_ship %>
           <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); display: flex; align-items: center; justify-content: center; z-index: 1000;">
@@ -105,34 +104,7 @@
 
           </div>
 
-          <script>
-            // いま何枚目のカードを見ているかを覚えておく変数（最初は0枚目）
-            let currentCardIndex = 0;
-
-            // 画面上にある「gacha-card」という名前のついたカードの山をすべて取得する
-            const cards = document.querySelectorAll('.gacha-card');
-            
-            // 最後の全員集合画面の枠を取得する
-            const summary = document.getElementById('final-summary');
-
-            // 「👉 次へ」ボタンが押されたときに動く処理
-            function nextCard() {
-              // 1. いま表示されているカードを「非表示（none）」にする
-              cards[currentCardIndex].style.display = 'none';
-
-              // 2. カウンターを1つ進める
-              currentCardIndex++;
-
-              // 3. もし、まだカードが残っているなら（10枚目未満なら）
-              if (currentCardIndex < cards.length) {
-                // 次のカードを「表示（block）」にする
-                cards[currentCardIndex].style.display = 'block';
-              } else {
-                // 4. 10枚全部めくり終わったら、11画面目の「全員集合画面」を表示する！
-                summary.style.display = 'block';
-              }
-            }
-          </script>
+          <script src="/js/gacha.js"></script>
         <% end %>
 
 

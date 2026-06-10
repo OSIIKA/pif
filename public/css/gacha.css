@@ -1,5 +1,59 @@
+body {
+    background: #141414;
+    color: #fff;
+    padding: 20px;
+    font-family: sans-serif;
+}
+
 .hr {
     border: 0;
     border-top: 1px solid #333;
     margin: 30px 0;
+}
+
+.gacha {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    max-width: 900px;
+}
+
+.gacha-types {
+    flex: 1;
+    min-width: 220px;
+    background: #1f1f1f;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.gacha-1-form {
+    margin: 25px 0;
+}
+.gacha-1-form button {
+    padding: 12px 30px;
+    background-color: #1890ff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.gacha-10-form {
+    margin: 0;
+}
+.gacha-10-form button {
+    padding: 12px 25px;
+    background-color: #722ed1;
+    color: #fff; border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.gacha-cards {
+    flex: 2;
 }
