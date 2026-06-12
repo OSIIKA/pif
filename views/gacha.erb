@@ -26,15 +26,17 @@
 
     </div>
     <%
-      # 今選ばれているガチャの種類（normal か rare）に合わせて確率データを自動集計
+      # 1. まず、そのガチャにおける各大枠レア度（RARITY）の基本確率を設定
       if @gacha_type == "rare"
-        display_candidates = Allfreet.where("rare > 0")
-        total_w = display_candidates.sum(:rare)
+        rarity_rates = { 3 => 5.0, 2 => 20.0, 1 => 75.0 } # SSR 5%, R 20%, N 75%
+        weight_column = "rare"
       else
-        display_candidates = Allfreet.where("normal > 0")
-        total_w = display_candidates.sum(:normal)
+        rarity_rates = { 3 => 0.0, 2 => 10.0, 1 => 90.0 } # SSR 0%, R 10%, N 90%
+        weight_column = "normal"
       end
-      total_w = 1 if total_w == 0 # 0除算防止の安全装置
+
+      # 2. 現在排出対象になっている（重みが0より大きい）キャラクターを全取得
+      display_candidates = Allfreet.where("#{weight_column} > 0")
     %>
 
     <div style="text-align: right; margin: -10px 0 15px 0;">
@@ -60,9 +62,17 @@
             <tbody>
               <% display_candidates.each do |ship| %>
                 <% 
-                  # 各艦船の重みから正確なパーセンテージをリアルタイム計算
-                  weight = (@gacha_type == "rare") ? ship.rare : ship.normal
-                  percent = (weight.to_f / total_w * 100).round(2)
+                  # 🟢 ここが2段階抽選用の計算！
+                  # 同じレア度の中に、現在何人の排出対象キャラがいるかを数える（分母）
+                  same_rarity_count = display_candidates.where(rarity: ship.rarity).count
+                
+                  if same_rarity_count > 0
+                    # 大枠の確率 ÷ そのレア度のキャラ数 で、1隻あたりの確率を完全に等分（圧縮）する！
+                    base_rate = rarity_rates[ship.rarity] || 0.0
+                    percent = (base_rate / same_rarity_count).round(2)
+                  else
+                    percent = 0.0
+                  end
                 %>
                 <tr style="border-bottom: 1px solid #333; color: #fff;">
                   <td style="padding: 8px;">

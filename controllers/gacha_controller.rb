@@ -93,9 +93,7 @@ helpers do
       selected_ship = candidates.sample
       results << selected_ship
 
-      # 安全対策：万が一すり抜けた場合は先頭のキャラを入れる
-      selected_ship ||= candidates.first
-      results << selected_ship
+      # ＝＝＝＝＝ 💾 ステップ3：引いたキャラをユーザーの所持品（myfreets）に保存する ＝＝＝＝＝
 
       # データベースへ保存
       UserMyfreet.create(
