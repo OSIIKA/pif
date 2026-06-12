@@ -134,8 +134,8 @@ end
 # ＝＝＝＝＝ 🤝 ガチャシール（天井）交換所の裏側処理 ＝＝＝＝＝
   post '/gacha/exchange' do
     # ログインチェック（念のため）
-    redirect '/login' unless session[:user_id]
-    @user = User.find(session[:user_id])
+    @user = User.find_by(id: session[:user])
+    redirect '/login' if @user.nil?
     
     # 画面から送られてきた「交換したいキャラのID」と「ガチャタイプ」を取得
     character_id = params[:target_character_id]
