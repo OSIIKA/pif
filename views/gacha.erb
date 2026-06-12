@@ -73,6 +73,8 @@
                   else
                     percent = 0.0
                   end
+                  # 🟢 【この1行を追加！】確率が 0.0% のキャラは表示をスキップして次のループへ進む
+                  next if percent == 0.0
                 %>
                 <tr style="border-bottom: 1px solid #333; color: #fff;">
                   <td style="padding: 8px;">
