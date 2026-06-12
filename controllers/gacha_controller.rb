@@ -130,3 +130,51 @@ helpers do
     erb :gacha
   end
 end
+
+# ＝＝＝＝＝ 🤝 ガチャシール（天井）交換所の裏側処理 ＝＝＝＝＝
+  post '/gacha/exchange' do
+    # ログインチェック（念のため）
+    redirect '/login' unless session[:user_id]
+    @user = User.find(session[:user_id])
+    
+    # 画面から送られてきた「交換したいキャラのID」と「ガチャタイプ」を取得
+    character_id = params[:target_character_id]
+    gacha_type = params[:gacha_type]
+    
+    # 1. ユーザーの「レアガチャシール（type: 2, rarity: 1）」の所持データを取得
+    seal_item = Item.find_by(type: 2, rarity: 1)
+    user_seal = @user.user_items.find_by(item_id: seal_item.id) if seal_item
+    
+    # 安全対策：シールを持っていない、または10枚未満なら不正とみなして戻す
+    if user_seal.nil? || user_seal.count < 10
+      puts "🚨 エラー: シールが足りないか、データが存在しません"
+      redirect "/gacha?type=#{gacha_type}"
+    end
+    
+    # 2. 交換対象のキャラクターデータ（Allfreet）が存在するかチェック
+    character_data = Allfreet.find_by(id: character_id)
+    
+    if character_data
+      # 🟢 シールを10枚消費
+      user_seal.count -= 10
+      user_seal.save
+      
+      # 🟢 ユーザーの倉庫（UserFleet）にキャラクターを追加！
+      # （既存のガチャ排出時のカラム設定に合わせて保存します）
+      UserFleet.create!(
+        user_id: @user.id,
+        name: character_data.name,
+        hp: character_data.hp,
+        max_hp: character_data.max_hp,
+        atk: character_data.atk,
+        info: character_data.info,
+        rarity: character_data.rarity
+      )
+      
+      puts "✨ 天井交換成功: #{character_data.name} を獲得しました！"
+    end
+    
+    # 交換が終わったら、ガチャ画面にリダイレクトして戻す
+    redirect "/gacha?type=#{gacha_type}"
+  end
+  # ＝＝＝＝＝ 🤝 ここまで ＝＝＝＝＝

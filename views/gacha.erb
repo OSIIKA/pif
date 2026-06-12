@@ -126,10 +126,26 @@
           </div>
         
           <% if seal_count >= exchange_limit %>
-            <form action="/gacha/exchange" method="post" style="margin: 0;">
+            <form action="/gacha/exchange" method="post" style="margin: 0; display: flex; gap: 10px; align-items: center;">
               <input type="hidden" name="gacha_type" value="<%= @gacha_type %>">
+            
+              <%
+                # 交換対象となるキャラクターのマスターデータを安全に取得
+                target_ally = Allfreet.find_by(name: "味方3")
+                target_enemy = Allfreet.find_by(name: "敵3")
+              %>
+            
+              <select name="target_character_id" style="background: #333; color: #fff; border: 1px solid #555; padding: 10px; border-radius: 4px; font-weight: bold;">
+                <% if target_ally %>
+                  <option value="<%= target_ally.id %>">🔵 <%= target_ally.name %> を召喚する</option>
+                <% end %>
+                <% if target_enemy %>
+                  <option value="<%= target_enemy.id %>">🔴 <%= target_enemy.name %>（鹵獲/加入）を召喚する</option>
+                <% end %>
+              </select>
+
               <button type="submit" style="background: #d4b106; color: #000; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; border-bottom: 3px solid #9a8003;">
-                🤝 艦船を交換する（天井発動）
+                🤝 天井交換を発動！
               </button>
             </form>
           <% else %>
