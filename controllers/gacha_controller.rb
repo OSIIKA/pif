@@ -103,17 +103,19 @@ helpers do
         exp: 0
       )
     end
-    
-    # ＝＝＝＝＝ 🎟️ ここから：プロセカ式 ガチャシール自動付与システム ＝＝＝＝＝
-    # ガチャの種類によって、付与するアイテムIDを切り替える（1:通常、2:レア）
-    seal_item_id = (gacha_type == "rare") ? 2 : 1
 
-    # ログイン中のユーザーの中間テーブルから、対象のシールデータを探索。無ければ新しく準備（初期化）
-    user_item = @user.user_items.find_or_initialize_by(item_id: seal_item_id)
-    
-    # 引いた回数分（1回 or 10回）のシールをまとめて加算！
-    user_item.count += roll_count
-    user_item.save
+    # ＝＝＝＝＝ 🎟️ レアガチャ限定：ガチャシール自動付与システム ＝＝＝＝＝
+    if gacha_type == "rare"
+      # 🟢 大倉さん設計：名前や生のIDは一切使わず、属性の組み合わせでアイテムを特定！
+      # type: 2 (シール) かつ、レアガチャ用を示す rarity: 1 のアイテムを探す
+      seal_item = Item.find_by(type: 2, rarity: 1)
+      
+      if seal_item
+        user_item = @user.user_items.find_or_initialize_by(item_id: seal_item.id)
+        user_item.count += roll_count
+        user_item.save
+      end
+    end
     # ＝＝＝＝＝ 🎟️ ここまで ＝＝＝＝＝
 
     # 結果の割り振り（画面のERBがそのまま読み込めるようにします）

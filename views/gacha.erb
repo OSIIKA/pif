@@ -103,7 +103,43 @@
         document.getElementById('probability-overlay').style.display = 'none';
       }
     </script>
+
     <hr class="hr">
+
+    <% if @gacha_type == "rare" %>
+      <%
+        # 🟢 大倉さん設計：名前は一切使わず、type: 2 (シール) と rarity: 1 (レア用) で特定！
+        seal_item = Item.find_by(type: 2, rarity: 1)
+        user_seal = seal_item ? @user.user_items.find_by(item_id: seal_item.id) : nil
+        seal_count = user_seal ? user_seal.count : 0
+
+        # 10枚で天井交換できるテスト設定
+        exchange_limit = 10 
+      %>
+
+      <div style="background: #1a1a1a; border: 1px solid #444; padding: 15px; border-radius: 6px; margin: 15px 0; color: #fff;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <span style="color: #6495ed; font-weight: bold;">🎟️ 現在の<%= seal_item ? seal_item.name : "ガチャシール" %>:</span>
+            <span style="font-size: 1.3em; color: #fff; font-weight: bold; margin-left: 5px;"><%= seal_count %></span> 枚
+            <p style="margin: 5px 0 0 0; font-size: 0.8em; color: #aaa;">※<%= exchange_limit %>枚貯まると、特別に[SR]味方3を直接召喚（天井交換）できます！</p>
+          </div>
+        
+          <% if seal_count >= exchange_limit %>
+            <form action="/gacha/exchange" method="post" style="margin: 0;">
+              <input type="hidden" name="gacha_type" value="<%= @gacha_type %>">
+              <button type="submit" style="background: #d4b106; color: #000; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; border-bottom: 3px solid #9a8003;">
+                🤝 艦船を交換する（天井発動）
+              </button>
+            </form>
+          <% else %>
+            <button disabled style="background: #444; color: #888; border: none; padding: 10px 15px; border-radius: 4px; font-weight: bold; cursor: not-allowed;">
+              🔒 払い出しまであと <%= exchange_limit - seal_count %> 枚
+            </button>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
 
     <div class="gacha">
 

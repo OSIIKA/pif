@@ -31,7 +31,7 @@ end
 Item.find_or_create_by!(name: "レアガチャシール", type: 2, rarity: 1) do |item|
   item.description = "レア作戦のガチャシール。一定数で限定艦船と交換可能。"
 end
-Item.find_or_create_by!(name: "レアガチャシール", type: 2, rarity: 2) do |item|
+Item.find_or_create_by!(name: "期間限定ガチャシール", type: 2, rarity: 2) do |item|
   item.description = "期間限定作戦のガチャシール。一定数で限定艦船と交換可能。"
 end
 # ===========================
