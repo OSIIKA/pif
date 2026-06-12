@@ -51,37 +51,47 @@ helpers do
     # 「i」には、0, 1, 2 ... 9 と、現在の回数のインデックスが入ります
     roll_count.times do |i|
     
-      # 🔥【蒼焔リスペクト】10連ボーナスの発動判定！
-      # もし「10回目（iが9）」で、かつ「ボーナスがON」の場合
+      # ＝＝＝＝＝ 🎯 ステップ1：まず「レア度（枠）」を決定する ＝＝＝＝＝
       if i == 9 && bonus_active
-        # 🟢 固定ではなく、ルートから送られてきた条件（例: nameが味方3）で動的にキャラを探す！
-      candidates = Allfreet.where(bonus_condition)
+        # 10連ボーナス（確定枠）の時は、ルートから送られてきた条件（rarity: 3）を強制適用！
+        selected_rarity = bonus_condition[:rarity]
       else
-        # 通常通りの箱（1〜9回目、または単発の場合）
+        # 通常時は、サイコロ（0〜99の乱数）を振って大枠のレア度を決定！
+        dice = rand(100)
+        
         if gacha_type == "rare"
-          candidates = Allfreet.where("rare > 0")
+          # 🟡 レアガチャの大枠確率設定（最高レア 5%、中堅レア 20%、低レア 75%）
+          if dice < 5
+            selected_rarity = 3  # 5%の確率で最高レア枠
+          elsif dice < 25
+            selected_rarity = 2  # 20%の確率で中堅レア枠
+          else
+            selected_rarity = 1  # 75%の確率で低レア枠
+          end
         else
-          candidates = Allfreet.where("normal > 0")
+          # 🔵 通常ガチャの大枠確率設定（中堅レア 10%、低レア 90%）
+          if dice < 10
+            selected_rarity = 2  # 10%の確率で中堅レア枠
+          else
+            selected_rarity = 1  # 90%の確率で低レア枠
+          end
         end
       end
     
-      # 確率の合計を計算
+      # ＝＝＝＝＝ 🎲 ステップ2：決まったレア度の中から「等確率」でキャラを1隻選ぶ ＝＝＝＝＝
+      # 現在のガチャで排出対象（重みが0より大きい）かつ、選ばれたレア度のキャラをデータベースから探索
       weight_column = (gacha_type == "rare") ? :rare : :normal
-      total_weight = candidates.sum(weight_column)
-      total_weight = 1 if total_weight == 0 # 安全装置
+      candidates = Allfreet.where(rarity: selected_rarity).where("#{weight_column} > 0")
 
-      random_point = rand(total_weight)
-      selected_ship = nil
-      current_weight = 0
-
-      candidates.each do |ship|
-        weight = (gacha_type == "rare") ? ship.rare : ship.normal
-        current_weight += weight
-        if random_point < current_weight
-          selected_ship = ship
-          break
-        end
+      # 【安全装置】もしそのレア度のキャラが1隻も登録されていなかったら、全対象から選ぶ
+      if candidates.empty?
+        candidates = Allfreet.where("#{weight_column} > 0")
       end
+
+      # 🟢 ここが大倉さんのアイデアの核心！
+      # そのレア度の中にあるキャラ一覧から、完全に「等確率」でランダムに1隻を決定（圧縮）します！
+      selected_ship = candidates.sample
+      results << selected_ship
 
       # 安全対策：万が一すり抜けた場合は先頭のキャラを入れる
       selected_ship ||= candidates.first
