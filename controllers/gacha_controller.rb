@@ -20,7 +20,7 @@ end
 post '/gacha/normal' do
   roll_count = params[:roll_count].to_i
   # 通常ガチャは10連ボーナスは無し（false）で実行！
-  execute_gacha("normal", roll_count, false)
+  execute_gacha("normal", roll_count, false, nil)
 end
 
 # 🟡 レアガチャの入り口
@@ -30,7 +30,7 @@ post '/gacha/rare' do
   has_bonus = (roll_count == 10)
   # 🟢 10連ボーナスが発生した時に「狙い撃ちしたい条件」をここで指定して渡す！
   bonus_target = { rarity: 3 } # 例えば「レアリティ3のキャラだけが入った特別な箱」など
-  execute_gacha("rare", roll_count, has_bonus)
+  execute_gacha("rare", roll_count, has_bonus, bonus_target)
 end
 
 
@@ -38,11 +38,14 @@ end
 # ❷ 共通のガチャ実行メソッド（ここで実際の抽選と保存を行う）
 # ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 helpers do
-  def execute_gacha(gacha_type, roll_count, bonus_active)
+  def execute_gacha(gacha_type, roll_count, bonus_active, bonus_condition)
     @user = User.find_by(id: session[:user])
     redirect '/users/new' if @user.nil?
 
     results = []
+    # 🟢 【安全ガードを追加】もし、そもそもガチャの候補が1隻も登録されていなかったら強制送還する
+    #test_box = (gacha_type == "rare") ? Allfreet.where("rare > 0") : Allfreet.where("normal > 0")
+    #return redirect '/gacha' if test_box.empty? # ➔ 0件なら引かせずに安全に戻す
 
     # 指定された回数（1回 または 10回）だけループを回す
     # 「i」には、0, 1, 2 ... 9 と、現在の回数のインデックスが入ります
