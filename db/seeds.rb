@@ -17,6 +17,15 @@ User.find_or_create_by!(id: 1) do |u|
   u.alliance_role = 0
 end
 # ===========================
+# アイテムデータ
+# ===========================
+Item.find_or_create_by!(name: "紫鉄", type: 0, rarity: 1) do |item|
+  item.description = "ガチャを引くための基本アイテム。"
+end
+Item.find_or_create_by!(name: "ガチャチケット", type: 1, rarity: 2) do |item|
+  item.description = "ガチャを1回引くことができるチケット。"
+end
+# ===========================
 # 敵データ
 # ===========================
 # ステージ1の敵（2体）
