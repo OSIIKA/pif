@@ -25,7 +25,72 @@
       </form>
 
     </div>
+    <%
+      # 今選ばれているガチャの種類（normal か rare）に合わせて確率データを自動集計
+      if @gacha_type == "rare"
+        display_candidates = Allfreet.where("rare > 0")
+        total_w = display_candidates.sum(:rare)
+      else
+        display_candidates = Allfreet.where("normal > 0")
+        total_w = display_candidates.sum(:normal)
+      end
+      total_w = 1 if total_w == 0 # 0除算防止の安全装置
+    %>
 
+    <div style="text-align: right; margin: -10px 0 15px 0;">
+      <button onclick="openProbability()" style="background: none; border: none; color: #aaa; text-decoration: underline; cursor: pointer; font-size: 0.9em;">
+        📊 この作戦の提供割合（排出確率）を確認する
+      </button>
+    </div>
+
+    <div id="probability-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center; z-index: 2000;">
+      <div style="background: #222; border: 2px solid #d4b106; padding: 25px; border-radius: 8px; width: 90%; max-width: 450px; text-align: center;">
+      
+        <h3 style="color: #d4b106; margin-top: 0; margin-bottom: 5px;">📜 提供割合（<%= @gacha_type == 'rare' ? 'レアガチャ' : '通常ガチャ' %>）</h3>
+        <p style="font-size: 0.8em; color: #aaa; margin-bottom: 15px;">※景品表示法及びガイドラインに基づき、算出確率を公開しています。</p>
+
+        <div style="max-height: 250px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #444; border-radius: 4px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95em;">
+            <thead style="background: #333; color: #fff; position: sticky; top: 0;">
+              <tr>
+                <th style="padding: 8px;">艦船名 (レア度)</th>
+                <th style="padding: 8px; text-align: right;">排出確率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% display_candidates.each do |ship| %>
+                <% 
+                  # 各艦船の重みから正確なパーセンテージをリアルタイム計算
+                  weight = (@gacha_type == "rare") ? ship.rare : ship.normal
+                  percent = (weight.to_f / total_w * 100).round(2)
+                %>
+                <tr style="border-bottom: 1px solid #333; color: #fff;">
+                  <td style="padding: 8px;">
+                    <span style="color: #deff9a;">[<%= ship.rarity_text %>]</span> <%= ship.name %>
+                  </td>
+                  <td style="padding: 8px; text-align: right; font-weight: bold; color: #deff9a;">
+                    <%= percent %>%
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <button onclick="closeProbability()" style="padding: 8px 25px; background: #444; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+          ✖ 閉じる
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function openProbability() {
+        document.getElementById('probability-overlay').style.display = 'flex';
+      }
+      function closeProbability() {
+        document.getElementById('probability-overlay').style.display = 'none';
+      }
+    </script>
     <hr class="hr">
 
     <div class="gacha">
