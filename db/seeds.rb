@@ -44,6 +44,10 @@ Allfreet.find_or_create_by!(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 3
 Allfreet.find_or_create_by!(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 Allfreet.find_or_create_by!(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 Allfreet.find_or_create_by!(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+# レアガチャに入る敵（？）
+Allfreet.find_or_create_by!(stage: 0, name: "Mk.628", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ", normal: 0, rare: 100, rarity: 2)
+Allfreet.find_or_create_by!(stage: 0, name: "デプリクト", hp: 250, max_hp: 250, atk: 60, info: "てんぷれ", normal: 0, rare: 100, rarity: 2)
+Allfreet.find_or_create_by!(stage: 0, name: "Mk.628α", hp: 300, max_hp: 300, atk: 70, info: "てんぷれ", normal: 0, rare: 100, rarity: 2)
 # ===========================
 # 敵・味方データ
 # ===========================
