@@ -103,6 +103,18 @@ helpers do
         exp: 0
       )
     end
+    
+    # ＝＝＝＝＝ 🎟️ ここから：プロセカ式 ガチャシール自動付与システム ＝＝＝＝＝
+    # ガチャの種類によって、付与するアイテムIDを切り替える（1:通常、2:レア）
+    seal_item_id = (gacha_type == "rare") ? 2 : 1
+
+    # ログイン中のユーザーの中間テーブルから、対象のシールデータを探索。無ければ新しく準備（初期化）
+    user_item = @user.user_items.find_or_initialize_by(item_id: seal_item_id)
+    
+    # 引いた回数分（1回 or 10回）のシールをまとめて加算！
+    user_item.count += roll_count
+    user_item.save
+    # ＝＝＝＝＝ 🎟️ ここまで ＝＝＝＝＝
 
     # 結果の割り振り（画面のERBがそのまま読み込めるようにします）
     if roll_count == 1
