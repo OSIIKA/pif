@@ -22,11 +22,11 @@ end
 Item.find_or_create_by!(name: "紫鉄", type: 0, rarity: 1) do |item|
   item.description = "ガチャを引くための基本アイテム。"
 end
-Item.find_or_create_by!(name: "通常ガチャチケット", type: 1, rarity: 2) do |item|
-  item.description = "ガチャを1回引くことができるチケット。"
-end
-Item.find_or_create_by!(name: "レアガチャチケット", type: 1, rarity: 3) do |item|
+Item.find_or_create_by!(name: "レアガチャチケット", type: 1, rarity: 2) do |item|
   item.description = "レアガチャを1回引くことができるチケット。"
+end
+Item.find_or_create_by!(name: "期間限定ガチャチケット", type: 1, rarity: 3) do |item|
+  item.description = "期間限定のレアガチャを1回引くことができるチケット。"
 end
 # ===========================
 # 敵データ

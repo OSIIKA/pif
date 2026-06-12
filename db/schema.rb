@@ -62,6 +62,13 @@ ActiveRecord::Schema.define(version: 22) do
     t.index ["category"], name: "index_chats_on_category"
   end
 
+  create_table "items", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "type", null: false
+    t.integer "rarity", null: false
+  end
+
   create_table "myfreets", force: :cascade do |t|
     t.string "name"
     t.integer "hp"
@@ -77,6 +84,15 @@ ActiveRecord::Schema.define(version: 22) do
     t.text "text", null: false
     t.integer "style", default: 0
     t.integer "battle", default: 0
+  end
+
+  create_table "user_items", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "item_id", null: false
+    t.integer "count", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id", "item_id"], name: "index_user_items_on_user_id_and_item_id", unique: true
   end
 
   create_table "user_lanks", force: :cascade do |t|
