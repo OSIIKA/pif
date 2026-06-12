@@ -28,7 +28,8 @@ post '/gacha/rare' do
   roll_count = params[:roll_count].to_i
   # 10連ガチャ（roll_countが10）のときだけ、ボーナスをON（true）にする！
   has_bonus = (roll_count == 10)
-  
+  # 🟢 10連ボーナスが発生した時に「狙い撃ちしたい条件」をここで指定して渡す！
+  bonus_target = { rarity: 3 } # 例えば「レアリティ3のキャラだけが入った特別な箱」など
   execute_gacha("rare", roll_count, has_bonus)
 end
 
@@ -50,9 +51,8 @@ helpers do
       # 🔥【蒼焔リスペクト】10連ボーナスの発動判定！
       # もし「10回目（iが9）」で、かつ「ボーナスがON」の場合
       if i == 9 && bonus_active
-        # 🌟 10回目だけは「味方3（最高レア）」しか入っていない特別な箱にする！
-        # （ここはお好みで "rarity: 3" など、大倉さんのマスターデータの仕様に合わせて調整してください）
-        candidates = Allfreet.where(name: "味方3")
+        # 🟢 固定ではなく、ルートから送られてきた条件（例: nameが味方3）で動的にキャラを探す！
+      candidates = Allfreet.where(bonus_condition)
       else
         # 通常通りの箱（1〜9回目、または単発の場合）
         if gacha_type == "rare"
