@@ -161,14 +161,11 @@ end
       
       # 🟢 ユーザーの倉庫（UserFleet）にキャラクターを追加！
       # （既存のガチャ排出時のカラム設定に合わせて保存します）
-      UserFleet.create!(
+      UserMyfreet.create(
         user_id: @user.id,
-        name: character_data.name,
-        hp: character_data.hp,
-        max_hp: character_data.max_hp,
-        atk: character_data.atk,
-        info: character_data.info,
-        rarity: character_data.rarity
+        myfreet_id: selected_ship.id,
+        level: 1,
+        exp: 0
       )
       
       puts "✨ 天井交換成功: #{character_data.name} を獲得しました！"
