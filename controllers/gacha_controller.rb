@@ -163,7 +163,7 @@ end
       # （既存のガチャ排出時のカラム設定に合わせて保存します）
       UserMyfreet.create(
         user_id: @user.id,
-        myfreet_id: selected_ship.id,
+        myfreet_id: character_data.id,
         level: 1,
         exp: 0
       )

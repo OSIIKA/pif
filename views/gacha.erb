@@ -130,17 +130,19 @@
               <input type="hidden" name="gacha_type" value="<%= @gacha_type %>">
             
               <%
-                # 交換対象となるキャラクターのマスターデータを安全に取得
-                target_ally = Allfreet.find_by(name: "味方3")
-                target_enemy = Allfreet.find_by(name: "敵3")
+                # 🟢 大倉さん新設計：名前は一切使わず、レア度3（SR）以上のキャラをDBから全自動で拉致してくる！
+                pickup_characters = Allfreet.where("rarity >= ?", 3)
               %>
             
               <select name="target_character_id" style="background: #333; color: #fff; border: 1px solid #555; padding: 10px; border-radius: 4px; font-weight: bold;">
-                <% if target_ally %>
-                  <option value="<%= target_ally.id %>">🔵 <%= target_ally.name %> を召喚する</option>
-                <% end %>
-                <% if target_enemy %>
-                  <option value="<%= target_enemy.id %>">🔴 <%= target_enemy.name %>（鹵獲/加入）を召喚する</option>
+                <% pickup_characters.each do |char| %>
+                  <% 
+                    # 敵キャラ（名前に"敵"や"Mk."が入っている場合）は赤、味方は青のアイコンにする演出
+                    prefix = (char.name.include?("敵") || char.name.include?("Mk.")) ? "🔴" : "🔵"
+                  %>
+                  <option value="<%= char.id %>">
+                  <%= prefix %> [SR] <%= char.name %> を召喚する
+                  </option>
                 <% end %>
               </select>
 
