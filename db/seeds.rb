@@ -20,18 +20,18 @@ end
 # 敵データ
 # ===========================
 # ステージ1の敵（2体）
-Allfreet.find_or_create_by!(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ", normal: 100, rarity: 1)
-Allfreet.find_or_create_by!(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ", normal: 100, rarity: 1)
+Allfreet.find_or_create_by!(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 # ステージ2の敵（3体）
-Allfreet.find_or_create_by!(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rarity: 1)
-Allfreet.find_or_create_by!(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rarity: 1)
-Allfreet.find_or_create_by!(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ", normal: 100, rarity: 1)
+Allfreet.find_or_create_by!(stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 # ===========================
 # 敵・味方データ
 # ===========================
-Allfreet.find_or_create_by!(name: "味方1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 100, rarity: 1)
-Allfreet.find_or_create_by!(name: "味方2", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 40, rarity: 2)
-Allfreet.find_or_create_by!(name: "味方3", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 20, rarity: 3)
+Allfreet.find_or_create_by!(name: "味方1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(name: "味方2", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 40, rare: 150, rarity: 2)
+Allfreet.find_or_create_by!(name: "味方3", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 20, rare: 40, rarity: 3)
 # ===========================
 # ストーリーデータ
 # ===========================
