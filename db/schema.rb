@@ -121,6 +121,13 @@ ActiveRecord::Schema.define(version: 22) do
     t.integer "exp"
   end
 
+  create_table "user_steps", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "limited_gacha_step", default: 1
+    t.integer "integer", default: 1
+    t.index ["user_id"], name: "index_user_steps_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "mail"
