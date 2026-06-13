@@ -69,6 +69,15 @@ ActiveRecord::Schema.define(version: 22) do
     t.integer "rarity", null: false
   end
 
+  create_table "itemtimelines", force: :cascade do |t|
+    t.integer "big_type", null: false
+    t.integer "small_type", null: false
+    t.integer "step", null: false
+    t.integer "item_id", null: false
+    t.integer "count", null: false
+    t.index ["item_id"], name: "index_itemtimelines_on_item_id"
+  end
+
   create_table "myfreets", force: :cascade do |t|
     t.string "name"
     t.integer "hp"
