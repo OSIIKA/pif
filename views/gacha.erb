@@ -106,7 +106,7 @@
 
     <hr class="hr">
 
-    <% if @gacha_type == "rare" %>
+    <% if @gacha_type == "rare" || @gacha_type == "limited" %>
       <%
         # 🟢 大倉さん設計：名前は一切使わず、type: 2 (シール) と rarity: 1 (レア用) で特定！
         seal_item = Item.find_by(type: 2, rarity: 1)
