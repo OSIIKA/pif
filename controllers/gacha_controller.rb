@@ -141,7 +141,7 @@ helpers do
     # レアガチャか限定ガチャで、かつ10連（roll_countが10）の時だけ発動！
     if roll_count == 10 && (gacha_type == "rare" || gacha_type == "limited")
       # 👤 ユーザーの進捗レコードを取得。もし無ければその場で新規作成（初期値 step: 1）する！
-      u_step = @user.userstep || @user.create_userstep(step: 1)
+      u_step = @user.usersteps || @user.create_usersteps(step: 1)
       current_step = u_step.step 
     
       # 🔍 大倉さんの指定条件：大分類(1) と 小分類(現在のステップ数) でタイムラインを検索！
