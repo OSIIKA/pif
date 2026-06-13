@@ -142,7 +142,7 @@ helpers do
     if roll_count == 10 && (gacha_type == "rare" || gacha_type == "limited")
       # 👤 ユーザーの進捗レコードを取得。もし無ければその場で新規作成（初期値 step: 1）する！
       u_step = @user.usersteps || @user.create_usersteps(limited_gacha_step: 1)
-      current_step = u_step.step 
+      current_step = u_step.limited_gacha_step 
     
       # 🔍 大倉さんの指定条件：大分類(1) と 小分類(現在のステップ数) でタイムラインを検索！
       timeline_bonus = Itemtimeline.find_by(big_type: 1, small_type: 1, step: current_step)
@@ -163,10 +163,10 @@ helpers do
           max_step = Itemtimeline.where(big_type: 1, small_type: 1).count
         
           # 👤 ユーザーの進捗データ（u_step）のステップを進める
-          if u_step.step >= max_step
-            u_step.step = 1 # 登録された最大数を超えたら、自動で1回目に戻る！
+          if u_step.limited_gacha_step >= max_step
+            u_step.limited_gacha_step = 1 # 登録された最大数を超えたら、自動で1回目に戻る！
           else
-            u_step.step += 1 # まだ上限に行ってなければ、次のステップへ
+            u_step.limited_gacha_step += 1 # まだ上限に行ってなければ、次のステップへ
           end
         
           u_step.save # 忘れずに進捗データを保存！
