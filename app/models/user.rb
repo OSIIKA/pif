@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   # bcryptとpassword_digestを連動させる魔法の1行
   has_secure_password
+  # ユーザーは1つのユーザーステップ（進捗）を持つ
+  has_one :usersteps, dependent: :destroy
   # ユーザーはたくさんのチャット発言を持つ
   has_many :chats, dependent: :destroy
   # ユーザーはたくさんの自分のフリートを持つ
@@ -9,7 +11,7 @@ class User < ActiveRecord::Base
   has_many :user_items, dependent: :destroy
   # アイテムとの多対多の関係を中間テーブル（user_items）を経由して定義
   has_many :items, through: :user_items
-  
+
   # 既存のリレーション（そのまま残します）
   belongs_to :user_lank, foreign_key: :level, optional: true
   # ユーザーはどこかの同盟に所属する（無所属もOKにするため optional: true）
