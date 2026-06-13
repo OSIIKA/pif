@@ -29,6 +29,18 @@
           <span class="stat">Lv:<%= @user.level %></span>
           <span class="stat">Exp:<%= @user.exp %></span>
         </div>
+        <%
+          # 🟢 大倉さん設計準拠：名前は使わず、type: 0, rarity: 1 で「紫鉄」を狙い撃ちして取得
+          iron_item = Item.find_by(type: 0, rarity: 1)
+          user_iron = iron_item ? @user.user_items.find_by(item_id: iron_item.id) : nil
+          iron_count = user_iron ? user_iron.count : 0
+        %>
+        <div style="font-weight: bold; margin-bottom: 10px;">
+  
+          <span style="margin-left: 20px; background: #222; border: 1px solid #555; padding: 2px 8px; border-radius: 4px; color: #ffbc00;">
+            🔩 紫鉄: <strong style="font-size: 1.1em; color: #fff;"><%= iron_count %></strong> 個
+          </span>
+        </div>
       <% else %>
         <p>ログインしてください</p>
       <% end %>
