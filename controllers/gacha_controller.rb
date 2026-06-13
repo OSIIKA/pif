@@ -142,7 +142,7 @@ helpers do
     if roll_count == 10 && (gacha_type == "rare" || gacha_type == "limited")
       # 🔴 残りの問題点に関わるため、一旦「現在の10連回数」を仮で定義します（例として3回目）
       # ※実際にはユーザーごとに「今何回目か」をカウント・保持する仕組みが今後必要になります！
-      current_step = 3 
+      current_step = @user.limited_gacha_step 
     
       # 🔍 大倉さんの指定条件：大分類(1) と 小分類(現在のステップ数) でタイムラインを検索！
       timeline_bonus = Itemtimeline.find_by(big_type: 1, small_type: 1, step: current_step)
