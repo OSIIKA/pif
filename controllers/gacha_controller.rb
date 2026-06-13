@@ -140,9 +140,9 @@ helpers do
     # 🎁 🟢 ここから追記：大倉さん特製 10連おまけアイテム配布システム
     # レアガチャか限定ガチャで、かつ10連（roll_countが10）の時だけ発動！
     if roll_count == 10 && (gacha_type == "rare" || gacha_type == "limited")
-      # 🔴 残りの問題点に関わるため、一旦「現在の10連回数」を仮で定義します（例として3回目）
-      # ※実際にはユーザーごとに「今何回目か」をカウント・保持する仕組みが今後必要になります！
-      current_step = @user.limited_gacha_step 
+      # 👤 ユーザーの進捗レコードを取得。もし無ければその場で新規作成（初期値 step: 1）する！
+      u_step = @user.userstep || @user.create_userstep(step: 1)
+      current_step = u_step.step 
     
       # 🔍 大倉さんの指定条件：大分類(1) と 小分類(現在のステップ数) でタイムラインを検索！
       timeline_bonus = Itemtimeline.find_by(big_type: 1, small_type: 1, step: current_step)
@@ -158,6 +158,7 @@ helpers do
           # ❌ 固定の「+ 5」を廃止！
           # ⭕️ DBの「count」カラムに設定された不規則な数量（12個、49個など）をそのまま加算！
           user_bonus.count = (user_bonus.count || 0) + timeline_bonus.count
+          user_bonus.step+=1
           user_bonus.save
         
           puts "🎁 10連ボーナス！[#{current_step}回目] おまけとして「#{bonus_item.name}」を #{timeline_bonus.count} 個支給しました！"
