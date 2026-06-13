@@ -159,6 +159,51 @@
       </div>
     <% end %>
 
+    <% if @gacha_type == "limited" %>
+      <button type="button" onclick="openBonusModal()" style="background: #333; color: #ffbc00; border: 1px solid #ffbc00; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 15px;">
+        🎁 10連おまけ報酬一覧を見る
+      </button>
+
+      <div id="bonusModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: #1a1a1a; color: #fff; border: 2px solid #555; padding: 20px; border-radius: 8px; width: 90%; max-width: 360px; box-shadow: 0 4px 20px rgba(0,0,0,0.8);">
+    
+          <h3 style="margin-top: 0; border-bottom: 2px solid #ffbc00; padding-bottom: 10px; color: #ffbc00; text-align: center;">
+            🚀 10連ガチャ 累計ボーナス
+          </h3>
+    
+          <ul style="list-style: none; padding: 0; margin: 15px 0; max-height: 300px; overflow-y: auto;">
+            <%
+              # 大倉さん新設のタイムラインから「ガチャ関連おまけ(1, 1)」をステップ順に全取得
+              display_bonuses = Itemtimeline.where(big_type: 1, small_type: 1).order(:step)
+              display_bonuses.each do |bonus|
+                # 外部キー（item_id）を使って、マスターデータからアイテムの名前を引っ張る
+                target_item = Item.find_by(id: bonus.item_id)
+                item_name = target_item ? target_item.name : "未知の物質"
+            %>
+              <li style="padding: 10px 0; border-bottom: 1px solid #333; display: flex; justify-content: space-between; font-size: 0.95em;">
+                <span><strong><%= bonus.step %>回目：</strong> <%= item_name %></span>
+                <span style="color: #ffbc00; font-weight: bold;"><%= bonus.count %> 個</span>
+              </li>
+            <% end %>
+          </ul>
+    
+          <button type="button" onclick="closeBonusModal()" style="background: #444; color: #fff; border: none; padding: 10px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px;">
+            閉じる
+          </button>
+    
+        </div>
+      </div>
+
+      <script>
+        function openBonusModal() {
+          document.getElementById('bonusModal').style.display = 'flex';
+        }
+        function closeBonusModal() {
+          document.getElementById('bonusModal').style.display = 'none';
+        }
+      </script>
+    <% end %>
+
     <div class="gacha">
 
       <div class="gacha-types">
