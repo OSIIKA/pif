@@ -158,7 +158,20 @@ helpers do
           # ❌ 固定の「+ 5」を廃止！
           # ⭕️ DBの「count」カラムに設定された不規則な数量（12個、49個など）をそのまま加算！
           user_bonus.count = (user_bonus.count || 0) + timeline_bonus.count
-          user_bonus.step+=1
+          # 🔄 🟢 ここを追記：大倉さん新提案の「シードの数だけ動的おまけ配布」ループシステム
+          # 現在登録されている「ガチャおまけ（1, 1）」の総件数（今回は 6 件）をDBから自動カウント！
+          max_step = Itemtimeline.where(big_type: 1, small_type: 1).count
+        
+          # 👤 ユーザーの進捗データ（u_step）のステップを進める
+          if u_step.step >= max_step
+            u_step.step = 1 # 登録された最大数を超えたら、自動で1回目に戻る！
+          else
+            u_step.step += 1 # まだ上限に行ってなければ、次のステップへ
+          end
+        
+          u_step.save # 忘れずに進捗データを保存！
+          # 🔄 🟢 ここまで
+          
           user_bonus.save
         
           puts "🎁 10連ボーナス！[#{current_step}回目] おまけとして「#{bonus_item.name}」を #{timeline_bonus.count} 個支給しました！"
