@@ -121,13 +121,6 @@ ActiveRecord::Schema.define(version: 22) do
     t.integer "exp"
   end
 
-  create_table "user_steps", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "limited_gacha_step", default: 1
-    t.integer "integer", default: 1
-    t.index ["user_id"], name: "index_user_steps_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "mail"
@@ -140,6 +133,13 @@ ActiveRecord::Schema.define(version: 22) do
     t.string "uid"
     t.string "provider"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
+  end
+
+  create_table "usersteps", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "limited_gacha_step", default: 1
+    t.integer "integer", default: 1
+    t.index ["user_id"], name: "index_usersteps_on_user_id"
   end
 
 end
