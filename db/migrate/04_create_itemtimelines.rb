@@ -9,7 +9,6 @@ class CreateItemtimelines < ActiveRecord::Migration[6.1]
     end
 
     # よく検索する項目にはインデックスを貼ると爆速になります
-    add_index :itemtimelines, :user_id
     add_index :itemtimelines, :item_id
   end
 end

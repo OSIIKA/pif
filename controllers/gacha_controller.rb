@@ -140,16 +140,28 @@ helpers do
     # 🎁 🟢 ここから追記：大倉さん特製 10連おまけアイテム配布システム
     # レアガチャか限定ガチャで、かつ10連（roll_countが10）の時だけ発動！
     if roll_count == 10 && (gacha_type == "rare" || gacha_type == "limited")
-      bonus_item = Item.find_by(type: 0, rarity: 1) # 紫鉄（基本素材）
+      # 🔴 残りの問題点に関わるため、一旦「現在の10連回数」を仮で定義します（例として3回目）
+      # ※実際にはユーザーごとに「今何回目か」をカウント・保持する仕組みが今後必要になります！
+      current_step = 3 
     
-      if bonus_item
-        # ユーザーの所持品から紫鉄を探す（なければ新しく枠を作る）
-        user_bonus = @user.user_items.find_or_initialize_by(item_id: bonus_item.id)
-        # 5個プレゼント！
-        user_bonus.count = (user_bonus.count || 0) + 5
-        user_bonus.save
+      # 🔍 大倉さんの指定条件：大分類(1) と 小分類(現在のステップ数) でタイムラインを検索！
+      timeline_bonus = Itemtimeline.find_by(big_type: 1, small_type: 1, step: current_step)
+    
+      if timeline_bonus
+        # タイムラインに設定されている外部キー（item_id）を使って、配るアイテムを特定
+        bonus_item = Item.find_by(id: timeline_bonus.item_id)
       
-        puts "🎁 10連ボーナス！おまけとして「#{bonus_item.name}」を5個支給しました！"
+        if bonus_item
+          # ユーザーの所持品から対象アイテムを探す（なければ新枠作成）
+          user_bonus = @user.user_items.find_or_initialize_by(item_id: bonus_item.id)
+        
+          # ❌ 固定の「+ 5」を廃止！
+          # ⭕️ DBの「count」カラムに設定された不規則な数量（12個、49個など）をそのまま加算！
+          user_bonus.count = (user_bonus.count || 0) + timeline_bonus.count
+          user_bonus.save
+        
+          puts "🎁 10連ボーナス！[#{current_step}回目] おまけとして「#{bonus_item.name}」を #{timeline_bonus.count} 個支給しました！"
+        end
       end
     end
     # 🎁 🟢 ここまで追記
