@@ -7,6 +7,29 @@ get '/gacha' do
   @gacha_type = params[:type] || "normal"
   # 最初はまだ引いていないので、結果は空っぽ
   @rolled_ship = nil
+  # 📅 🟢 ここから追記：期間限定ガチャの動的スケジュール判定システム
+  if @gacha_type == "limited"
+    # 1. 先送りゾーンに置いたリリース日からの経過日数を計算
+    # (※ RELEASE_DATE が app.rb 等で定義されている前提)
+    elapsed_days = (Date.today - RELEASE_DATE).to_i
+    
+    # 2. 「実質Seeds.rb」から、今の経過日数に合致するガチャを検索
+    active_schedule = GACHA_SCHEDULES.find do |s|
+      elapsed_days >= s[:start_day] && elapsed_days <= s[:end_day]
+    end
+    
+    if active_schedule
+      # 今日のガチャの名前とIDを画面に渡す！
+      @gacha_title = active_schedule[:name]
+      @limited_gacha_id = active_schedule[:id] # 例: "limited_fire"
+    else
+      @gacha_title = "期間外の特別なガチャ"
+      @limited_gacha_id = "limited_default"
+    end
+  else
+    @gacha_title = "常設レアガチャ"
+  end
+  # 🟢 ここまで
   # views/gacha.erb を読み込んで画面に表示する
   erb :gacha
 end
