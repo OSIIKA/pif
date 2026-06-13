@@ -137,7 +137,22 @@ helpers do
       end
     end
     # ＝＝＝＝＝ 🎟️ ここまで ＝＝＝＝＝
-
+    # 🎁 🟢 ここから追記：大倉さん特製 10連おまけアイテム配布システム
+    # レアガチャか限定ガチャで、かつ10連（roll_countが10）の時だけ発動！
+    if roll_count == 10 && (gacha_type == "rare" || gacha_type == "limited")
+      bonus_item = Item.find_by(type: 0, rarity: 1) # 紫鉄（基本素材）
+    
+      if bonus_item
+        # ユーザーの所持品から紫鉄を探す（なければ新しく枠を作る）
+        user_bonus = @user.user_items.find_or_initialize_by(item_id: bonus_item.id)
+        # 5個プレゼント！
+        user_bonus.count = (user_bonus.count || 0) + 5
+        user_bonus.save
+      
+        puts "🎁 10連ボーナス！おまけとして「#{bonus_item.name}」を5個支給しました！"
+      end
+    end
+    # 🎁 🟢 ここまで追記
     # 結果の割り振り（画面のERBがそのまま読み込めるようにします）
     if roll_count == 1
       @rolled_ship = results.first
