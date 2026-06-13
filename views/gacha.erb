@@ -175,9 +175,9 @@
             🟡 レアガチャ起動 <%= @gacha_type == 'rare' ? '◀選択中' : '' %>
           </a>
           
-          <button style="padding: 10px; background: #262626; color: #aaa; border: 1px solid #434343; border-radius: 4px; font-weight: bold; text-align: left; cursor: not-allowed;">
-            🔥 期間限定ガチャ (準備中)
-          </button>
+          <a href="/gacha?type=limited" style="display: block; width: 100%; padding: 12px; background-color: <%= @gacha_type == 'limited' ? '#d4b106' : '#222' %>; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; margin-bottom: 10px; box-sizing: border-box;">
+            🎃 期間限定ガチャ起動 <%= @gacha_type == 'limited' ? '◀選択中' : '' %>
+          </a>
           
           <button style="padding: 10px; background: #262626; color: #aaa; border: 1px solid #434343; border-radius: 4px; font-weight: bold; text-align: left; cursor: not-allowed;">
             👑 ストーリークリアガチャ (準備中)

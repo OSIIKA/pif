@@ -22,7 +22,6 @@ post '/gacha/normal' do
   # 通常ガチャは10連ボーナスは無し（false）で実行！
   execute_gacha("normal", roll_count, false, nil)
 end
-
 # 🟡 レアガチャの入り口
 post '/gacha/rare' do
   roll_count = params[:roll_count].to_i
@@ -32,7 +31,17 @@ post '/gacha/rare' do
   bonus_target = { rarity: 3 } # 例えば「レアリティ3のキャラだけが入った特別な箱」など
   execute_gacha("rare", roll_count, has_bonus, bonus_target)
 end
-
+# 🎃 期間限定ガチャの入り口（追加）
+post '/gacha/limited' do
+  roll_count = params[:roll_count].to_i
+  # レアガチャと同じく、10連（roll_countが10）のときだけボーナスをON！
+  has_bonus = (roll_count == 10)
+  # 期間限定ガチャでもSR（rarity: 3）以上を確定枠にする場合
+  bonus_target = { rarity: 3 }
+  
+  # 🟢 タイプを "limited" にして共通処理へ丸投げ！
+  execute_gacha("limited", roll_count, has_bonus, bonus_target)
+end
 
 # ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 # ❷ 共通のガチャ実行メソッド（ここで実際の抽選と保存を行う）
@@ -109,6 +118,17 @@ helpers do
       # 🟢 大倉さん設計：名前や生のIDは一切使わず、属性の組み合わせでアイテムを特定！
       # type: 2 (シール) かつ、レアガチャ用を示す rarity: 1 のアイテムを探す
       seal_item = Item.find_by(type: 2, rarity: 1)
+      
+      if seal_item
+        user_item = @user.user_items.find_or_initialize_by(item_id: seal_item.id)
+        user_item.count += roll_count
+        user_item.save
+      end
+    end
+    if gacha_type == "limited"
+      # 🟢 大倉さん設計：名前や生のIDは一切使わず、属性の組み合わせでアイテムを特定！
+      # type: 2 (シール) かつ、期間限定ガチャ用を示す rarity: 2 のアイテムを探す
+      seal_item = Item.find_by(type: 2, rarity: 2)
       
       if seal_item
         user_item = @user.user_items.find_or_initialize_by(item_id: seal_item.id)
