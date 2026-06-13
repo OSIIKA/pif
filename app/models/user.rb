@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   # bcryptとpassword_digestを連動させる魔法の1行
   has_secure_password
   # ユーザーは1つのユーザーステップ（進捗）を持つ
-  has_one :usersteps, dependent: :destroy
+  has_one :usersteps, class_name: "Usersteps", dependent: :destroy
   # ユーザーはたくさんのチャット発言を持つ
   has_many :chats, dependent: :destroy
   # ユーザーはたくさんの自分のフリートを持つ
