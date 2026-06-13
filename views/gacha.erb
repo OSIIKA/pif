@@ -7,7 +7,27 @@
 <body>
 
     <h1>🎲 ガチャシステム</h1>
+    <%
+      # 🔩 大倉さん設計準拠：紫鉄 (type: 0, rarity: 1) の所持数を取得
+      iron_item = Item.find_by(type: 0, rarity: 1)
+      user_iron = (iron_item && @user) ? @user.user_items.find_by(item_id: iron_item.id) : nil
+      iron_count = user_iron ? user_iron.count : 0
 
+      # 🎟️ 現在おまけで配られているはずの「ID: 3」のアイテム（期間限定ガチャチケット）の所持数を取得
+      ticket_item = Item.find_by(id: 3)
+      user_ticket = (ticket_item && @user) ? @user.user_items.find_by(item_id: ticket_item.id) : nil
+      ticket_count = user_ticket ? user_ticket.count : 0
+      ticket_name = ticket_item ? ticket_item.name : "期間限定ガチャチケット"
+    %>
+
+    <div style="background: #222; border: 1px solid #444; padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; display: inline-flex; gap: 20px; font-weight: bold;">
+      <span style="color: #fff;">
+        🔩 紫鉄: <strong style="color: #ffbc00; font-size: 1.1em;"><%= iron_count %></strong> 個
+      </span>
+      <span style="color: #fff; border-left: 1px solid #555; padding-left: 20px;">
+        🎟️ <%= ticket_name %>: <strong style="color: #ffbc00; font-size: 1.1em;"><%= ticket_count %></strong> 枚
+      </span>
+    </div>
     <div style="display: flex; gap: 15px; margin: 25px 0;">
   
       <form action="/gacha/<%= @gacha_type %>" method="post" style="margin: 0;">
