@@ -120,6 +120,16 @@
                       👾：<%= enemy_fleet.flagship.allfreet.name %>
                     </text>
                   <% end %>
+
+                  <% if @allies %>
+                    <% ally_session_fleet = @allies.find { |a| a[:col] == col && a[:row] == row && a[:hp] > 0 } %>
+                    <% if ally_session_fleet %>
+                      <text x="<%= center_x %>" y="<%= center_y - 4 %>" 
+                            fill="#00ffbc" font-size="11" font-weight="bold" text-anchor="middle" class="placed-fleet-icon" style="user-select: none;">
+                        🚢：<%= ally_session_fleet[:name] %>
+                      </text>
+                    <% end %>
+                  <% end %>
                 </g>
               <% end %>
             <% end %>

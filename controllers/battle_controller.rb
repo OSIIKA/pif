@@ -147,7 +147,23 @@ get '/battle/turn' do
   
   # 📝 今回のターンの行動ログを溜める配列
   @turn_logs = []
-
+  # 📥 🟢 【ここを追記】戦闘開始時の両軍の健康状態をログに強制出力！
+  @turn_logs << "ーーー 📊 現時刻・戦況報告 ーーー"
+  if @allies.empty?
+    @turn_logs << "⚠️ 警告：出撃している味方艦隊がいません！"
+  else
+    @allies.each do |a| 
+      # 万が一HPが0で生成されていたら、デバッグ用に100にしてあげる救済処置
+      if a[:hp] <= 0
+        a[:hp] = 100
+        a[:max_hp] = 100
+        @turn_logs << "🔧 救済：#{a[:name]}のHPが0だったため応急修理(HP100)"
+      end
+      @turn_logs << "🚢 #{a[:name]}：HP #{a[:hp]}/#{a[:max_hp]} [位置: #{a[:col]},#{a[:row]}]"
+    end
+  end
+  @enemies.each { |e| @turn_logs << "👾 #{e[:name]}：HP #{e[:hp]}/#{e[:max_hp]} [位置: #{e[:col]},#{e[:row]}]" }
+  @turn_logs << "ーーーーーーーーーーーーーーーー"
   # 1️⃣ 【行動順の決定】
   # 味方と敵をすべて混ぜて、行動順のリスト（キュー）を作ります。
   # 今回はシンプルに「配置されている全員」を行動ループに回します。
