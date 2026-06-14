@@ -1,5 +1,5 @@
 # 🌐 A: メインのバトル画面（布陣・演出・戦闘をすべてここで内蔵管理）
-get '/battle' do
+get '/battle/set' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
   # ⚙️ ✨【超重要：タイムラインの復元】

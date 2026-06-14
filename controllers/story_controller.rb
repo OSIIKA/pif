@@ -27,7 +27,7 @@ get '/story' do
     # 次の step に進めてから戦闘へ
     session[:step] += 1
 
-    redirect '/battle'
+    redirect '/battle/set'
   end
 
   # ★ 通常の会話処理
