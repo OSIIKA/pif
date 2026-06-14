@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 22) do
     t.string "name", null: false
     t.text "description"
     t.integer "type", null: false
+    t.integer "each_id", null: false
     t.integer "rarity", null: false
   end
 
@@ -73,9 +74,10 @@ ActiveRecord::Schema.define(version: 22) do
     t.integer "big_type", null: false
     t.integer "small_type", null: false
     t.integer "step", null: false
-    t.integer "item_id", null: false
+    t.integer "item_type", null: false
+    t.integer "item_each_id", null: false
     t.integer "count", null: false
-    t.index ["item_id"], name: "index_itemtimelines_on_item_id"
+    t.index ["item_type", "item_each_id"], name: "index_itemtimelines_on_item_type_and_item_each_id"
   end
 
   create_table "myfreets", force: :cascade do |t|
@@ -93,6 +95,19 @@ ActiveRecord::Schema.define(version: 22) do
     t.text "text", null: false
     t.integer "style", default: 0
     t.integer "battle", default: 0
+  end
+
+  create_table "user_bases", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "hq_level", default: 1
+    t.integer "production_level", default: 1
+    t.integer "slotted_character_1_id"
+    t.integer "slotted_character_2_id"
+    t.integer "slotted_character_3_id"
+    t.integer "slotted_character_4_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_user_bases_on_user_id", unique: true
   end
 
   create_table "user_items", force: :cascade do |t|

@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   has_secure_password
   # ユーザーは1つのユーザーステップ（進捗）を持つ
   has_one :usersteps, class_name: "Usersteps", dependent: :destroy
+  # ユーザーは1つのユーザーベース（基地）を持つ
+  has_one :user_base, dependent: :destroy
   # ユーザーはたくさんのチャット発言を持つ
   has_many :chats, dependent: :destroy
   # ユーザーはたくさんの自分のフリートを持つ

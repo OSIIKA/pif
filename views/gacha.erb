@@ -205,7 +205,7 @@
               sorted_bonuses = display_bonuses.sort_by { |b| [b.step < current_step ? 1 : 0, b.step] }
 
               sorted_bonuses.each do |bonus|
-                target_item = Item.find_by(id: bonus.item_id)
+                target_item = Item.find_by(type: bonus.item_type, each_id: bonus.item_each_id)
                 item_name = target_item ? target_item.name : "未知の物質"
           
                 # 🔍 獲得済みかどうかの判定フラグ
