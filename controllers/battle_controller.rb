@@ -91,25 +91,25 @@ post '/battle/start' do
   
   session[:battle_enemies] = enemy_units.map do |unit|
     # ※ 中間テーブルのモデル名を「EnemyFreet」と仮定しています。もし違う場合は適宜変更してください
-    flagship = EnemyFreet.find_by(id: unit.flagship_id)
+    flagship = Allfreet.find_by(id: unit.flagship_id)
     next nil unless flagship
 
-    flagship_data = { id: unit.flagship_id, hp: flagship.allfreet.hp, max_hp: flagship.allfreet.hp }
+    flagship_data = { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }
 
     sub_ships_data = []
     (1..6).each do |i|
       ship_id = unit.send("sub_ship_#{i}_id")
       next if ship_id.blank?
       
-      sub_ship = EnemyFreet.find_by(id: ship_id)
+      sub_ship = Allfreet.find_by(id: ship_id)
       if sub_ship
-        sub_ships_data << { id: ship_id, hp: sub_ship.allfreet.hp, max_hp: sub_ship.allfreet.hp }
+        sub_ships_data << { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp }
       end
     end
 
     {
       id: unit.id,
-      name: "👾 #{flagship.allfreet.name}",
+      name: "👾 #{flagship.name}",
       col: unit.col,
       row: unit.row,
       flagship: flagship_data,
