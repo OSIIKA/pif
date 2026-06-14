@@ -31,7 +31,7 @@
         <div style="border: 2px solid #ffbc00; background: rgba(255, 188, 0, 0.05); padding: 15px; border-radius: 8px; width: 220px; text-align: center;">
           <span style="color: #ffbc00; font-size: 0.8em; font-weight: bold; display: block; margin-bottom: 5px;">★ 旗艦 ★</span>
           <% if @flagship %>
-            <strong style="color: #fff;"><%= @flagship.name %></strong> <span style="font-size: 0.8em; color: #aaa;">(Lv.<%= @flagship.level %>)</span>
+            <strong style="color: #fff;"><%= @flagship.allfreet.name %></strong> <span style="font-size: 0.8em; color: #aaa;">(Lv.<%= @flagship.level %>)</span>
             <form action="/fleet/set_ship" method="post" style="margin-top: 8px;">
               <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
               <input type="hidden" name="slot_type" value="flagship">
@@ -45,7 +45,7 @@
               <select name="user_myfreet_id" style="width: 140px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #555; padding: 2px;">
                 <option value="">➕ 旗艦選択</option>
                 <% @my_ships.each do |ms| %>
-                  <option value="<%= ms.id %>"><%= ms.name %> (Lv.<%= ms.level %>)</option>
+                  <option value="<%= ms.id %>"><%= ms.allfreet.name %> (Lv.<%= ms.allfreet.level %>)</option>
                 <% end %>
               </select>
               <button type="submit" style="font-size: 0.8em; background: #ffbc00; color: #000; border: none; padding: 2px 6px; margin-top: 5px; font-weight: bold; border-radius: 3px; cursor: pointer;">配置</button>
@@ -59,7 +59,7 @@
             <div style="border: 1px dashed #555; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; width: 130px; text-align: center; font-size: 0.9em;">
               <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 5px;">随伴艦 <%= i %></span>
               <% if sub_ship %>
-                <strong style="color: #fff;"><%= sub_ship.name %></strong>
+                <strong style="color: #fff;"><%= sub_ship.allfreet.name %></strong> <span style="font-size: 0.8em; color: #aaa;">(Lv.<%= sub_ship.allfreet.level %>)</span>
                 <form action="/fleet/set_ship" method="post" style="margin-top: 5px;">
                   <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
                   <input type="hidden" name="slot_type" value="sub_<%= i %>">
@@ -73,7 +73,7 @@
                   <select name="user_myfreet_id" style="width: 110px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #444; padding: 2px;">
                     <option value="">➕ 選択</option>
                     <% @my_ships.each do |ms| %>
-                      <option value="<%= ms.id %>"><%= ms.name %></option>
+                      <option value="<%= ms.id %>"><%= ms.allfreet.name %> (Lv.<%= ms.allfreet.level %>)</option>
                     <% end %>
                   </select>
                   <button type="submit" style="font-size: 0.75em; background: #007bff; color: #fff; border: none; padding: 2px 6px; margin-top: 4px; border-radius: 3px; cursor: pointer;">配置</button>
