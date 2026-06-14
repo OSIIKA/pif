@@ -19,20 +19,32 @@ end
 # ===========================
 # アイテムデータ
 # ===========================
-Item.find_or_create_by!(name: "紫鉄", type: 0, rarity: 1) do |item|
+Item.find_or_create_by!(name: "紫鉄", type: 0, each_id: 1, rarity: 1) do |item|
   item.description = "ガチャを引くための基本アイテム。"
 end
-Item.find_or_create_by!(name: "レアガチャチケット", type: 1, rarity: 1) do |item|
+Item.find_or_create_by!(name: "レアガチャチケット", type: 1, each_id: 1, rarity: 1) do |item|
   item.description = "レアガチャを1回引くことができるチケット。"
 end
-Item.find_or_create_by!(name: "期間限定ガチャチケット", type: 1, rarity: 2) do |item|
+Item.find_or_create_by!(name: "期間限定ガチャチケット", type: 1, each_id: 2, rarity: 2) do |item|
   item.description = "期間限定のレアガチャを1回引くことができるチケット。"
 end
-Item.find_or_create_by!(name: "レアガチャシール", type: 2, rarity: 1) do |item|
+Item.find_or_create_by!(name: "レアガチャシール", type: 2, each_id: 1, rarity: 1) do |item|
   item.description = "レア作戦のガチャシール。一定数で限定艦船と交換可能。"
 end
-Item.find_or_create_by!(name: "期間限定ガチャシール", type: 2, rarity: 2) do |item|
+Item.find_or_create_by!(name: "期間限定ガチャシール", type: 2, each_id: 2, rarity: 2) do |item|
   item.description = "期間限定作戦のガチャシール。一定数で限定艦船と交換可能。"
+end
+Item.find_or_create_by!(name: "Mk.628", type: 4, each_id: 1, rarity: 3) do |item|
+  item.description = "基地に配置可能なキャラクター1"
+end
+Item.find_or_create_by!(name: "Mk.628-2", type: 4, each_id: 2, rarity: 3) do |item|
+  item.description = "基地に配置可能なキャラクター2"
+end
+Item.find_or_create_by!(name: "磯秋", type: 4, each_id: 3, rarity: 3) do |item|
+  item.description = "基地に配置可能なキャラクター3"
+end
+Item.find_or_create_by!(name: "北上湊", type: 4, each_id: 4, rarity: 3) do |item|
+  item.description = "基地に配置可能なキャラクター4"
 end
 # ===========================
 # アイテム配布データ
@@ -57,7 +69,19 @@ Itemtimeline.find_or_create_by!(step: 5, item_id: 5, count: 100) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 6, item_id: 2, count: 100) do |timeline|
+Itemtimeline.find_or_create_by!(step: 6, item_id: 6, count: 1) do |timeline|
+  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
+  timeline.small_type = 1 # 小分類（例: ログインボーナス）
+end
+Itemtimeline.find_or_create_by!(step: 7, item_id: 7, count: 1) do |timeline|
+  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
+  timeline.small_type = 1 # 小分類（例: ログインボーナス）
+end
+Itemtimeline.find_or_create_by!(step: 8, item_id: 8, count: 1) do |timeline|
+  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
+  timeline.small_type = 1 # 小分類（例: ログインボーナス）
+end
+Itemtimeline.find_or_create_by!(step: 9, item_id: 9, count: 1) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
