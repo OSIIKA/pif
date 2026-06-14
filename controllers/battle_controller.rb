@@ -135,3 +135,92 @@ post '/battle/attack' do
   # バトル画面へリダイレクト
   redirect '/battle'
 end
+
+# 🔄 C: 戦闘フェーズ（ターン進行処理）
+get '/battle/turn' do
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' unless @user
+
+  # 📥 セッションから現在の両軍のリアルタイムデータを取得
+  @allies = session[:battle_allies] || []
+  @enemies = session[:battle_enemies] || []
+  
+  # 📝 今回のターンの行動ログを溜める配列
+  @turn_logs = []
+
+  # 1️⃣ 【行動順の決定】
+  # 味方と敵をすべて混ぜて、行動順のリスト（キュー）を作ります。
+  # 今回はシンプルに「配置されている全員」を行動ループに回します。
+  all_units = []
+  @allies.each  { |a| all_units << { type: :ally,  data: a } }
+  @enemies.each { |e| all_units << { type: :enemy, data: e } }
+
+  # 2️⃣ 【移動 → 照準 → 攻撃 の行動ループ】
+  all_units.each do |unit|
+    current = unit[:data]
+    next if current[:hp] <= 0 # すでに撃沈しているならパス
+
+    if unit[:type] == :ally
+      # ==========================================
+      # 🚢 味方艦隊のターン
+      # ==========================================
+      
+      # 🗺️ ①【移動】：とりあえず一番近い敵を探す（簡易版）
+      # ここでは仮に、最初にみつかった生存している敵をターゲットにします
+      target_enemy = @enemies.find { |e| e[:hp] > 0 }
+      
+      if target_enemy
+        @turn_logs << "🤖 #{current[:name]}：行動開始。"
+        
+        # 🎯 ②【照準】＆ ③【攻撃】：敵を狙って攻撃力をぶつける！
+        damage = current[:atk]
+        target_enemy[:hp] -= damage
+        target_enemy[:hp] = 0 if target_enemy[:hp] < 0 # マイナスHP防止
+        
+        @turn_logs << "⚔️ #{current[:name]} が #{target_enemy[:name]} に主砲一斉射！【#{damage}】のダメージ！"
+        @turn_logs << "💥 #{target_enemy[:name]} の残りHP: #{target_enemy[:hp]}/#{target_enemy[:max_hp]}"
+        
+        if target_enemy[:hp] <= 0
+          @turn_logs << "☠️ 撃沈！ #{target_enemy[:name]} は光の塵となって消滅した。"
+        end
+      end
+
+    else
+      # ==========================================
+      # 👾 敵艦隊のターン
+      # ==========================================
+      target_ally = @allies.find { |a| a[:hp] > 0 }
+      
+      if target_ally
+        damage = current[:atk]
+        target_ally[:hp] -= damage
+        target_ally[:hp] = 0 if target_ally[:hp] < 0
+        
+        @turn_logs << "🚨 敵警報！ #{current[:name]} の反撃！ #{target_ally[:name]} が被弾！【#{damage}】のダメージ！"
+        @turn_logs << "❤️ #{target_ally[:name]} の残りHP: #{target_ally[:hp]}/#{target_ally[:max_hp]}"
+      end
+    end
+  end
+
+  # 💾 変動したHPなどの最新状態をセッションに上書き保存
+  session[:battle_allies] = @allies
+  session[:battle_enemies] = @enemies
+
+  # 勝利・敗北の判定
+  all_enemies_dead = @enemies.all? { |e| e[:hp] <= 0 }
+  all_allies_dead  = @allies.all?  { |a| a[:hp] <= 0 }
+
+  if all_enemies_dead
+    @turn_logs << "🎉 作戦大成功！ 海域の敵艦隊をすべて駆逐しました！"
+  elsif all_allies_dead
+    @turn_logs << "🏳️ 作戦失敗… 総員、急速転舵。これ以上の作戦続行は不可能です！"
+  end
+
+  # 共通の家具を取得して、バトルのURLのまま戦闘結果ログを表示する
+  @stage = session[:battle_stage] || 1
+  @fleets = @user.user_battleunits.order(:fleet_number)
+  @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
+  @phase = 'turn' # 画面側に「戦闘中だよ」と教えるスイッチ
+
+  erb :battle
+end
