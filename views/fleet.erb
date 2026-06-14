@@ -42,18 +42,10 @@
               <button type="submit" style="font-size: 0.75em; background: #c0392b; color: #fff; border: none; padding: 2px 8px; border-radius: 3px; cursor: pointer;">外す</button>
             </form>
           <% else %>
-            <form action="/fleet/set_ship" method="post" style="margin-top: 5px;">
-              <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
-              <input type="hidden" name="slot_type" value="flagship">
-              <select name="user_myfreet_id" style="width: 140px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #555; padding: 2px;">
-                <option value="">➕ 旗艦選択</option>
-                <% @my_ships.each do |ms| %>
-                  <% next if assigned_ids.include?(ms.id) %> <!-- すでにどこかの艦隊に配置されている艦は選択肢から除外 -->
-                  <option value="<%= ms.id %>"><%= ms.allfreet.name %> (Lv.<%= ms.level %>)</option>
-                <% end %>
-              </select>
-              <button type="submit" style="font-size: 0.8em; background: #ffbc00; color: #000; border: none; padding: 2px 6px; margin-top: 5px; font-weight: bold; border-radius: 3px; cursor: pointer;">配置</button>
-            </form>
+            <button type="button" onclick="openSelectionModal('flagship')" 
+                    style="margin-top: 10px; font-size: 0.85em; background: #ffbc00; color: #000; border: none; padding: 5px 15px; font-weight: bold; border-radius: 4px; cursor: pointer;">
+              ➕ 旗艦を選択
+            </button>
           <% end %>
         </div>
 
@@ -71,18 +63,10 @@
                   <button type="submit" style="font-size: 0.7em; background: #555; color: #fff; border: none; padding: 1px 5px; border-radius: 3px; cursor: pointer;">外す</button>
                 </form>
               <% else %>
-                <form action="/fleet/set_ship" method="post" style="margin-top: 5px;">
-                  <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
-                  <input type="hidden" name="slot_type" value="sub_<%= i %>">
-                  <select name="user_myfreet_id" style="width: 110px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #444; padding: 2px;">
-                    <option value="">➕ 選択</option>
-                    <% @my_ships.each do |ms| %>
-                      <% next if assigned_ids.include?(ms.id) %> <!-- すでにどこかの艦隊に配置されている艦は選択肢から除外 -->
-                      <option value="<%= ms.id %>"><%= ms.allfreet.name %> (Lv.<%= ms.level %>)</option>
-                    <% end %>
-                  </select>
-                  <button type="submit" style="font-size: 0.75em; background: #007bff; color: #fff; border: none; padding: 2px 6px; margin-top: 4px; border-radius: 3px; cursor: pointer;">配置</button>
-                </form>
+                <button type="button" onclick="openSelectionModal('sub_<%= i %>')" 
+                        style="margin-top: 8px; font-size: 0.8em; background: #007bff; color: #fff; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer;">
+                  ➕ 選択
+                </button>
               <% end %>
             </div>
           <% end %>
@@ -131,6 +115,49 @@
     <br><br>
     <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
     <a href="/home" style="color: #1890ff; text-decoration: none;">➔ ホームに戻る</a>
+    <div id="fleetModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+      <div style="background: #1a1a2e; border: 2px solid #ffbc00; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; padding: 20px; box-shadow: 0 0 20px rgba(255,188,0,0.3);">
+    
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <h3 style="color: #ffbc00; margin: 0; font-size: 1.2em;">🚢 配備艦船の選択</h3>
+          <button type="button" onclick="closeSelectionModal()" style="background: none; border: none; color: #aaa; font-size: 1.5em; cursor: pointer;">&times;</button>
+        </div>
 
+        <input type="text" id="modalSearchInput" oninput="filterModalShips()" placeholder="🔍 艦船名で絞り込み..." 
+               style="width: 100%; padding: 10px; background: #111; color: #fff; border: 1px solid #555; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box;">
+
+        <div id="modalShipList" style="overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
+      
+          <form id="modalFleetForm" action="/fleet/set_ship" method="post">
+            <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
+            <input type="hidden" id="modalSlotType" name="slot_type" value="">
+            <input type="hidden" id="modalUserMyfreetId" name="user_myfreet_id" value="">
+
+            <% @my_ships.each do |ms| %>
+              <% next if assigned_ids.include?(ms.id) %>
+          
+              <div class="modal-ship-card" data-name="<%= ms.allfreet.name %>" onclick="submitModalSelection(<%= ms.id %>)"
+                   style="background: #222; border: 1px solid #444; padding: 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;">
+                <div>
+                  <strong style="color: #fff; font-size: 1em;"><%= ms.allfreet.name %></strong>
+                  <span style="color: #ffbc00; font-size: 0.85em; margin-left: 10px;">Lv.<%= ms.level %></span>
+                </div>
+                <span style="font-size: 0.8em; color: #007bff; background: rgba(0,123,255,0.1); padding: 3px 8px; border-radius: 3px;">配備</span>
+              </div>
+            <% end %>
+          </form>
+
+        </div>
+      </div>
+    </div>
+    <script src="/js/freet.js"></script>
+    <style>
+      /* カードにマウスを乗せたときのカッコいい光るエフェクト */
+      .modal-ship-card:hover {
+        background: #2d2d44 !important;
+        border-color: #ffbc00 !important;
+        box-shadow: 0 0 8px rgba(255,188,0,0.2);
+      }
+    </style>
 </body>
 </html>
