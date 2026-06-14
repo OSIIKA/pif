@@ -1,16 +1,49 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>基地 - 紫鉄艦隊</title>
+  <meta charset="UTF-8">
+  <title>基地 - 紫鉄艦隊</title>
 </head>
 <body style="background: #141414; color: #fff; padding: 20px; font-family: sans-serif;">
 
-    <h1>🏢 司令部基地</h1>
-    <p>司令官: <strong><%= @user.name %></strong> の所属基地です。</p>
-    <p style="color: #aaa; margin: 40px 0;">（※基地機能は今後のアップデートで実装予定です。施設強化や資材生産などができるようになります！）</p>
+  <h1>🏢 司令部基地</h1>
+  <p>司令官: <strong><%= @user.name %></strong> の所属基地です。</p>
+  <p style="color: #aaa; margin: 40px 0;">（※基地機能は今後のアップデートで実装予定です。施設強化や資材生産などができるようになります！）</p>
 
-    <a href="/home" style="color: #1890ff; text-decoration: none;">➔ ホームに戻る</a>
+  <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+    <% (1..4).each do |num| %>
+      <% char = @slotted_chars[num] %>
+    
+      <div style="border: 2px dashed #555; width: 120px; height: 160px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.3);">
+        <span style="font-size: 0.8em; color: #aaa;">スロット <%= num %></span>
+      
+        <% if char %>
+          <div style="text-align: center; margin-top: 10px;">
+            <strong style="color: #ffbc00;"><%= char.name %></strong>
+            <form action="/base/set_character" method="post" style="margin-top: 10px;">
+              <input type="hidden" name="slot_num" value="<%= num %>">
+              <input type="hidden" name="each_id" value=""> <button type="submit" style="font-size: 0.7em; background: #555; color: #fff; border: none; padding: 2px 5px; cursor: pointer;">外す</button>
+            </form>
+          </div>
+        <% else %>
+          <form action="/base/set_character" method="post" style="text-align: center; margin-top: 10px;">
+            <input type="hidden" name="slot_num" value="<%= num %>">
+          
+            <select name="each_id" style="width: 100px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #555;">
+              <option value="">➕ 選択</option>
+              <% @available_characters.each do |ac| %>
+                <option value="<%= ac.each_id %>"><%= ac.name %></option>
+              <% end %>
+            </select>
+          
+            <button type="submit" style="margin-top: 8px; font-size: 0.8em; background: #007bff; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; cursor: pointer;">配置</button>
+          </form>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <a href="/home" style="color: #1890ff; text-decoration: none;">➔ ホームに戻る</a>
 
 </body>
 </html>
