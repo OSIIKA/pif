@@ -149,7 +149,7 @@
             🏳️ 一旦撤退してホームに戻る
           </a>
         </div>
-      <% elsif @phase == 'prepare' %>
+      <% elsif @phase.nil? %>
         <div style="margin-top: 40px;">
           <form action="/battle/start" method="post" style="display: inline-block; margin-right: 10px;">
             <input type="hidden" name="stage" value="<%= @stage %>">
