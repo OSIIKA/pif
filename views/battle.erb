@@ -13,7 +13,7 @@
     <div style="color: #ffbc00; font-weight: bold; font-size: 1.2em; font-family: monospace;">
       🛸 紫鉄艦隊 - BATTLE CONTROL
     </div>
-
+    <!-- 画面最上部の操作ボタン -->
     <div style="display: flex; gap: 10px;">
       <button style="background: #222; color: #888; border: 1px solid #444; padding: 5px 15px; cursor: not-allowed;" disabled>
         🤖 オート（未実装）
@@ -148,7 +148,7 @@
 
                   <% 
                     # コントローラーから渡された敵データの中に、現在の col, row と一致するものがあるか探す
-                    enemy_fleet = @enemy_fleets.find { |ef| ef.col == col && ef.row == row }
+                    enemy_fleet = @enemies.find { |ef| ef.col == col && ef.row == row }
                   %>
                   <% if @enemies %>
                     <% enemy_session = @enemies.find { |e| e[:col] == col && e[:row] == row } %>
@@ -206,11 +206,6 @@
             </button>
           </form>
         </div>
-        <div style="margin-top: 40px;">
-          <a href="/home" style="display: inline-block; background: #333; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; border: 1px solid #555;">
-            🏳️ 一旦撤退してホームに戻る
-          </a>
-        </div>
       <% elsif request.path_info == '/battle/prepare' %>
         <div style="margin-top: 40px;">
           <a href="/home" style="display: inline-block; background: #333; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; border: 1px solid #555;">
@@ -226,6 +221,7 @@
       <% end %>
     </div>
   </main>
+  <!-- フェーズごとの特別なオーバーレイ表示 -->
   <% if request.path_info == '/battle/prepare' %>
     <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 5, 15, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(4px); font-family: monospace;">
     
