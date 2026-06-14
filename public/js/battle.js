@@ -1,34 +1,94 @@
-function updateHpBar(bar, newHp, maxHp) {
-    console.log(`読み込み確認 ID: ${bar.getAttribute('data-id')} HP: ${newHp}/${maxHp}`);
-    bar.setAttribute('data-hp', newHp); // HTMLのデータ属性を更新
-    const percentage = (newHp / maxHp) * 100;
-    bar.style.width = `${percentage}%`; // CSS変数ではなく直接幅を設定
+// パレットからの新規ドラッグ開始
+function handlePaletteDragStart(event) {
+  const card = event.target;
+  const fleetData = {
+    type: 'palette',
+    fleet_num: card.dataset.fleetNum,
+    fleet_name: card.dataset.fleetName
+  };
+  event.dataTransfer.setData('application/json', JSON.stringify(fleetData));
 }
-  
-// 初期設定（必要に応じて）
-document.querySelectorAll('.hp-bar-fill').forEach(bar => {
-    const hp = parseFloat(bar.getAttribute('data-hp'));
-    const maxHp = parseFloat(bar.getAttribute('data-max-hp'));
-    updateHpBar(bar, hp, maxHp);
-});
-// 攻撃アニメーションを発火させる関数
-function playAttackAnimation(attackerId, defenderId, damage) {
-  const attacker = document.getElementById(`unit-${attackerId}`);
-  const defender = document.getElementById(`unit-${defenderId}`);
 
-  // 攻撃側を光らせる
-  attacker.classList.add("attack-flash");
-  setTimeout(() => attacker.classList.remove("attack-flash"), 200);
+// 配置済みアイコンの再ドラッグ（位置調整）開始
+function handlePlacedIconDragStart(event) {
+  const icon = event.target;
+  const cell = icon.closest('.hex-cell');
+  const fleetData = {
+    type: 'move',
+    fleet_num: icon.dataset.fleetNum,
+    fleet_name: icon.dataset.fleetName,
+    from_col: cell.dataset.col,
+    from_row: cell.dataset.row
+  };
+  event.dataTransfer.setData('application/json', JSON.stringify(fleetData));
+}
 
-  // 被弾側を揺らす
-  defender.classList.add("hit-shake");
-  setTimeout(() => defender.classList.remove("hit-shake"), 300);
+// ドロップを許可する判定
+function allowFleetDrop(event) {
+  event.preventDefault();
+}
 
-  // ダメージ数字を表示
-  const dmg = document.createElement("div");
-  dmg.className = "damage-popup";
-  dmg.textContent = `-${damage}`;
-  defender.appendChild(dmg);
+// ドロップ時のメイン処理
+function handleFleetDrop(event) {
+  event.preventDefault();
+  const dragDataJson = event.dataTransfer.getData('application/json');
+  if (!dragDataJson) return;
 
-  setTimeout(() => dmg.remove(), 800);
+  const data = JSON.parse(dragDataJson);
+  const targetCell = event.currentTarget;
+
+  // 重複チェック（ドロップ先にすでに別の艦隊がいる場合は弾く）
+  const alreadyPlaced = targetCell.querySelector('.placed-fleet-icon');
+  if (alreadyPlaced) {
+    alert("⚠️ このマスには既に艦隊が配置されています。");
+    return;
+  }
+
+  // ターゲットマスの中心座標を取得
+  const targetX = targetCell.dataset.centerX;
+  const targetY = targetCell.dataset.centerY;
+  if (data.type === 'palette') {
+    // -----------------------------------------------------------
+    // 【パターンA: パレットからの新規配置】
+    // -----------------------------------------------------------
+    const newIcon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    newIcon.setAttribute('x', targetX);
+    newIcon.setAttribute('y', parseFloat(targetY) - 6); // 座標表示と被らないように少し上へ
+    newIcon.setAttribute('fill', '#ffbc00');
+    newIcon.setAttribute('font-size', '11');
+    newIcon.setAttribute('font-weight', 'bold');
+    newIcon.setAttribute('text-anchor', 'middle');
+    newIcon.setAttribute('class', 'placed-fleet-icon');
+    newIcon.setAttribute('draggable', 'true');
+    newIcon.setAttribute('ondragstart', 'handlePlacedIconDragStart(event)');
+    newIcon.setAttribute('data-fleet-num', data.fleet_num);
+    newIcon.setAttribute('data-fleet-name', data.fleet_name);
+    newIcon.style.cursor = 'grab';
+    newIcon.textContent = data.fleet_name;
+
+    targetCell.appendChild(newIcon);
+    // 元のパレットカードを「配置中」に更新してドラッグ不可にする
+    const paletteCard = document.querySelector(`.draggable-fleet-card[data-fleet-num="${data.fleet_num}"]`);
+    if (paletteCard) {
+      paletteCard.style.opacity = '0.2';
+      paletteCard.setAttribute('draggable', 'false');
+      paletteCard.style.cursor = 'not-allowed';
+      paletteCard.querySelector('.status-text').textContent = '配置中';
+    }
+
+  } else if (data.type === 'move') {
+    // -----------------------------------------------------------
+    // 【パターンB: 配置済みアイコンの位置調整（移動）】
+    // -----------------------------------------------------------
+    const sourceCell = document.querySelector(`.hex-cell[data-col="${data.from_col}"][data-row="${data.from_row}"]`);
+    if (!sourceCell) return;
+
+    const icon = sourceCell.querySelector('.placed-fleet-icon');
+    if (!icon) return;
+
+    // 新しいマスへ要素ごと引っ越し、座標を再セット
+    targetCell.appendChild(icon);
+    icon.setAttribute('x', targetX);
+    icon.setAttribute('y', parseFloat(targetY) - 6);
+  }
 }

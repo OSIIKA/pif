@@ -1,182 +1,31 @@
-/* バトルユニット枠1 */
-.unit-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-/* バトルユニット枠2 */
-.unit-card {
-  width: 110px;
-  height: 140px;
-  background: #1a1a1a;
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 6px;
-  position: relative;
-  color: #fff;
-  font-size: 12px;
-}
-/* バトルユニット枠3 */
-.unit-img {
-  width: 100%;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-/* バトルユニット枠4 */
-.unit-name {
-  font-size: 12px;
-  margin-top: 4px;
-  text-align: center;
-}
-/* バトルユニット枠5 */
-.hp-bar {
-  width: 100%;
-  height: 8px;
-  background: #333;
-  border-radius: 4px;
-  margin-top: 4px;
-  overflow: hidden;
-}
-/* バトルユニット枠6 */
-.hp-bar-fill {
-  height: 100%;
-  background: #e33;
-  width: 100%;
-}
-/* バトルユニット枠7 */
-.unit-info-button {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: none;
-  background: #555;
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-}
-/* バトルユニットオーバーレイ1 */
-.overlay {
-  display: none;/* 初期は非表示 */
-  position: fixed;
-  inset: 0;
-  /*top: 0; left: 0;*/
-  /*width: 100%; height: 100%;*/
-  background: rgba(0,0,0,0.7);
-  display: flex; /* flex を指定しておく */
-  justify-content: center;
-  align-items: center;
-  z-index: 999;/* battle-form より前に出す */
+/* <html> と <body> のスクロールロックを一時的に強制解除 */
+html, body {
+  overflow: auto !important;
+  height: auto !important;
+  max-height: none !important;
 }
 
-/* バトルユニットオーバーレイ2 */
-.overlay-content {
-  background: #222;
-  padding: 20px;
-  border-radius: 8px;
-  width: 300px;
-  color: #fff;
-  position: relative;
-}
-/* バトルユニットオーバーレイを閉じるボタン */
-.overlay-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-}
-/* 下部固定UI */
-.battle-form {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 110px;
-  background: rgba(20,20,20,0.95);
-  border-top: 2px solid #444;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  z-index: 900;
-}
-/* main の下に余白を作る（固定UIと重ならないように） */
-main {
-  padding-bottom: 130px;
-}
-/* 攻撃ボタン1 */
-.attack-button {
-  padding: 8px 16px;
-  background: #c33;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-}
-/* 攻撃ボタン2 */
-.attack-button:hover {
-  background: #e55;
-}
-/* 攻撃対象を選ぶフォーム */
-.battle-form select {
-  padding: 6px;
-  background: #222;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 4px;
-}
-/* 攻撃ユニットが光る1 */
-.attack-flash {
-  animation: flash 0.2s ease-out;
-}
-/* 攻撃ユニットが光る2 */
-@keyframes flash {
-  0% { filter: brightness(1); }
-  50% { filter: brightness(2); }
-  100% { filter: brightness(1); }
+/* マップのコンテナ自体も、はみ出したらスクロールできるようにする */
+.battle-map-wrapper {
+  overflow: auto;
+  max-width: 100%;
+  margin: 20px auto;
+  padding-bottom: 20px;
 }
 
-/* 敵ユニットが揺れる1 */
-.hit-shake {
-  animation: shake 0.3s ease-out;
-}
-/* 敵ユニットが揺れる2 */
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-3px); }
-  100% { transform: translateX(0); }
-}
-/* ダメージ数字1 */
-.damage-popup {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #ff4444;
-  font-size: 18px;
-  font-weight: bold;
-  animation: damage 0.8s ease-out forwards;
-  pointer-events: none;
-}
-/* ダメージ数字2 */
-@keyframes damage {
-  0% { opacity: 1; transform: translate(-50%, 0); }
-  100% { opacity: 0; transform: translate(-50%, -40px); }
+/* 配置可能なカードのホバーエフェクト */
+.draggable-fleet-card.available:hover {
+  background: #2d2d44 !important;
+  border-color: #007bff !important;
+  box-shadow: 0 0 10px rgba(0,123,255,0.3);
 }
 
-/* HP0 のユニットを灰色化 */
-.unit-dead {
-  filter: grayscale(100%) brightness(0.5);
-  opacity: 0.6;
+/* マスホバー時の近未来風エフェクト */
+.hex-cell:hover polygon {
+  fill: rgba(0, 255, 188, 0.15) !important;
+  stroke: #00ffbc !important;
+  filter: drop-shadow(0px 0px 5px rgba(0,255,188,0.5));
+}
+.hex-cell:hover .hex-coord-text {
+  fill: #00ffbc !important;
 }
