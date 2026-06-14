@@ -3,8 +3,8 @@
 # 🏢 基地画面の表示
 get '/base' do
   # 👤 ログインユーザーの取得
-  @user = User.find_by(id: session[:user_id])
-  redirect '/user/login' unless @user
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' if @user.nil?
 
   # 🏢 ユーザーの基地データを取得（なければ初期状態で作成）
   @user_base = @user.user_base || @user.create_user_base
@@ -26,8 +26,8 @@ end
 
 # 🛠️ キャラクター配置を実行する機能（大倉さん専用の格納機能）
 post '/base/set_character' do
-  @user = User.find_by(id: session[:user_id])
-  redirect '/user/login' unless @user
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' if @user.nil?
   
   user_base = @user.user_base || @user.create_user_base
 
