@@ -14,91 +14,30 @@
   </header>
   <main>
     
-    <div class="unit-row">
-      <% @my_units.each do |freet| %>
-        <div class="unit-card" id="unit-<%= freet['id'] || freet['myfreet']['id'] %>">
+    <div style="background: #111; color: #fff; padding: 30px; text-align: center; border: 1px solid #333; border-radius: 10px;">
+      <h1 style="color: #ffbc00; font-size: 1.8em; margin-bottom: 10px;">⚔️ 作戦海域・戦闘フェーズ ⚔️</h1>
+      <p style="color: #aaa; font-size: 1.1em; margin-bottom: 30px;">
+        【 ステージ <%= @stage %> 】に突入しました。総員、対空・対潜戦闘配置！
+      </p>
 
-          <!-- 艦画像（仮） -->
-          <img src="/img/ship_placeholder.png" class="unit-img">
+      <div style="background: #222; border: 1px solid #444; padding: 20px; text-align: left; max-width: 500px; margin: 0 auto; border-radius: 6px;">
+        <h3 style="color: #ffbc00; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px;">📊 出撃艦隊データ確認</h3>
+        <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+          <% @fleets.each do |f| %>
+            <li>
+              <strong>第<%= %w(一 二 三 四 五 六)[f.fleet_number-1] %>艦隊:</strong> 
+              旗艦 ID[<%= f.flagship_id || "未配備" %>] / 随伴艦 6隻
+            </li>
+          <% end %>
+        </ul>
+      </div>
 
-          <!-- 艦名 -->
-          <div class="unit-name"><%= freet['myfreet']['name'] %></div>
-
-          <!-- HPバー -->
-          <div class="hp-bar">
-            <div class="hp-bar-fill"
-              data-id="<%= freet['myfreet']['id'] %>"
-              data-hp="<%= freet['myfreet']['hp'] %>"
-              data-max-hp="<%= freet['myfreet']['max_hp'] %>">
-            </div>
-          </div>
-
-          <!-- iボタン（詳細オーバーレイ用） -->
-          <button class="unit-info-button" data-unit="<%= freet.to_json %>">i</button>
-
-        </div>
-      <% end %>
-      <% @enemy_units.each do |freet| %>
-        <div class="unit-card" id="unit-<%= freet['id'] %>">
-
-          <img src="/img/ship_placeholder.png" class="unit-img">
-
-          <div class="unit-name"><%= freet['name'] %></div>
-
-          <div class="hp-bar">
-            <div class="hp-bar-fill"
-              data-id="<%= freet['id'] %>"
-              data-hp="<%= freet['hp'] %>"
-              data-max-hp="<%= freet['max_hp'] %>">
-            </div>
-          </div>
-
-          <button class="unit-info-button" data-unit="<%= freet.to_json %>">i</button>
-
-        </div>
-      <% end %>
-    </div>
-
-    
-    <form action="/battle/attack" method="post" class="battle-form">
-      <select name="my_unit_id" id="">
-        <% @my_units.each do |my| %>
-          <!--name→value-->
-          <option value=<%= my['myfreet']['id'] %> ><%= my['myfreet']['name'] %></option>
-        <% end %>
-      </select>
-      <select name="enemy_unit_id" id="">
-        <% @enemy_units.each do |enemy| %>
-          <!--name→value-->
-          <option value=<%= enemy['id'] %> ><%= enemy['name'] %></option>
-        <% end %>
-      </select>
-      <button type="submit" class="attack-button">攻撃</button>
-    </form>
-    <!--ここにフォームを作っていく-->
-    <!--攻撃するユニットと、攻撃を受けるユニットをそれぞれ選択する(Select)フォーム-->
-    <!--フォームは /battle/attack に POST リクエストを送信-->
-    <!--攻撃ユニットと被攻撃ユニットの ID が、それぞれ my_unit_id と enemy_unit_id というパラメータとして送信される-->
-    <!--フォームを送信することで攻撃が実装されるイメージ-->
-    <!-- ▼ 詳細オーバーレイ -->
-    <div id="unit-detail-overlay" class="overlay">
-      <div class="overlay-content">
-        <button id="overlay-close" class="overlay-close">×</button>
-        <div id="unit-detail-body"></div>
+      <div style="margin-top: 40px;">
+        <a href="/home" style="display: inline-block; background: #333; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; border: 1px solid #555;">
+          🏳️ 一旦撤退してホームに戻る
+        </a>
       </div>
     </div>
   </main>
-  <script src="/js/battle.js"></script>
-  <script src="/js/battle_detail.js"></script>
-  <script>
-    <% if session[:last_attack] %>
-      playAttackAnimation(
-        <%= session[:last_attack][:attacker] %>,
-        <%= session[:last_attack][:defender] %>,
-        <%= session[:last_attack][:damage] %>
-      );
-      <% session[:last_attack] = nil %>
-    <% end %>
-  </script>
 </body>
 </html>
