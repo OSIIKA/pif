@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 22) do
+ActiveRecord::Schema.define(version: 32) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,28 @@ ActiveRecord::Schema.define(version: 22) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["alliance_id"], name: "index_chats_on_alliance_id"
     t.index ["category"], name: "index_chats_on_category"
+  end
+
+  create_table "enemy_battleunits", force: :cascade do |t|
+    t.integer "battle_stage_id", null: false
+    t.integer "col", null: false
+    t.integer "row", null: false
+    t.integer "flagship_id", null: false
+    t.integer "sub_ship_1_id"
+    t.integer "sub_ship_2_id"
+    t.integer "sub_ship_3_id"
+    t.integer "sub_ship_4_id"
+    t.integer "sub_ship_5_id"
+    t.integer "sub_ship_6_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "enemy_freets", force: :cascade do |t|
+    t.integer "allfreet_id", null: false
+    t.integer "level", default: 1, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "items", force: :cascade do |t|

@@ -85,8 +85,9 @@ Itemtimeline.find_or_create_by!(step: 9, item_type: 4, item_each_id: 4, count: 1
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
+
 # ===========================
-# 敵データ
+# 敵・味方データ
 # ===========================
 # ステージ1の敵（2体）
 Allfreet.find_or_create_by!(stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
@@ -99,12 +100,65 @@ Allfreet.find_or_create_by!(stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 5
 Allfreet.find_or_create_by!(stage: 0, name: "Mk.628", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
 Allfreet.find_or_create_by!(stage: 0, name: "デプリクト", hp: 250, max_hp: 250, atk: 60, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
 Allfreet.find_or_create_by!(stage: 0, name: "Mk.628α", hp: 300, max_hp: 300, atk: 70, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-# ===========================
-# 敵・味方データ
-# ===========================
+# 味方データ
 Allfreet.find_or_create_by!(name: "味方1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 100, rare: 100, rarity: 1)
 Allfreet.find_or_create_by!(name: "味方2", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 40, rare: 150, rarity: 2)
 Allfreet.find_or_create_by!(name: "味方3", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 20, rare: 40, rarity: 3)
+# ===========================
+# 敵データ
+# ===========================
+puts "🌱 敵データのシードを開始します..."
+# ⚠️ 注意: データベースを何度もクリーンに叩き直したい場合は、
+# データの重複を防ぐために最初に削除処理を入れておくと開発がラクになります。
+EnemyBattleunit.destroy_all
+EnemyFreet.destroy_all
+# 1. 敵個体の作成 (EnemyFreet)
+# ステージ番号_第何艦隊_個体番号 という命名ルールで変数を作ると、後から見たときにどの敵がどこに出てくるのかが一目瞭然になります！
+enemy_zako_1_1_1 = EnemyFreet.create!(allfreet_id: 1, level: 3)
+enemy_zako_1_1_2 = EnemyFreet.create!(allfreet_id: 1, level: 4)
+enemy_boss_1_1 = EnemyFreet.create!(allfreet_id: 2, level: 8)
+enemy_zako_2_1_1 = EnemyFreet.create!(allfreet_id: 3, level: 3)
+enemy_zako_2_1_2 = EnemyFreet.create!(allfreet_id: 3, level: 4)
+enemy_zako_2_1_3 = EnemyFreet.create!(allfreet_id: 3, level: 4)
+enemy_boss_2_1 = EnemyFreet.create!(allfreet_id: 5, level: 8)
+enemy_zako_2_2_1 = EnemyFreet.create!(allfreet_id: 4, level: 3)
+enemy_zako_2_2_2 = EnemyFreet.create!(allfreet_id: 4, level: 4)
+enemy_zako_2_2_3 = EnemyFreet.create!(allfreet_id: 4, level: 4)
+enemy_boss_2_2 = EnemyFreet.create!(allfreet_id: 5, level: 8)
+# 2. 敵艦隊（塊）の配置 (EnemyBattleunit)
+# ストーリーの `battle: 1` と連動させるため、`battle_stage_id: 1` にします。
+# 敵はマップの右側（col: 4〜5 付近）に湧かせると、左側から出撃する味方と対峙できて一気にゲームらしくなります！
+
+EnemyBattleunit.create!(
+  battle_stage_id: 1,
+  col: 5,  # 右端の列
+  row: 2,  # 中央の行
+  sub_ship_1_id: enemy_zako_1_1_1.id, # 随伴1
+  sub_ship_2_id: enemy_zako_1_1_2.id  # 随伴2
+  flagship_id:   enemy_boss_1_1.id, # 旗艦
+  # 随伴3〜6は指定しない（nilになる）ことで、3隻編成の艦隊になります！
+)
+
+EnemyBattleunit.create!(
+  battle_stage_id: 2,
+  col: 4,
+  row: 1,
+  sub_ship_1_id: enemy_zako_2_1_1.id,
+  sub_ship_2_id: enemy_zako_2_1_2.id,
+  sub_ship_3_id: enemy_zako_2_1_3.id,
+  flagship_id:   enemy_zako_2_1.id
+)
+EnemyBattleunit.create!(
+  battle_stage_id: 2,
+  col: 4,
+  row: 2,
+  sub_ship_1_id: enemy_zako_2_2_1.id,
+  sub_ship_2_id: enemy_zako_2_2_2.id,
+  sub_ship_3_id: enemy_zako_2_2_3.id,
+  flagship_id:   enemy_zako_2_2.id
+)
+
+puts "✨ 敵データのシードが完了しました！（EnemyFreet / EnemyBattleunit 登録完了）"
 # ===========================
 # ストーリーデータ
 # ===========================
