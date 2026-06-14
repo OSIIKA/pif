@@ -108,33 +108,86 @@ Allfreet.find_or_create_by!(name: "味方3", hp: 100, max_hp: 100, atk: 25, info
 # ===========================
 # ストーリーデータ
 # ===========================
-# 第0話
-#episode0 = [
-#  ["システム", "＜紫星・磯秋より、紫星・Userへ、メッセージを送信します。＞"],
-#  ["磯秋", "「あなたはもう、こちらに向かっているのでしょうか…」"],
-#  ["システム", "＜時間切れになりました。メッセージを終了します。＞"],
-#  ["System", "BattleStart", 1],
-#  ["？？？", "てすと"],
-#  ["System", "BattleStart", 2],
-#  ["？？？", "てすと"]
-  # ここに続きの文章を追加していく
-#]
+# 既存データを一度お掃除
+Story.delete_all
 
-#episode0.each_with_index do |(name, text, battle), i|
-#  Story.create(episode: 0, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
-#end
-# 第1話
-#episode1 = [
-#  ["ナレーション", "＜集結編第1話　未知の通信システム＞"],
-#  ["？？？", "てすと"],
-#  ["？？？", "てすと"],
-#  ["？？？", "てすと"]
-#  # ここに続きの文章を追加していく
-#]
+# ===========================================================
+# 📖 ここにストーリーの台本をそのまま貼り付けるだけ！
+# ===========================================================
+# 【書き方ルール】
+# ・「●話数」で行を始めると、そこからそのエピソードになります。
+# ・「名前: セリフ」の形式で書きます（コロンは全角でも半角でもOK）。
+# ・「[BATTLE: ステージ番号]」と書くと、そのタイミングで戦闘を挟めます。
+# ===========================================================
+script = <<~TEXT
+  ●0
+  システム: ＜紫星・磯秋より、紫星・Userへ、メッセージを送信します。＞
+  磯秋: 「あなたはもう、こちらに向かっているのでしょうか…」
+  システム: ＜時間切れになりました。メッセージを終了します。＞
+  [BATTLE: 1]
+  ？？？: てすと
+  [BATTLE: 2]
+  ？？？: てすと
 
-#episode1.each_with_index do |(name, text, battle), i|
-#  Story.create(episode: 1, step: i+1, name: name, text: text, style: 0, battle: battle || 0)
-#end
+  ●1
+  ナレーション: ＜集結編第1話 未知の通信システム＞
+  ？？？: てすと
+  ？？？: てすと
+  ？？？: てすと
+  [BATTLE: 3]
+TEXT
+
+
+# ===========================================================
+# ⚙️ 台本テキストを自動で解析（パース）してDBに保存するロジック
+# ===========================================================
+current_episode = 0
+current_step = 1
+
+script.each_line do |line|
+  line = line.strip
+  next if line.empty? # 空行はスキップ
+
+  # 1. 「●話数」の行を見つけたらエピソードを切り替えてステップをリセット
+  if line.start_with?("●")
+    current_episode = line.delete("●").to_i
+    current_step = 1
+    next
+  end
+
+  # 2. 「[BATTLE: 番号]」の行を見つけたら、直前の会話にバトルを設定するか、戦闘用ステップを作る
+  if line =~ /\[BATTLE:\s*(\d+)\]/
+    battle_num = $1.to_i
+    
+    # 特殊な戦闘イベント用レコードとして登録
+    Story.create!(
+      episode: current_episode,
+      step: current_step,
+      name: "System",
+      text: "BattleStart",
+      battle: battle_num
+    )
+    current_step += 1
+    next
+  end
+
+  # 3. 通常の「名前: セリフ」を分割して登録（全角コロン・半角コロン両対応）
+  if line =~ /(.+?)[:：](.+)/
+    name = $1.strip
+    text = $2.strip
+
+    Story.create!(
+      episode: current_episode,
+      step: current_step,
+      name: name,
+      text: text,
+      battle: 0
+    )
+    current_step += 1
+  end
+end
+
+puts "🌱 台本からのストーリーデータのインポートが完了しました！"
 # ==========================================
 # 🚨 PostgreSQLの自動採番カウンター（シーケンス）を現在の最大IDに同期する
 # ==========================================
@@ -144,5 +197,5 @@ if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
   # 他のテーブルも同様に必要に応じてシーケンスをリセットする
   ActiveRecord::Base.connection.execute("SELECT setval('myfreets_id_seq', COALESCE((SELECT MAX(id) FROM myfreets), 1))")
   ActiveRecord::Base.connection.execute("SELECT setval('allfreets_id_seq', COALESCE((SELECT MAX(id) FROM allfreets), 1))")
-#  ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
+  ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
 end

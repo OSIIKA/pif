@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 22) do
     t.string "info"
   end
 
-  create_table "storys", force: :cascade do |t|
+  create_table "stories", force: :cascade do |t|
     t.integer "episode", null: false
     t.integer "step", null: false
     t.string "name"
