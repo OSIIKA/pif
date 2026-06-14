@@ -243,6 +243,38 @@
           document.getElementById('bonusModal').style.display = 'none';
         }
       </script>
+
+      <div style="margin: 20px auto; max-width: 500px; background: #1a1a2e; border: 2px solid #e94560; border-radius: 10px; padding: 15px; box-shadow: 0 4px 15px rgba(233, 69, 96, 0.2);">
+        <h3 style="color: #e94560; text-align: center; margin-top: 0; font-size: 1.1em; letter-spacing: 1px;">
+          ⏳ 期間限定作戦 ガチャスケジュール
+        </h3>
+    
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid #e94560; color: #ffbc00;">
+              <th style="padding: 8px;">期間（日数）</th>
+              <th style="padding: 8px;">作戦（ガチャ名）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @gacha_schedules.each do |schedule| %>
+              <tr style="border-bottom: 1px solid #333; background: rgba(255,255,255,0.02);">
+                <td style="padding: 8px; color: #66b0ff; white-space: nowrap;">
+                  Day <%= schedule[:start_day] %> 〜 <%= schedule[:end_day] %>
+                </td>
+                <td style="padding: 8px; color: #fff; font-weight: bold;">
+                  <%= schedule[:name] %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+    
+        <p style="color: #888; font-size: 0.75em; text-align: center; margin-bottom: 0; margin-top: 10px;">
+          ※現在の司令部の経過日数に応じて対象のガチャが自動で開放されます。
+        </p>
+      </div>
+
     <% end %>
 
     <div class="gacha">

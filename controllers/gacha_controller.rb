@@ -22,6 +22,8 @@ get '/gacha' do
       # 今日のガチャの名前とIDを画面に渡す！
       @gacha_title = active_schedule[:name]
       @limited_gacha_id = active_schedule[:id] # 例: "limited_fire"
+      # 🔄 画面（ERB）にスケジュール一覧を届ける
+      @gacha_schedules = GACHA_SCHEDULES
     else
       @gacha_title = "期間外の特別なガチャ"
       @limited_gacha_id = "limited_default"
