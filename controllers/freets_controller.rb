@@ -37,3 +37,33 @@ get '/fleet' do
   # 4. 艦隊画面（fleet.erb）を表示
   erb :fleet
 end
+
+# ⚔️ 🟢 ここを追記：艦船の配置・解除を実行するシステム
+post '/fleet/set_ship' do
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' unless @user
+
+  # 📥 どの艦隊の、どのスロット（旗艦 or 随伴1〜6）に、どの所持艦船を入れるか受け取る
+  fleet_num = params[:fleet_num].to_i
+  slot_type = params[:slot_type] # "flagship", "sub_1", "sub_2" ... "sub_6"
+  chosen_ship_id = params[:user_myfreet_id].present? ? params[:user_myfreet_id].to_i : nil
+
+  # 🔍 対象ユーザーの指定艦隊レコードを取得
+  fleet = @user.user_battleunits.find_by(fleet_number: fleet_num)
+
+  if fleet
+    # 🔄 指定されたスロットのカラムをピンポイントで更新（空ならnilが入って解除になる）
+    case slot_type
+    when "flagship" then fleet.update(flagship_id: chosen_ship_id)
+    when "sub_1"    then fleet.update(sub_ship_1_id: chosen_ship_id)
+    when "sub_2"    then fleet.update(sub_ship_2_id: chosen_ship_id)
+    when "sub_3"    then fleet.update(sub_ship_3_id: chosen_ship_id)
+    when "sub_4"    then fleet.update(sub_ship_4_id: chosen_ship_id)
+    when "sub_5"    then fleet.update(sub_ship_5_id: chosen_ship_id)
+    when "sub_6"    then fleet.update(sub_ship_6_id: chosen_ship_id)
+    end
+  end
+
+  # ✨ 配置が終わったら、選んでいた艦隊のタブを開いた状態でリダイレクト！
+  redirect "/fleet?fleet_num=#{fleet_num}"
+end

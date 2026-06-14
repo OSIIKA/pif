@@ -27,25 +27,57 @@
       </h2>
 
       <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-    
-        <div style="border: 2px solid #ffbc00; background: rgba(255, 188, 0, 0.05); padding: 15px; border-radius: 8px; width: 200px; text-align: center;">
+  
+        <div style="border: 2px solid #ffbc00; background: rgba(255, 188, 0, 0.05); padding: 15px; border-radius: 8px; width: 220px; text-align: center;">
           <span style="color: #ffbc00; font-size: 0.8em; font-weight: bold; display: block; margin-bottom: 5px;">★ 旗艦 ★</span>
           <% if @flagship %>
-            <strong><%= @flagship.name %></strong> (Lv.<%= @flagship.level %>)
+            <strong style="color: #fff;"><%= @flagship.name %></strong> <span style="font-size: 0.8em; color: #aaa;">(Lv.<%= @flagship.level %>)</span>
+            <form action="/fleet/set_ship" method="post" style="margin-top: 8px;">
+              <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
+              <input type="hidden" name="slot_type" value="flagship">
+              <input type="hidden" name="user_myfreet_id" value="">
+              <button type="submit" style="font-size: 0.75em; background: #c0392b; color: #fff; border: none; padding: 2px 8px; border-radius: 3px; cursor: pointer;">外す</button>
+            </form>
           <% else %>
-            <span style="color: #666;">❌ 未配置</span>
+            <form action="/fleet/set_ship" method="post" style="margin-top: 5px;">
+              <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
+              <input type="hidden" name="slot_type" value="flagship">
+              <select name="user_myfreet_id" style="width: 140px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #555; padding: 2px;">
+                <option value="">➕ 旗艦選択</option>
+                <% @my_ships.each do |ms| %>
+                  <option value="<%= ms.id %>"><%= ms.name %> (Lv.<%= ms.level %>)</option>
+                <% end %>
+              </select>
+              <button type="submit" style="font-size: 0.8em; background: #ffbc00; color: #000; border: none; padding: 2px 6px; margin-top: 5px; font-weight: bold; border-radius: 3px; cursor: pointer;">配置</button>
+            </form>
           <% end %>
         </div>
 
         <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
           <% (1..6).each do |i| %>
             <% sub_ship = @sub_ships[i-1] %>
-            <div style="border: 1px dashed #555; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; width: 120px; text-align: center; font-size: 0.9em;">
+            <div style="border: 1px dashed #555; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; width: 130px; text-align: center; font-size: 0.9em;">
               <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 5px;">随伴艦 <%= i %></span>
               <% if sub_ship %>
-                <strong><%= sub_ship.name %></strong>
+                <strong style="color: #fff;"><%= sub_ship.name %></strong>
+                <form action="/fleet/set_ship" method="post" style="margin-top: 5px;">
+                  <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
+                  <input type="hidden" name="slot_type" value="sub_<%= i %>">
+                  <input type="hidden" name="user_myfreet_id" value="">
+                  <button type="submit" style="font-size: 0.7em; background: #555; color: #fff; border: none; padding: 1px 5px; border-radius: 3px; cursor: pointer;">外す</button>
+                </form>
               <% else %>
-                <span style="color: #555;">未配置</span>
+                <form action="/fleet/set_ship" method="post" style="margin-top: 5px;">
+                  <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
+                  <input type="hidden" name="slot_type" value="sub_<%= i %>">
+                  <select name="user_myfreet_id" style="width: 110px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #444; padding: 2px;">
+                    <option value="">➕ 選択</option>
+                    <% @my_ships.each do |ms| %>
+                      <option value="<%= ms.id %>"><%= ms.name %></option>
+                    <% end %>
+                  </select>
+                  <button type="submit" style="font-size: 0.75em; background: #007bff; color: #fff; border: none; padding: 2px 6px; margin-top: 4px; border-radius: 3px; cursor: pointer;">配置</button>
+                </form>
               <% end %>
             </div>
           <% end %>

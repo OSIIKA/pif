@@ -19,6 +19,6 @@ class CreateUserBattleunits < ActiveRecord::Migration[6.1]
     end
     
     # 「ユーザーID」と「艦隊番号」の組み合わせにインデックスを張る（検索爆速化＆重複防止）
-    add_index :user_fleets, [:user_id, :fleet_number], unique: true
+    add_index :user_battleunits, [:user_id, :fleet_number], unique: true
   end
 end

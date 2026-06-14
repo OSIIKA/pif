@@ -44,13 +44,6 @@ ActiveRecord::Schema.define(version: 22) do
     t.index ["name"], name: "index_alliances_on_name", unique: true
   end
 
-  create_table "battleunits", force: :cascade do |t|
-    t.string "name"
-    t.integer "hp"
-    t.integer "atk"
-    t.string "info"
-  end
-
   create_table "chats", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "body", null: false
@@ -108,6 +101,21 @@ ActiveRecord::Schema.define(version: 22) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_user_bases_on_user_id", unique: true
+  end
+
+  create_table "user_battleunits", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "fleet_number", null: false
+    t.integer "flagship_id"
+    t.integer "sub_ship_1_id"
+    t.integer "sub_ship_2_id"
+    t.integer "sub_ship_3_id"
+    t.integer "sub_ship_4_id"
+    t.integer "sub_ship_5_id"
+    t.integer "sub_ship_6_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id", "fleet_number"], name: "index_user_battleunits_on_user_id_and_fleet_number", unique: true
   end
 
   create_table "user_items", force: :cascade do |t|
