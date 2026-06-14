@@ -134,8 +134,8 @@ EnemyBattleunit.create!(
   col: 5,  # 右端の列
   row: 2,  # 中央の行
   sub_ship_1_id: enemy_zako_1_1_1.id, # 随伴1
-  sub_ship_2_id: enemy_zako_1_1_2.id  # 随伴2
-  flagship_id:   enemy_boss_1_1.id, # 旗艦
+  sub_ship_2_id: enemy_zako_1_1_2.id,  # 随伴2
+  flagship_id:   enemy_boss_1_1.id # 旗艦
   # 随伴3〜6は指定しない（nilになる）ことで、3隻編成の艦隊になります！
 )
 
@@ -146,7 +146,7 @@ EnemyBattleunit.create!(
   sub_ship_1_id: enemy_zako_2_1_1.id,
   sub_ship_2_id: enemy_zako_2_1_2.id,
   sub_ship_3_id: enemy_zako_2_1_3.id,
-  flagship_id:   enemy_zako_2_1.id
+  flagship_id:   enemy_boss_2_1.id
 )
 EnemyBattleunit.create!(
   battle_stage_id: 2,
@@ -155,7 +155,7 @@ EnemyBattleunit.create!(
   sub_ship_1_id: enemy_zako_2_2_1.id,
   sub_ship_2_id: enemy_zako_2_2_2.id,
   sub_ship_3_id: enemy_zako_2_2_3.id,
-  flagship_id:   enemy_zako_2_2.id
+  flagship_id:   enemy_boss_2_2.id
 )
 
 puts "✨ 敵データのシードが完了しました！（EnemyFreet / EnemyBattleunit 登録完了）"

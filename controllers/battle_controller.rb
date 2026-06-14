@@ -2,12 +2,16 @@
 get '/battle' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
-  # 📥 ストーリーから渡されたステージ番号を取得
-  stage = session[:battle_stage]
 
-  # 🏗️ いま編成されている大艦隊（第1〜第6）のデータを戦闘画面に引き渡す準備だけしておく
+  # 📥 現在のステージ番号を取得（ストーリーから渡されたもの、無ければ1）
+  @stage = session[:battle_stage] || 1
+
+  # 📊 味方艦隊データの取得
   @fleets = @user.user_battleunits.order(:fleet_number)
-  # バトル画面を表示する
+
+  # 👾 🟢 ここを追記：このステージに配置されている敵艦隊をすべて取得
+  @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
+
   erb :battle
 end
 
