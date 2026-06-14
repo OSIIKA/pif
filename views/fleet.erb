@@ -7,6 +7,55 @@
 <body style="background: #141414; color: #fff; padding: 20px; font-family: sans-serif;">
 
     <h1>⚓ 艦隊管理運用（所持一覧）</h1>
+
+    <div style="background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+  
+      <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+        <% (1..6).each do |num| %>
+          <a href="/fleet?fleet_num=<%= num %>" 
+             style="padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; 
+                    background: <%= @current_fleet_num == num ? '#ffbc00' : '#222' %>; 
+                    color: <%= @current_fleet_num == num ? '#000' : '#fff' %>; 
+                    border: 1px solid #555;">
+            第<%= %w(一 二 三 四 五 六)[num-1] %>艦隊
+          </a>
+        <% end %>
+      </div>
+
+      <h2 style="text-align: center; color: #ffbc00; font-size: 1.2em; margin-bottom: 20px;">
+        ⚓ 第<%= %w(一 二 三 四 五 六)[@current_fleet_num-1] %>艦隊 編成状況 （総員、戦闘配置！）
+      </h2>
+
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+    
+        <div style="border: 2px solid #ffbc00; background: rgba(255, 188, 0, 0.05); padding: 15px; border-radius: 8px; width: 200px; text-align: center;">
+          <span style="color: #ffbc00; font-size: 0.8em; font-weight: bold; display: block; margin-bottom: 5px;">★ 旗艦 ★</span>
+          <% if @flagship %>
+            <strong><%= @flagship.name %></strong> (Lv.<%= @flagship.level %>)
+          <% else %>
+            <span style="color: #666;">❌ 未配置</span>
+          <% end %>
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+          <% (1..6).each do |i| %>
+            <% sub_ship = @sub_ships[i-1] %>
+            <div style="border: 1px dashed #555; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; width: 120px; text-align: center; font-size: 0.9em;">
+              <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 5px;">随伴艦 <%= i %></span>
+              <% if sub_ship %>
+                <strong><%= sub_ship.name %></strong>
+              <% else %>
+                <span style="color: #555;">未配置</span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #333; margin: 40px 0;">
+
     <p>司令官: <strong><%= @user.name %></strong> が現在保有している戦力一覧です。</p>
 
     <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
