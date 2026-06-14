@@ -49,39 +49,39 @@ end
 # ===========================
 # アイテム配布データ
 # ===========================
-Itemtimeline.find_or_create_by!(step: 1, item_id: 1, count: 100) do |timeline|
+Itemtimeline.find_or_create_by!(step: 1, item_type: 0, item_each_id: 1, count: 100) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 2, item_id: 2, count: 100) do |timeline|
+Itemtimeline.find_or_create_by!(step: 2, item_type: 1, item_each_id: 1, count: 100) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 3, item_id: 3, count: 100) do |timeline|
+Itemtimeline.find_or_create_by!(step: 3, item_type: 1, item_each_id: 2, count: 100) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 4, item_id: 4, count: 100) do |timeline|
+Itemtimeline.find_or_create_by!(step: 4, item_type: 2, item_each_id: 1, count: 100) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 5, item_id: 5, count: 100) do |timeline|
+Itemtimeline.find_or_create_by!(step: 5, item_type: 2, item_each_id: 2, count: 100) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 6, item_id: 6, count: 1) do |timeline|
+Itemtimeline.find_or_create_by!(step: 6, item_type: 4, item_each_id: 1, count: 1) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 7, item_id: 7, count: 1) do |timeline|
+Itemtimeline.find_or_create_by!(step: 7, item_type: 4, item_each_id: 2, count: 1) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 8, item_id: 8, count: 1) do |timeline|
+Itemtimeline.find_or_create_by!(step: 8, item_type: 4, item_each_id: 3, count: 1) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
-Itemtimeline.find_or_create_by!(step: 9, item_id: 9, count: 1) do |timeline|
+Itemtimeline.find_or_create_by!(step: 9, item_type: 4, item_each_id: 4, count: 1) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end

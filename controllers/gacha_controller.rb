@@ -172,8 +172,7 @@ helpers do
     
       if timeline_bonus
         # タイムラインに設定されている外部キー（item_id）を使って、配るアイテムを特定
-        bonus_item = Item.find_by(id: timeline_bonus.item_id)
-      
+        bonus_item = Item.find_by(type: timeline_bonus.item_type, each_id: timeline_bonus.item_each_id)      
         if bonus_item
           # ユーザーの所持品から対象アイテムを探す（なければ新枠作成）
           user_bonus = @user.user_items.find_or_initialize_by(item_id: bonus_item.id)
