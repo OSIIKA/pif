@@ -38,6 +38,89 @@ get '/battle/set' do
   erb :battle
 end
 
+post '/battle/start' do
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' unless @user
+
+  battle_allies = []
+
+  (1..6).each do |fleet_num|
+    pos_str = params["fleet_#{fleet_num}_pos"]
+    next if pos_str.blank?
+
+    col, row = pos_str.split(',').map(&:to_i)
+    fleet_data = @user.user_battleunits.find_by(fleet_number: fleet_num)
+    next unless fleet_data
+
+    # 👑 旗艦データをDBから正しくロード
+    flagship = UserMyfreet.find_by(id: fleet_data.flagship_id)
+    next unless flagship # 旗艦がいなければスキップ
+
+    base_flag_hp = flagship.allfreet.hp
+    base_flag_hp *= 10 if fleet_num == 1 # 第一艦隊旗艦10倍ルール
+
+    flagship_data = { id: fleet_data.flagship_id, hp: base_flag_hp, max_hp: base_flag_hp }
+
+    # ⚓ 随伴艦データ（1〜6）をDBから正しくロード
+    sub_ships_data = []
+    (1..6).each do |i|
+      ship_id = fleet_data.send("sub_ship_#{i}_id")
+      next if ship_id.blank?
+
+      sub_ship = UserMyfreet.find_by(id: ship_id)
+      if sub_ship
+        sub_ships_data << { id: ship_id, hp: sub_ship.allfreet.hp, max_hp: sub_ship.allfreet.hp }
+      end
+    end
+
+    battle_allies << {
+      fleet_number: fleet_num,
+      name: "第#{fleet_num}艦隊",
+      col: col,
+      row: row,
+      flagship: flagship_data,
+      sub_ships: sub_ships_data
+    }
+  end
+
+  session[:battle_allies] = battle_allies
+
+  # 👾 敵のデータ構築（enemy_battleunits -> enemy_freets -> allfreets）
+  stage = (params[:stage] || 1).to_i
+  enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
+  
+  session[:battle_enemies] = enemy_units.map do |unit|
+    # ※ 中間テーブルのモデル名を「EnemyFreet」と仮定しています。もし違う場合は適宜変更してください
+    flagship = EnemyFreet.find_by(id: unit.flagship_id)
+    next nil unless flagship
+
+    flagship_data = { id: unit.flagship_id, hp: flagship.allfreet.hp, max_hp: flagship.allfreet.hp }
+
+    sub_ships_data = []
+    (1..6).each do |i|
+      ship_id = unit.send("sub_ship_#{i}_id")
+      next if ship_id.blank?
+      
+      sub_ship = EnemyFreet.find_by(id: ship_id)
+      if sub_ship
+        sub_ships_data << { id: ship_id, hp: sub_ship.allfreet.hp, max_hp: sub_ship.allfreet.hp }
+      end
+    end
+
+    {
+      id: unit.id,
+      name: "👾 #{flagship.allfreet.name}",
+      col: unit.col,
+      row: unit.row,
+      flagship: flagship_data,
+      sub_ships: sub_ships_data
+    }
+  end.compact
+
+  session[:battle_logs] = []
+  redirect '/battle/set?phase=prepare' # 大倉さんが直してくれた /battle/set へ
+end
+
 # ⚔️ B: 布陣確定後のデータ処理
 post '/battle/start' do
   @user = User.find_by(id: session[:user])
@@ -152,109 +235,117 @@ get '/battle/turn' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
 
-  # 🚨 🛑 【追加：安全装置】
-  # セッションに味方や敵のデータがない（配置フェーズを踏んでいない）なら、強制的に布陣画面に送還する！
-  if session[:battle_allies].nil? || session[:battle_enemies].nil?
-    redirect '/battle'
+  if session[:battle_allies].blank? || session[:battle_enemies].blank?
+    redirect '/battle/set'
   end
 
-  # 📥 セッションから現在の両軍のリアルタイムデータを取得
-  @allies = session[:battle_allies] || []
-  @enemies = session[:battle_enemies] || []
-  
-  # 📝 今回のターンの行動ログを溜める配列
+  @allies = session[:battle_allies]
+  @enemies = session[:battle_enemies]
   @turn_logs = []
-  # 📥 🟢 【ここを追記】戦闘開始時の両軍の健康状態をログに強制出力！
-  @turn_logs << "ーーー 📊 現時刻・戦況報告 ーーー"
-  if @allies.empty?
-    @turn_logs << "⚠️ 警告：出撃している味方艦隊がいません！"
-  else
-    @allies.each do |a| 
-      # 万が一HPが0で生成されていたら、デバッグ用に100にしてあげる救済処置
-      if a[:hp] <= 0
-        a[:hp] = 100
-        a[:max_hp] = 100
-        @turn_logs << "🔧 救済：#{a[:name]}のHPが0だったため応急修理(HP100)"
-      end
-      @turn_logs << "🚢 #{a[:name]}：HP #{a[:hp]}/#{a[:max_hp]} [位置: #{a[:col]},#{a[:row]}]"
-    end
-  end
-  @enemies.each { |e| @turn_logs << "👾 #{e[:name]}：HP #{e[:hp]}/#{e[:max_hp]} [位置: #{e[:col]},#{e[:row]}]" }
-  @turn_logs << "ーーーーーーーーーーーーーーーー"
-  # 1️⃣ 【行動順の決定】
-  # 味方と敵をすべて混ぜて、行動順のリスト（キュー）を作ります。
-  # 今回はシンプルに「配置されている全員」を行動ループに回します。
+
+  # 行動順リストの作成
   all_units = []
   @allies.each  { |a| all_units << { type: :ally,  data: a } }
   @enemies.each { |e| all_units << { type: :enemy, data: e } }
 
-  # 2️⃣ 【移動 → 照準 → 攻撃 の行動ループ】
   all_units.each do |unit|
     current = unit[:data]
-    next if current[:hp] <= 0 # すでに撃沈しているならパス
+    
+    # 艦隊の総HPを計算（旗艦 + 随伴艦の合計）
+    current_total_hp = current[:flagship][:hp] + current[:sub_ships].sum { |s| s[:hp] }
+    next if current_total_hp <= 0
 
     if unit[:type] == :ally
-      # ==========================================
-      # 🚢 味方艦隊のターン
-      # ==========================================
-      
-      # 🗺️ ①【移動】：とりあえず一番近い敵を探す（簡易版）
-      # ここでは仮に、最初にみつかった生存している敵をターゲットにします
-      target_enemy = @enemies.find { |e| e[:hp] > 0 }
-      
+      # 🎯 攻撃対象（生存している敵）の選定
+      target_enemy = @enemies.find { |e| (e[:flagship][:hp] + e[:sub_ships].sum { |s| s[:hp] }) > 0 }
       if target_enemy
-        @turn_logs << "🤖 #{current[:name]}：行動開始。"
+        # 味方艦隊の全生存艦の攻撃力を、DBのマスタから動的に合計する
+        total_atk = 0
         
-        # 🎯 ②【照準】＆ ③【攻撃】：敵を狙って攻撃力をぶつける！
-        damage = current[:atk]
-        target_enemy[:hp] -= damage
-        target_enemy[:hp] = 0 if target_enemy[:hp] < 0 # マイナスHP防止
+        if current[:flagship][:hp] > 0
+          flag_obj = UserMyfreet.find_by(id: current[:flagship][:id])
+          flag_atk = flag_obj&.allfreet&.atk || 0
+          flag_atk *= 10 if current[:fleet_number] == 1 # 10倍ルール
+          total_atk += flag_atk
+        end
         
-        @turn_logs << "⚔️ #{current[:name]} が #{target_enemy[:name]} に主砲一斉射！【#{damage}】のダメージ！"
-        @turn_logs << "💥 #{target_enemy[:name]} の残りHP: #{target_enemy[:hp]}/#{target_enemy[:max_hp]}"
-        
-        if target_enemy[:hp] <= 0
-          @turn_logs << "☠️ 撃沈！ #{target_enemy[:name]} は光の塵となって消滅した。"
+        current[:sub_ships].each do |s|
+          if s[:hp] > 0
+            sub_obj = UserMyfreet.find_by(id: s[:id])
+            total_atk += (sub_obj&.allfreet&.atk || 0)
+          end
+        end
+        total_atk = 10 if total_atk <= 0 # 最低保証
+
+        # 敵の生存艦プールからランダムに1隻被弾
+        pool = []
+        pool << target_enemy[:flagship] if target_enemy[:flagship][:hp] > 0
+        target_enemy[:sub_ships].each { |s| pool << s if s[:hp] > 0 }
+
+        if pool.any?
+          target_ship = pool.sample
+          target_ship[:hp] -= total_atk
+          target_ship[:hp] = 0 if target_ship[:hp] < 0
+
+          # 被弾した敵の船の名前をDBから直接引く
+          enemy_ship_obj = EnemyFreet.find_by(id: target_ship[:id])
+          enemy_ship_name = enemy_ship_obj&.allfreet&.name || "敵艦"
+
+          @turn_logs << "⚔️ #{current[:name]} が砲撃！ 敵の『#{enemy_ship_name}』に【#{total_atk}】ダメージ！"
         end
       end
-
     else
-      # ==========================================
-      # 👾 敵艦隊のターン
-      # ==========================================
-      target_ally = @allies.find { |a| a[:hp] > 0 }
-      
+      # 👾 敵の反撃ロジック（同様にDBから攻撃力を集計して味方を狙う）
+      target_ally = @allies.find { |a| (a[:flagship][:hp] + a[:sub_ships].sum { |s| s[:hp] }) > 0 }
       if target_ally
-        damage = current[:atk]
-        target_ally[:hp] -= damage
-        target_ally[:hp] = 0 if target_ally[:hp] < 0
-        
-        @turn_logs << "🚨 敵警報！ #{current[:name]} の反撃！ #{target_ally[:name]} が被弾！【#{damage}】のダメージ！"
-        @turn_logs << "❤️ #{target_ally[:name]} の残りHP: #{target_ally[:hp]}/#{target_ally[:max_hp]}"
+        total_atk = 0
+        if current[:flagship][:hp] > 0
+          flag_obj = EnemyFreet.find_by(id: current[:flagship][:id])
+          total_atk += flag_obj&.allfreet&.atk || 0
+        end
+        current[:sub_ships].each do |s|
+          if s[:hp] > 0
+            sub_obj = EnemyFreet.find_by(id: s[:id])
+            total_atk += (sub_obj&.allfreet&.atk || 0)
+          end
+        end
+        total_atk = 10 if total_atk <= 0
+
+        pool = []
+        pool << target_ally[:flagship] if target_ally[:flagship][:hp] > 0
+        target_ally[:sub_ships].each { |s| pool << s if s[:hp] > 0 }
+
+        if pool.any?
+          target_ship = pool.sample
+          target_ship[:hp] -= total_atk
+          target_ship[:hp] = 0 if target_ship[:hp] < 0
+
+          ally_ship_obj = UserMyfreet.find_by(id: target_ship[:id])
+          ally_ship_name = ally_ship_obj&.allfreet&.name || "味方艦"
+
+          @turn_logs << "🚨 #{current[:name]} の反撃！ 『#{ally_ship_name}』が被弾！【#{total_atk}】ダメージ！"
+        end
       end
     end
   end
 
-  # 💾 変動したHPなどの最新状態をセッションに上書き保存
   session[:battle_allies] = @allies
   session[:battle_enemies] = @enemies
 
-  # 📊 🛡️ 【修正：勝敗判定の厳密化】
-  # 「そもそもキャラクターが存在する(any?)」かつ「全員のHPが0(all?)」を条件にする（嘘の大成功対策）
-  all_enemies_dead = @enemies.any? && @enemies.all? { |e| e[:hp] <= 0 }
-  all_allies_dead  = @allies.any?  && @allies.all?  { |a| a[:hp] <= 0 }
+  # 勝敗判定（全船のHP合計が0か）
+  all_enemies_dead = @enemies.all? { |e| e[:flagship][:hp] + e[:sub_ships].sum { |s| s[:hp] } <= 0 }
+  all_allies_dead  = @allies.all?  { |a| a[:flagship][:hp] + a[:sub_ships].sum { |s| s[:hp] } <= 0 }
 
   if all_enemies_dead
     @turn_logs << "🎉 作戦大成功！ 海域の敵艦隊をすべて駆逐しました！"
   elsif all_allies_dead
-    @turn_logs << "🏳️ 作戦失敗… 総員、急速転舵。これ以上の作戦続行は不可能です！"
+    @turn_logs << "🏳️ 作戦失敗… 総員、急速転舵！"
   end
 
-  # 共通の家具を取得して、バトルのURLのまま戦闘結果ログを表示する
   @stage = session[:battle_stage] || 1
   @fleets = @user.user_battleunits.order(:fleet_number)
   @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
-  @phase = 'turn' # 画面側に「戦闘中だよ」と教えるスイッチ
+  @phase = 'turn'
 
   erb :battle
 end
