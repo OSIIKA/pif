@@ -21,6 +21,14 @@ get '/base' do
   # user_items から type: 4 の items をINNER JOINで引っ張ってきます
   @available_characters = Item.where(type: 4).joins(:user_items).where(user_items: { user_id: @user.id })
 
+  # 🔍 🟢 ここを追記：大倉さん提案の「特定キャラによる機能解放システム」
+  # 今回は「北上湊」がスロットのどこかに配置されているかをチェックします
+  # （もし「倉庫にいるだけでOK」にしたい場合は、@available_characters.any? を使います）
+  @has_kitakami = @slotted_chars.values.compact.any? { |char| char.name.include?("北上湊") }
+
+  # 🟢 ここまで追記
+
+  # 🏁 最後に基地画面のERBを呼び出す
   erb :base
 end
 
