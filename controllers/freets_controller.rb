@@ -1,10 +1,4 @@
-# 📄 コントローラーファイル（app.rb など）の空いている場所に追記
 
-# 🟢 「基地」ボタンを押したときの通り道（まずは仮の画面を表示）
-get '/base' do
-  @user = User.find(session[:user])
-  erb :base
-end
 
 # 🟢 「艦隊」ボタンを押したときの通り道（ここが本番！）
 get '/fleet' do

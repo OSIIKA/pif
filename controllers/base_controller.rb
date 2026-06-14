@@ -4,7 +4,7 @@
 get '/base' do
   # 👤 ログインユーザーの取得
   @user = User.find_by(id: session[:user_id])
-  redirect '/login' unless @user
+  redirect '/user/login' unless @user
 
   # 🏢 ユーザーの基地データを取得（なければ初期状態で作成）
   @user_base = @user.user_base || @user.create_user_base
@@ -13,7 +13,7 @@ get '/base' do
   @slotted_chars = {
     1 => Item.find_by(type: 4, each_id: @user_base.slotted_character_1_id),
     2 => Item.find_by(type: 4, each_id: @user_base.slotted_character_2_id),
-    3 => Item.find_by(type: 4, DB_each_id: @user_base.slotted_character_3_id),
+    3 => Item.find_by(type: 4, each_id: @user_base.slotted_character_3_id),
     4 => Item.find_by(type: 4, each_id: @user_base.slotted_character_4_id)
   }
 
@@ -27,7 +27,7 @@ end
 # 🛠️ キャラクター配置を実行する機能（大倉さん専用の格納機能）
 post '/base/set_character' do
   @user = User.find_by(id: session[:user_id])
-  redirect '/login' unless @user
+  redirect '/user/login' unless @user
   
   user_base = @user.user_base || @user.create_user_base
 
