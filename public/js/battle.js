@@ -1,3 +1,32 @@
+// 🎬 画面の読み込みが100%完了した瞬間をトリガーにする
+window.addEventListener('DOMContentLoaded', () => {
+
+  // 🕵️‍♂️ 1. ERBで割り振ったIDを使って、演出用のコンテナを取得
+  const container = document.getElementById('phase-anim-container');
+
+  // 🛡️ ガード句：もしIDが見つからなければ、エラーを出さずに静かに終わる（安定性重視）
+  if (!container) return;
+
+
+  // 🚀 【第1幕：フロートイン】
+  // 画面外（left: -100%）にいる要素を、画面中央（left: 50%）に移動させる
+  // 1.5秒（ERBの transition: all 1.5s で指定）かけてスライドしてくる
+  container.style.left = '50%';
+
+
+  // ⏸️ 【第2幕：滞在（1.5秒待機）】
+  // フロートインの「1.5秒」が完了した時点で、次のタイマーを起動させる
+  setTimeout(() => {
+
+    // 🚪 【第3幕：フロートアウト}
+    // 中央（left: 50%）から、そのまま右の画面外（left: 200%）へ移動させる
+    // これも1.5秒かけてスライドアウトしていく
+    container.style.left = '200%';
+
+  }, 1500); // <-- 「イン」が完了するまでの時間（1.5秒）をミリ秒で指定
+
+});
+
 // パレットからの新規ドラッグ開始
 function handlePaletteDragStart(event) {
   const card = event.target;
