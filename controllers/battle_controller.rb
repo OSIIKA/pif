@@ -145,6 +145,12 @@ get '/battle/turn' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
 
+  # 🚨 🛑 【追加：安全装置】
+  # セッションに味方や敵のデータがない（配置フェーズを踏んでいない）なら、強制的に布陣画面に送還する！
+  if session[:battle_allies].nil? || session[:battle_enemies].nil?
+    redirect '/battle'
+  end
+
   # 📥 セッションから現在の両軍のリアルタイムデータを取得
   @allies = session[:battle_allies] || []
   @enemies = session[:battle_enemies] || []
@@ -226,9 +232,10 @@ get '/battle/turn' do
   session[:battle_allies] = @allies
   session[:battle_enemies] = @enemies
 
-  # 勝利・敗北の判定
-  all_enemies_dead = @enemies.all? { |e| e[:hp] <= 0 }
-  all_allies_dead  = @allies.all?  { |a| a[:hp] <= 0 }
+  # 📊 🛡️ 【修正：勝敗判定の厳密化】
+  # 「そもそもキャラクターが存在する(any?)」かつ「全員のHPが0(all?)」を条件にする（嘘の大成功対策）
+  all_enemies_dead = @enemies.any? && @enemies.all? { |e| e[:hp] <= 0 }
+  all_allies_dead  = @allies.any?  && @allies.all?  { |a| a[:hp] <= 0 }
 
   if all_enemies_dead
     @turn_logs << "🎉 作戦大成功！ 海域の敵艦隊をすべて駆逐しました！"
