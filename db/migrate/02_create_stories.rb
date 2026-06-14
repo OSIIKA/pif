@@ -1,6 +1,6 @@
-class CreateStory < ActiveRecord::Migration[6.1]
+class CreateStories < ActiveRecord::Migration[6.1]
   def change
-    create_table :storys do |t|
+    create_table :stories do |t|
       t.integer :episode, null: false
       t.integer :step,    null: false
       t.string  :name
