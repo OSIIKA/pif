@@ -2,12 +2,19 @@
 get '/battle' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
-  # 🧹 ✨【ここを追記】布陣画面に来た＝新しくやり直すので、戦闘状態を完全リセット！
-  @phase = 'prepare'
-  session[:battle_phase] = 'prepare' # セッション側も一応戻す
-  session[:battle_allies] = nil      # 前回の味方の残りHPデータを消去
-  session[:battle_enemies] = nil     # 前回の敵の残りHPデータを消去
-  session[:battle_logs] = nil        # 前回の戦闘ログを消去
+  # ⚙️ ✨【超重要：タイムラインの復元】
+  # URLのパラメータ（?phase=prepare など）があればそれを使い、普段は nil（編成画面）にします！
+  @phase = params[:phase]
+
+  # 🧹【条件付きクリーンアップ】
+  # 「最初の編成画面（@phase が nil）」の時だけ、前回の戦闘データを完全リセットする！
+  # これにより、確定後の「準備フェーズ」でここを通っても味方データが消えなくなります。
+  if @phase.nil?
+    session[:battle_phase] = nil
+    session[:battle_allies] = nil
+    session[:battle_enemies] = nil
+    session[:battle_logs] = nil
+  end
   # 📦 画面のどこであっても絶対に必要になる「共通の家具」を常に取得
   @stage = session[:battle_stage] || 1
   @fleets = @user.user_battleunits.order(:fleet_number)
