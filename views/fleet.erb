@@ -9,7 +9,7 @@
     <h1>⚓ 艦隊管理運用（所持一覧）</h1>
     <% 
       # すでにどこかの艦隊に登録されている艦のIDをすべて集める
-      assigned_ids = Fleet.all.map { |f| [f.flagship_id, f.sub1_id, f.sub2_id, f.sub3_id, f.sub4_id, f.sub5_id, f.sub6_id] }.flatten.compact.uniq
+      assigned_ids = UserBattleunit.all.map { |f| [f.flagship_id, f.sub_ship_1_id, f.sub_ship_2_id, f.sub_ship_3_id, f.sub_ship_4_id, f.sub_ship_5_id, f.sub_ship_6_id] }.flatten.compact.uniq
     %>
     <div style="background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
   
