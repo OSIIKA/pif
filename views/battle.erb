@@ -19,7 +19,15 @@
         【 ステージ <%= @stage %> 】に突入しました。総員、対空・対潜戦闘配置！
       </p>
 
-      <% if @phase == 'turn' %>
+      <% if request.path_info == '/battle/set' %>
+        <h2 style="color: #ff4a4a; margin-top: 20px; font-size: 1.6em; text-shadow: 0 0 10px rgba(255,74,74,0.3);">
+          ⚡ 第一次海域・編成フェーズ進行中 ⚡
+        </h2>
+      <% elsif request.path_info == '/battle/prepare' %>
+        <h2 style="color: #ff4a4a; margin-top: 20px; font-size: 1.6em; text-shadow: 0 0 10px rgba(255,74,74,0.3%;">
+          ⚡ 第一次海域・哨戒戦技フェーズ進行中 ⚡
+        </h2>
+      <% elsif request.path_info == '/battle/start' %>
         <h2 style="color: #ff4a4a; margin-top: 20px; font-size: 1.6em; text-shadow: 0 0 10px rgba(255,74,74,0.3);">
           ⚡ 第一次海域・交戦フェーズ進行中 ⚡
         </h2>
@@ -160,13 +168,7 @@
         </svg>
       </div>
 
-      <% if @phase == 'turn' %>
-        <div style="margin-top: 40px;">
-          <a href="/home" style="display: inline-block; background: #333; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; border: 1px solid #555;">
-            🏳️ 一旦撤退してホームに戻る
-          </a>
-        </div>
-      <% elsif @phase.nil? %>
+      <% if request.path_info == '/battle/set' %>
         <div style="margin-top: 40px;">
           <form action="/battle/start" method="post" style="display: inline-block; margin-right: 10px;">
             <input type="hidden" name="stage" value="<%= @stage %>">
@@ -182,10 +184,27 @@
             </button>
           </form>
         </div>
+        <div style="margin-top: 40px;">
+          <a href="/home" style="display: inline-block; background: #333; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; border: 1px solid #555;">
+            🏳️ 一旦撤退してホームに戻る
+          </a>
+        </div>
+      <% elsif request.path_info == '/battle/prepare' %>
+        <div style="margin-top: 40px;">
+          <a href="/home" style="display: inline-block; background: #333; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; border: 1px solid #555;">
+            🏳️ 一旦撤退してホームに戻る
+          </a>
+        </div>
+      <% elsif request.path_info == '/battle/start' %>
+        <div style="margin-top: 40px;">
+          <a href="/home" style="display: inline-block; background: #333; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; border: 1px solid #555;">
+            🏳️ 一旦撤退してホームに戻る
+          </a>
+        </div>
       <% end %>
     </div>
   </main>
-  <% if @phase == 'prepare' %>
+  <% if request.path_info == '/battle/prepare' %>
     <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 5, 15, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(4px); font-family: monospace;">
     
       <div style="width: 90%; max-width: 600px; background: #111; border: 2px solid #ffbc00; padding: 30px; border-radius: 8px; box-shadow: 0 0 25px rgba(255,188,0,0.3); text-align: center;">
@@ -214,7 +233,7 @@
       </div>
     </div>
   <% end %>
-  <% if @phase == 'turn' %>
+  <% if request.path_info == '/battle/turn' %>
     <div style="position: fixed; bottom: 20px; left: 20px; width: 400px; background: rgba(15, 10, 10, 0.85); border: 1px solid #ff4a4a; padding: 12px; border-radius: 6px; box-shadow: 0 0 15px rgba(255,74,74,0.3); z-index: 9999; backdrop-filter: blur(3px); font-family: monospace; text-align: left;">
     
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #331111; padding-bottom: 5px;">
