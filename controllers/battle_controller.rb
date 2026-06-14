@@ -2,7 +2,12 @@
 get '/battle' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
-
+  # 🧹 ✨【ここを追記】布陣画面に来た＝新しくやり直すので、戦闘状態を完全リセット！
+  @phase = 'prepare'
+  session[:battle_phase] = 'prepare' # セッション側も一応戻す
+  session[:battle_allies] = nil      # 前回の味方の残りHPデータを消去
+  session[:battle_enemies] = nil     # 前回の敵の残りHPデータを消去
+  session[:battle_logs] = nil        # 前回の戦闘ログを消去
   # 📦 画面のどこであっても絶対に必要になる「共通の家具」を常に取得
   @stage = session[:battle_stage] || 1
   @fleets = @user.user_battleunits.order(:fleet_number)
