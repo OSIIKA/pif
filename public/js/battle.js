@@ -91,4 +91,13 @@ function handleFleetDrop(event) {
     icon.setAttribute('x', targetX);
     icon.setAttribute('y', parseFloat(targetY) - 6);
   }
+  // 📝 🟢 ここを追記：ドロップまたは移動が発生したら、フォームのhiddenに最新座標をセット
+  // data.fleet_num（1〜6）に対応するhiddenを狙い撃ちして、「col,row」の文字列を入れる
+  const hiddenInput = document.getElementById(`input_fleet_${data.fleet_num}_pos`);
+  if (hiddenInput) {
+    hiddenInput.value = `${targetCell.dataset.col},${targetCell.dataset.row}`;
+  }
+      
+  // もし移動元のマス（古いマス）の記録を消す処理が必要な場合はここで行いますが、
+  // 上記のように「最新のドロップ先」で上書きしちゃえば基本はOKです！
 }
