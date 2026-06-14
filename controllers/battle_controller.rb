@@ -1,38 +1,60 @@
-# 🌐 A: メインのバトル画面（布陣・演出・戦闘をすべてここで内蔵管理）
+# 🟢 1. 【新設】ストーリー画面の「出撃ボタン」が叩く、初期化専用のPOST
+post '/battle/set' do
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' unless @user
+
+  # ストーリーから送られてきたステージIDをセット（なければデフォルト1）
+  stage = (params[:stage] || 1).to_i
+  session[:battle_stage] = stage
+
+  # 🔥 【ここで一発クリーンアップ】
+  # 画面を開き直した瞬間なので、前回のログや味方データを完全に初期化する
+  session[:battle_logs] = []
+  session[:battle_allies] = nil
+
+  # 👾 【敵データの初回ロード】
+  # DB（EnemyBattleunit）から今回のステージの敵を呼び出し、HPを持たせた戦闘用セッションを作る
+  enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
+  session[:battle_enemies] = enemy_units.map do |unit|
+    flagship = Allfreet.find_by(id: unit.flagship_id)
+    next nil unless flagship
+
+    {
+      id: unit.id,
+      name: "👾 #{flagship.name}",
+      col: unit.col,
+      row: unit.row,
+      flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp },
+      sub_ships: (1..6).map { |i|
+        ship_id = unit.send("sub_ship_#{i}_id")
+        next nil if ship_id.blank?
+        sub_ship = Allfreet.find_by(id: ship_id)
+        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil
+      }.compact
+    }
+  end.compact
+
+  # 初期化がすべて安全に完了したので、描画担当のGETへリダイレクト！
+  redirect '/battle/set'
+end
+
+
+# 🔵 2. 【改修】ただ画面を描画するだけになった、超シンプルなGET
 get '/battle/set' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
-  # ⚙️ ✨【超重要：タイムラインの復元】
-  # URLのパラメータ（?phase=prepare など）があればそれを使い、普段は nil（編成画面）にします！
-  @phase = params[:phase]
 
-  # 🧹【条件付きクリーンアップ】
-  # 「最初の編成画面（@phase が nil）」の時だけ、前回の戦闘データを完全リセットする！
-  # これにより、確定後の「準備フェーズ」でここを通っても味方データが消えなくなります。
-  if @phase.nil?
-    session[:battle_phase] = nil
-    session[:battle_allies] = nil
-    session[:battle_enemies] = nil
-    session[:battle_logs] = nil
-  end
-  # 📦 画面のどこであっても絶対に必要になる「共通の家具」を常に取得
+  # 📦 画面に必要な家具を、リロードに強いセッションから安全に復元するだけ！
   @stage = session[:battle_stage] || 1
   @fleets = @user.user_battleunits.order(:fleet_number)
-  @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
+  
+  # POSTで生成された「本物の敵データ」がここに入る（リロードしても絶対に消えない）
+  @enemies = session[:battle_enemies] 
+  @allies = session[:battle_allies]   # 布陣前は nil、出撃後はデータが入る
 
-  # ⚡ 🟢 【ここを追記】準備フェーズ（演出モード）の判定
-
-  if @phase == 'prepare'
-    @allies = session[:battle_allies]
-    @prep_logs = []
-    
-    # セッションから戦技ログを組み立てる
-    @allies&.each do |fleet|
-      if fleet[:skills]&.any?
-        fleet[:skills].each { |s| @prep_logs << "【味方】#{fleet[:name]} - #{s}" }
-      end
-    end
-    @prep_logs << "両軍、布陣完了。これより戦闘フェーズに移行します！" if @prep_logs.empty?
+  # パラメータによるフェーズ管理は廃止。実データ（@allies）があるかどうかで準備状態を自動判定
+  if @allies
+    @prep_logs = ["両軍、布陣完了。これより戦闘フェーズに移行します！"]
   end
 
   erb :battle
