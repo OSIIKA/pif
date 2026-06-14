@@ -14,7 +14,6 @@ get '/battle' do
   @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
 
   # ⚡ 🟢 【ここを追記】準備フェーズ（演出モード）の判定
-  @phase = params[:phase] # URLの「?phase=prepare」を読み取る
 
   if @phase == 'prepare'
     @allies = session[:battle_allies]
