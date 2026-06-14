@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :chats, dependent: :destroy
   # ユーザーはたくさんの自分のフリートを持つ
   has_many :user_myfreets, dependent: :destroy
+  # ユーザーはたくさんの艦隊配置を持つ
+  has_many :user_battleunits, dependent: :destroy
   # ユーザーはたくさんのアイテム所持データを持つ
   has_many :user_items, dependent: :destroy
   # アイテムとの多対多の関係を中間テーブル（user_items）を経由して定義
