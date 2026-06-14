@@ -148,5 +148,34 @@
       </div>
     </div>
   </main>
+  <% if @phase == 'prepare' %>
+    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 5, 15, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(4px); font-family: monospace;">
+    
+      <div style="width: 90%; max-width: 600px; background: #111; border: 2px solid #ffbc00; padding: 30px; border-radius: 8px; box-shadow: 0 0 25px rgba(255,188,0,0.3); text-align: center;">
+      
+        <h1 style="color: #ffbc00; margin-top: 0; font-size: 1.8em; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ffbc00; padding-bottom: 15px; margin-bottom: 25px;">
+          ⚡ 哨戒戦技発動・準備フェーズ ⚡
+        </h1>
+
+        <div style="background: #222; border: 1px solid #444; padding: 20px; border-radius: 6px; text-align: left; max-height: 250px; overflow-y: auto;">
+          <h4 style="color: #00ffbc; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📜 作戦海域 ログアナウンス</h4>
+          <ul style="list-style: none; padding-left: 0; line-height: 1.8; margin: 0; font-size: 1.05em;">
+            <% @prep_logs.each do |log| %>
+              <li style="margin-bottom: 8px; color: #fff; border-left: 3px solid #ffbc00; padding-left: 10px;">
+                <%= log %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <a href="/battle/turn" style="display: inline-block; background: #ff4a4a; color: #fff; padding: 12px 35px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 1.1em; box-shadow: 0 0 15px rgba(255,74,74,0.4); transition: 0.2s;">
+            🚀 進撃開始（戦闘フェーズへ）
+          </a>
+        </div>
+      
+      </div>
+    </div>
+  <% end %>
 </body>
 </html>
