@@ -102,3 +102,26 @@ if (storyClose) {
     sortieOverlay.style.display = 'flex';  // 出撃メニューを再表示
   });
 }
+
+// ▼ イベント選択オーバーレイ
+const eventOverlay = document.getElementById('event-overlay');
+const eventClose = document.getElementById('event-close');
+
+// 出撃メニューの「イベント」ボタンを押したら表示
+sortieMenuButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    if (mode === 'event' && eventOverlay) {
+      sortieOverlay.style.display = 'none';
+      eventOverlay.style.display = 'flex';
+    }
+  });
+});
+
+// イベント選択の閉じるボタン
+if (eventClose && eventOverlay) {
+  eventClose.addEventListener('click', () => {
+    eventOverlay.style.display = 'none';   // イベント選択を閉じる
+    sortieOverlay.style.display = 'flex';  // 出撃メニューを再表示
+  });
+}
