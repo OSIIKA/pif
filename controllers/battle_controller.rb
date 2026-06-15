@@ -183,7 +183,7 @@ post '/battle/start' do
   end
 
   session[:battle_logs] = []
-  redirect '/battle/set?phase=prepare' # 大倉さんが直してくれた /battle/set へ
+  redirect '/battle/turn' #  /battle/turn へ
 end
 
 # ⚔️ B: 布陣確定後のデータ処理
