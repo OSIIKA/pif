@@ -346,9 +346,11 @@ end
 
 # 🏁 【新設】戦闘結果画面を表示する処理
 get '/battle/result' do
-  # セッションから勝敗フラグを読み出す（win または lose）
-  @result = session[:battle_result]
+  # 1. 画面が求めている「@finaresult」に、日本語の「勝利」か「敗北」をセット
+  @finaresult = (session[:battle_result] == "win") ? "勝利" : "敗北"
   
-  # views/result.erb を表示する
+  # 2. 画面の19行目がエラーにならないよう、セッションにある元の味方データを渡す
+  @my_units = session[:my_freets] || []
+  
   erb :result
 end
