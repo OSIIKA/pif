@@ -51,6 +51,8 @@ post '/battle/set' do
 
   # 🎁 作成したデータを、リダイレクトしても消えないセッションに大切に保管する！
   session[:battle_enemies] = enemy_data_array
+  puts "====== 敵データロードテスト ======"
+  puts "セッションに入れた敵データ: #{session[:battle_enemies].inspect}"
   # 初期化がすべて安全に完了したので、描画担当のGETへリダイレクト！
   redirect '/battle/set'
 end
