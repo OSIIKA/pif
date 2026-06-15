@@ -1,4 +1,6 @@
-# 🟢 1. 【新設】ストーリー画面の「出撃ボタン」が叩く、初期化専用のPOST
+# ===========================
+# 編成機能POST
+# ===========================
 post '/battle/set' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
@@ -56,9 +58,9 @@ post '/battle/set' do
   # 初期化がすべて安全に完了したので、描画担当のGETへリダイレクト！
   redirect '/battle/set'
 end
-
-
-# 🔵 2. 【改修】ただ画面を描画するだけになった、超シンプルなGET
+# ===========================
+# 編成機能GET
+# ===========================
 get '/battle/set' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
@@ -326,8 +328,12 @@ get '/battle/turn' do
 
   if all_enemies_dead
     @turn_logs << "🎉 作戦大成功！ 海域の敵艦隊をすべて駆逐しました！"
+    session[:battle_result] = "win"         # 👈 勝利フラグをセッションに保存
+    return redirect '/battle/result'        # 👈 結果画面へ即座に遷移！
   elsif all_allies_dead
     @turn_logs << "🏳️ 作戦失敗… 総員、急速転舵！"
+    session[:battle_result] = "lose"        # 👈 敗北フラグをセッションに保存
+    return redirect '/battle/result'        # 👈 結果画面へ即座に遷移！
   end
 
   @stage = session[:battle_stage] || 1
@@ -336,4 +342,13 @@ get '/battle/turn' do
   @phase = 'turn'
 
   erb :battle
+end
+
+# 🏁 【新設】戦闘結果画面を表示する処理
+get '/battle/result' do
+  # セッションから勝敗フラグを読み出す（win または lose）
+  @result = session[:battle_result]
+  
+  # views/result.erb を表示する
+  erb :result
 end
