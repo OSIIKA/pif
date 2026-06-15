@@ -16,19 +16,15 @@
   <div class="unitss">
     <div class="units">
       <p>味方ユニット</p>
-      <% @my_units.each do |freet| %>
-        <div class="unit">
-          <div>
-            <div class="hp-bar">
-              <div class="hp-bar-fill" data-id="<%= freet['myfreet']['id'] %>" data-hp="<%= freet['myfreet']['hp'] %>" data-max-hp="<%= freet['myfreet']['max_hp'] %>"></div>
-            </div>
+      <% @my_units.each do |freet_list| %>
+        <% freet_list.each do |freet| %>
+          <div style="background: #222; border: 1px solid #444; padding: 15px; margin-bottom: 10px; border-radius: 4px;">
+            <strong><%= freet['myfreet']['name'] %></strong> (Lv.<%= freet['level'] %>) <br>
+            HP: <%= freet['myfreet']['hp'] %> / <%= freet['myfreet']['max_hp'] %> | 
+            攻撃力: <%= freet['myfreet']['atk'] %> <br>
+            <span style="color: #888; font-size: 0.9em;"><%= freet['myfreet']['info'] %></span>
           </div>
-          <p><%= freet['myfreet']['name'] %></p>
-          <p>Lv：<%= freet['level'] %>EXP：<%= freet['exp'] %></p>
-          <p>HP：<%= freet['myfreet']['hp'] %>/<%= freet['myfreet']['max_hp'] %></p>
-          <p>攻撃：<%= freet['myfreet']['atk'] %></p>
-          <p>情報：<%= freet['myfreet']['info'] %></p>
-        </div>
+        <% end %>
       <% end %>
     </div>
   </div>
