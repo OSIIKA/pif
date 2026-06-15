@@ -125,32 +125,27 @@ post '/battle/start' do
   # 👾 敵のデータ構築（enemy_battleunits -> enemy_freets -> allfreets）
   stage = (params[:stage] || 1).to_i
   enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
-  
   session[:battle_enemies] = enemy_units.map do |unit|
-    # ※ 中間テーブルのモデル名を「EnemyFreet」と仮定しています。もし違う場合は適宜変更してください
-    flagship = Allfreet.find_by(id: unit.flagship_id)
+    enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
+    next nil unless enemy_freet_flag
+    
+    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
     next nil unless flagship
 
-    flagship_data = { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }
-
-    sub_ships_data = []
-    (1..6).each do |i|
-      ship_id = unit.send("sub_ship_#{i}_id")
-      next if ship_id.blank?
-      
-      sub_ship = Allfreet.find_by(id: ship_id)
-      if sub_ship
-        sub_ships_data << { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp }
-      end
-    end
-
     {
-      id: unit.id,
-      name: "👾 #{flagship.name}",
-      col: unit.col,
-      row: unit.row,
-      flagship: flagship_data,
-      sub_ships: sub_ships_data
+      id: unit.id, 
+      name: "👾 #{flagship.name}", 
+      col: unit.col, 
+      row: unit.row, 
+      flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
+      sub_ships: (1..6).map { |i| 
+        ship_id = unit.send("sub_ship_#{i}_id")
+        next nil if ship_id.blank? 
+        ef_sub = EnemyFreet.find_by(id: ship_id)
+        next nil unless ef_sub
+        sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
+      }.compact 
     }
   end.compact
 
@@ -219,20 +214,27 @@ post '/battle/start' do
 
   stage = (params[:stage] || 1).to_i
   enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
-  
   session[:battle_enemies] = enemy_units.map do |unit|
-    enemy_hp = unit.flagship.allfreet.hp
-    enemy_atk = unit.flagship.allfreet.atk
+    enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
+    next nil unless enemy_freet_flag
+    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
+    next nil unless flagship
     {
-      id: unit.id,
-      name: "👾 #{unit.flagship.allfreet.name}",
-      max_hp: enemy_hp,
-      hp: enemy_hp,
-      atk: enemy_atk,
-      col: unit.col,
-      row: unit.row
+      id: unit.id, 
+      name: "👾 #{flagship.name}", 
+      col: unit.col, 
+      row: unit.row, 
+      flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
+      sub_ships: (1..6).map { |i| 
+        ship_id = unit.send("sub_ship_#{i}_id")
+        next nil if ship_id.blank? 
+        ef_sub = EnemyFreet.find_by(id: ship_id)
+        next nil unless ef_sub
+        sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
+      }.compact 
     }
-  end
+  end.compact
 
   session[:battle_logs] = []
 
