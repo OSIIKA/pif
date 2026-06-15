@@ -350,18 +350,26 @@ get '/battle/result' do
   @finaresult = (session[:battle_result] == "win") ? "勝利" : "敗北"
   
   # 2. 画面の19行目がエラーにならないよう、セッションにある味方データを渡す
-  raw_units = session[:battle_allies] || [] # 👈 ここを「user_freets」に変更します
+  raw_units = session[:battle_allies] || []
   @my_units = raw_units.map do |u|
+    # 1. 実際に戦った後の現在の残りHPを取得
+    current_hp = u[:flagship][:hp]
+    max_hp     = u[:flagship][:max_hp]
+    
+    # 2. データベースから本物の名前や攻撃力を逆引きする
+    flagship_obj = UserMyfreet.find_by(id: u[:flagship][:id])
+    master_ship  = flagship_obj&.allfreet
+    
     {
-      'level' => u['level'],
-      'exp'   => u['exp'],
+      'level' => flagship_obj&.level || 999999, # 本物のレベル
+      'exp'   => flagship_obj&.exp || 999999,   # 本物の経験値
       'myfreet' => {
-        'id'     => u['id'],
-        'name'   => u['allfreet'] ? u['allfreet']['name'] : "味方艦",
-        'hp'     => u['allfreet'] ? u['allfreet']['hp'] : 100,
-        'max_hp' => u['allfreet'] ? u['allfreet']['max_hp'] : 100,
-        'atk'    => u['allfreet'] ? u['allfreet']['atk'] : 25,
-        'info'   => u['allfreet'] ? u['allfreet']['info'] : ""
+        'id'     => u[:flagship][:id],
+        'name'   => master_ship ? master_ship.name : u[:name], # 本物の名前（例：味方1）
+        'hp'     => current_hp,                               # 戦闘後の残りHP！
+        'max_hp' => max_hp,
+        'atk'    => master_ship ? master_ship.atk : 25,       # 本物の攻撃力
+        'info'   => master_ship ? master_ship.info : ""
       }
     }
   end
