@@ -349,8 +349,22 @@ get '/battle/result' do
   # 1. 画面が求めている「@finaresult」に、日本語の「勝利」か「敗北」をセット
   @finaresult = (session[:battle_result] == "win") ? "勝利" : "敗北"
   
-  # 2. 画面の19行目がエラーにならないよう、セッションにある元の味方データを渡す
-  @my_units = session[:my_freets] || []
+  # 2. 画面の19行目がエラーにならないよう、セッションにある味方データを渡す
+  raw_units = session[:my_freets] || []
+  @my_units = raw_units.map do |u|
+    {
+      'level' => u['level'],
+      'exp'   => u['exp'],
+      'myfreet' => {
+        'id'     => u['id'],
+        'name'   => u['allfreet'] ? u['allfreet']['name'] : "味方艦",
+        'hp'     => u['allfreet'] ? u['allfreet']['hp'] : 100,
+        'max_hp' => u['allfreet'] ? u['allfreet']['max_hp'] : 100,
+        'atk'    => u['allfreet'] ? u['allfreet']['atk'] : 25,
+        'info'   => u['allfreet'] ? u['allfreet']['info'] : ""
+      }
+    }
+  end
   
   erb :result
 end
