@@ -352,26 +352,45 @@ get '/battle/result' do
   # 2. 画面の19行目がエラーにならないよう、セッションにある味方データを渡す
   raw_units = session[:battle_allies] || []
   @my_units = raw_units.map do |u|
-    # 1. 実際に戦った後の現在の残りHPを取得
+    ship_list = []
+    # 👑 1. まずは「旗艦」のデータを登録
     current_hp = u[:flagship][:hp]
     max_hp     = u[:flagship][:max_hp]
-    
-    # 2. データベースから本物の名前や攻撃力を逆引きする
     flagship_obj = UserMyfreet.find_by(id: u[:flagship][:id])
     master_ship  = flagship_obj&.allfreet
     
-    {
-      'level' => flagship_obj&.level || 999999, # 本物のレベル
-      'exp'   => flagship_obj&.exp || 999999,   # 本物の経験値
+    ship_list << {
+      'level' => flagship_obj&.level || 1,
+      'exp'   => flagship_obj&.exp || 0,
       'myfreet' => {
         'id'     => u[:flagship][:id],
-        'name'   => master_ship ? master_ship.name : u[:name], # 本物の名前（例：味方1）
-        'hp'     => current_hp,                               # 戦闘後の残りHP！
+        'name'   => master_ship ? master_ship.name : u[:name],
+        'hp'     => current_hp,
         'max_hp' => max_hp,
-        'atk'    => master_ship ? master_ship.atk : 25,       # 本物の攻撃力
-        'info'   => master_ship ? master_ship.info : ""
+        'atk'    => master_ship ? master_ship.atk : 25,
+        'info'   => master_ship ? master_ship.info || "てんぷれーと" : "てんぷれーと"
       }
     }
+    # ⚓ 2. 続いて、この艦隊に所属する「随伴艦」たちを全員登録
+    (u[:sub_ships] || []).each do |sub|
+      sub_obj = UserMyfreet.find_by(id: sub[:id])
+      sub_master = sub_obj&.allfreet
+      next unless sub_master # 万が一DBから消えていたらスキップ
+
+      ship_list << {
+        'level' => sub_obj&.level || 1,
+        'exp'   => sub_obj&.exp || 0,
+        'myfreet' => {
+          'id'     => sub[:id],
+          'name'   => sub_master.name,
+          'hp'     => sub[:hp], # 戦闘後の残りHP
+          'max_hp' => sub[:max_hp],
+          'atk'    => sub_master.atk,
+          'info'   => sub_master.info || "てんぷれーと"
+        }
+      }
+    end
+    ship_list
   end
   
   erb :result
