@@ -67,6 +67,33 @@ get '/battle/set' do
   @stage = session[:battle_stage] || 1
   @fleets = @user.user_battleunits.order(:fleet_number)
   
+  # 🔍 もしストーリーから直接GETへ飛んできて敵データがまだ無ければ、ここで正しくロードする
+  if session[:battle_enemies].blank?
+    enemy_units = EnemyBattleunit.where(battle_stage_id: @stage)
+    session[:battle_enemies] = enemy_units.map do |unit|
+      enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
+      next nil unless enemy_freet_flag
+      flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
+      next nil unless flagship
+      
+      {
+        id: unit.id, 
+        name: "👾 #{flagship.name}", 
+        col: unit.col, 
+        row: unit.row, 
+        flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
+        sub_ships: (1..6).map { |i| 
+          ship_id = unit.send("sub_ship_#{i}_id")
+          next nil if ship_id.blank? 
+          ef_sub = EnemyFreet.find_by(id: ship_id)
+          next nil unless ef_sub
+          sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+          sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
+        }.compact 
+      }
+    end.compact
+  end
+
   # POSTで生成された「本物の敵データ」がここに入る（リロードしても絶対に消えない）
   @enemies = session[:battle_enemies] || [] # 👈 後ろに「|| []」を追記
   @allies = session[:battle_allies]   # 布陣前は nil、出撃後はデータが入る
