@@ -350,7 +350,7 @@ get '/battle/result' do
   @finaresult = (session[:battle_result] == "win") ? "勝利" : "敗北"
   
   # 2. 画面の19行目がエラーにならないよう、セッションにある味方データを渡す
-  raw_units = session[:user_freets] || [] # 👈 ここを「user_freets」に変更します
+  raw_units = session[:battle_allies] || [] # 👈 ここを「user_freets」に変更します
   @my_units = raw_units.map do |u|
     {
       'level' => u['level'],
