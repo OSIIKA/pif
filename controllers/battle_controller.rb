@@ -16,21 +16,36 @@ post '/battle/set' do
   # DB（EnemyBattleunit）から今回のステージの敵を呼び出し、HPを持たせた戦闘用セッションを作る
   enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
   session[:battle_enemies] = enemy_units.map do |unit|
-    flagship = Allfreet.find_by(id: unit.flagship_id)
+    # 1. 旗艦のデータを「EnemyFreet」から探す
+    enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
+    next nil unless enemy_freet_flag
+    
+    # 2. そのEnemyFreetが持っている「allfreet_id」を使って、ベースとなる能力（Allfreet）を引く
+    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
     next nil unless flagship
 
     {
-      id: unit.id,
-      name: "👾 #{flagship.name}",
-      col: unit.col,
-      row: unit.row,
-      flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp },
-      sub_ships: (1..6).map { |i|
-        ship_id = unit.send("sub_ship_#{i}_id")
-        next nil if ship_id.blank?
-        sub_ship = Allfreet.find_by(id: ship_id)
-        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil
-      }.compact
+      id: unit.id, 
+      name: "👾 #{flagship.name}", 
+      col: unit.col, 
+      row: unit.row, 
+      flagship: { 
+        id: unit.flagship_id, # EnemyFreetのID
+        hp: flagship.hp,      # 今後は level を掛け算するロジックなどもここに入れられます！
+        max_hp: flagship.hp 
+      }, 
+      sub_ships: (1..6).map { |i| 
+        ship_id = unit.send("sub_ship_#{i}_id") # EnemyFreetのIDが入ってくる
+        next nil if ship_id.blank? 
+
+        # 随伴艦も同様に EnemyFreet -> Allfreet の順で探す
+        ef_sub = EnemyFreet.find_by(id: ship_id)
+        next nil unless ef_sub
+
+        sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+        
+        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
+      }.compact 
     }
   end.compact
 
@@ -49,7 +64,7 @@ get '/battle/set' do
   @fleets = @user.user_battleunits.order(:fleet_number)
   
   # POSTで生成された「本物の敵データ」がここに入る（リロードしても絶対に消えない）
-  @enemies = session[:battle_enemies] 
+  @enemies = session[:battle_enemies] || [] # 👈 後ろに「|| []」を追記
   @allies = session[:battle_allies]   # 布陣前は nil、出撃後はデータが入る
 
   # パラメータによるフェーズ管理は廃止。実データ（@allies）があるかどうかで準備状態を自動判定
