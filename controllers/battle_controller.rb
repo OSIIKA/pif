@@ -155,30 +155,32 @@ post '/battle/start' do
 
   # 👾 敵のデータ構築（enemy_battleunits -> enemy_freets -> allfreets）
   stage = (params[:stage] || 1).to_i
-  enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
-  session[:battle_enemies] = enemy_units.map do |unit|
-    enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
-    next nil unless enemy_freet_flag
+  if session[:battle_enemies].blank?
+    enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
+    session[:battle_enemies] = enemy_units.map do |unit|
+      enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
+      next nil unless enemy_freet_flag
     
-    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
-    next nil unless flagship
+      flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
+      next nil unless flagship
 
-    {
-      id: unit.id, 
-      name: "👾 #{flagship.name}", 
-      col: unit.col, 
-      row: unit.row, 
-      flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
-      sub_ships: (1..6).map { |i| 
-        ship_id = unit.send("sub_ship_#{i}_id")
-        next nil if ship_id.blank? 
-        ef_sub = EnemyFreet.find_by(id: ship_id)
-        next nil unless ef_sub
-        sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
-        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
-      }.compact 
-    }
-  end.compact
+      {
+        id: unit.id, 
+        name: "👾 #{flagship.name}", 
+        col: unit.col, 
+        row: unit.row, 
+        flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
+        sub_ships: (1..6).map { |i| 
+          ship_id = unit.send("sub_ship_#{i}_id")
+          next nil if ship_id.blank? 
+          ef_sub = EnemyFreet.find_by(id: ship_id)
+          next nil unless ef_sub
+          sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+          sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
+        }.compact 
+      }
+    end.compact
+  end
 
   session[:battle_logs] = []
   redirect '/battle/set?phase=prepare' # 大倉さんが直してくれた /battle/set へ
@@ -243,29 +245,7 @@ post '/battle/start' do
 
   session[:battle_allies] = battle_allies
 
-  stage = (params[:stage] || 1).to_i
-  enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
-  session[:battle_enemies] = enemy_units.map do |unit|
-    enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
-    next nil unless enemy_freet_flag
-    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
-    next nil unless flagship
-    {
-      id: unit.id, 
-      name: "👾 #{flagship.name}", 
-      col: unit.col, 
-      row: unit.row, 
-      flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
-      sub_ships: (1..6).map { |i| 
-        ship_id = unit.send("sub_ship_#{i}_id")
-        next nil if ship_id.blank? 
-        ef_sub = EnemyFreet.find_by(id: ship_id)
-        next nil unless ef_sub
-        sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
-        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
-      }.compact 
-    }
-  end.compact
+  
 
   session[:battle_logs] = []
 
