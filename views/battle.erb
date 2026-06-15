@@ -41,21 +41,10 @@
             ⚡ 第一次海域・編成フェーズ進行中 ⚡
           </h2>
         </div>
-      <% elsif request.path_info == '/battle/prepare' %>
-        <div id="phase-anim-container" style="position: fixed; top: 40%; left: -100%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; transition: all 0.5s ease-out; white-space: nowrap;">
-          <h2 style="color: #ff4a4a; font-size: 2.5em; font-weight: bold; font-family: monospace; text-shadow: 0 0 20px rgba(255,74,74,0.6); background: rgba(15,5,5,0.8); padding: 15px 40px; border-top: 2px solid #ff4a4a; border-bottom: 2px solid #ff4a4a;">
-            ⚡ 第一次海域・哨戒戦技フェーズ進行中 ⚡
-          </h2>
-        </div>
-      <% elsif request.path_info == '/battle/start' %>
-        <div id="phase-anim-container" style="position: fixed; top: 40%; left: -100%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; transition: all 0.5s ease-out; white-space: nowrap;">
-          <h2 style="color: #ff4a4a; font-size: 2.5em; font-weight: bold; font-family: monospace; text-shadow: 0 0 20px rgba(255,74,74,0.6); background: rgba(15,5,5,0.8); padding: 15px 40px; border-top: 2px solid #ff4a4a; border-bottom: 2px solid #ff4a4a;">
-            ⚡ 第一次海域・交戦フェーズ進行中 ⚡
-          </h2>
-        </div>
-      <% else %>
         <div style="background: #222; border: 1px solid #444; padding: 20px; text-align: left; max-width: 500px; margin: 0 auto; border-radius: 6px;">
-          <h3 style="color: #ffbc00; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px;">📊 出撃艦隊データ確認</h3>
+          <h3 style="color: #ffbc00; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px;">
+            📊 出撃艦隊データ確認
+          </h3>
           <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
             <% @fleets.each do |f| %>
               <li>
@@ -88,6 +77,20 @@
             </div>
           <% end %>
         </div>
+      <% elsif request.path_info == '/battle/prepare' %>
+        <div id="phase-anim-container" style="position: fixed; top: 40%; left: -100%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; transition: all 0.5s ease-out; white-space: nowrap;">
+          <h2 style="color: #ff4a4a; font-size: 2.5em; font-weight: bold; font-family: monospace; text-shadow: 0 0 20px rgba(255,74,74,0.6); background: rgba(15,5,5,0.8); padding: 15px 40px; border-top: 2px solid #ff4a4a; border-bottom: 2px solid #ff4a4a;">
+            ⚡ 第一次海域・哨戒戦技フェーズ進行中 ⚡
+          </h2>
+        </div>
+      <% elsif request.path_info == '/battle/start' %>
+        <div id="phase-anim-container" style="position: fixed; top: 40%; left: -100%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; transition: all 0.5s ease-out; white-space: nowrap;">
+          <h2 style="color: #ff4a4a; font-size: 2.5em; font-weight: bold; font-family: monospace; text-shadow: 0 0 20px rgba(255,74,74,0.6); background: rgba(15,5,5,0.8); padding: 15px 40px; border-top: 2px solid #ff4a4a; border-bottom: 2px solid #ff4a4a;">
+            ⚡ 第一次海域・交戦フェーズ進行中 ⚡
+          </h2>
+        </div>
+      <% else %>
+        
       <% end %>
 
       <div class="battle-map-wrapper" style="background: #0d0d1a; border: 2px solid #007bff; border-radius: 8px; padding: 20px; display: inline-block; box-shadow: 0 0 15px rgba(0,123,255,0.2);">
