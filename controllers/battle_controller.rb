@@ -392,6 +392,11 @@ get '/battle/result' do
     end
     ship_list
   end
+  # ⭕ 以下の4行をピンポイントで追加（戦闘用セッションの後片付け）
+  session[:battle_result]  = nil
+  session[:battle_allies]  = nil
+  session[:battle_enemies] = nil
+  session[:battle_logs]    = nil
   
   erb :result
 end
