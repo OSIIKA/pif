@@ -49,6 +49,8 @@ post '/battle/set' do
     }
   end.compact
 
+  # 🎁 作成したデータを、リダイレクトしても消えないセッションに大切に保管する！
+  session[:battle_enemies] = enemy_data_array
   # 初期化がすべて安全に完了したので、描画担当のGETへリダイレクト！
   redirect '/battle/set'
 end
