@@ -383,8 +383,8 @@ get '/battle/result' do
         'myfreet' => {
           'id'     => sub['id'],
           'name'   => sub_master.name,
-          'hp'     => sub['hp'], # 戦闘後の残りHP
-          'max_hp' => sub['max_hp'],
+          'hp'     => sub[:hp], # 戦闘後の残りHP
+          'max_hp' => sub[:max_hp],
           'atk'    => sub_master.atk,
           'info'   => sub_master.info || "てんぷれーと"
         }
