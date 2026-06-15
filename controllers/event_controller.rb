@@ -7,6 +7,8 @@ GACHA_SCHEDULES = [
   { id: "limited_wind",    start_day: 9, end_day: 11, name: "烈風の狂嵐ピックアップガチャ" }
 ]
 PERSONAL_EVENT_SCHEDULES = [
+  { id: "evt_personal_01", name: "【個人】初心者応援物資回収作戦" }
 ]
 ALLIANCE_EVENT_SCHEDULES = [
+  { id: "evt_alliance_01", name: "【同盟】大型要塞共同防衛戦" }
 ]
