@@ -15,7 +15,7 @@ post '/battle/set' do
   # 👾 【敵データの初回ロード】
   # DB（EnemyBattleunit）から今回のステージの敵を呼び出し、HPを持たせた戦闘用セッションを作る
   enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
-  session[:battle_enemies] = enemy_units.map do |unit|
+  enemy_data_array = enemy_units.map do |unit|
     # 1. 旗艦のデータを「EnemyFreet」から探す
     enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
     next nil unless enemy_freet_flag
