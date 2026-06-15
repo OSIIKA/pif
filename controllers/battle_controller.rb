@@ -363,7 +363,7 @@ get '/battle/result' do
       'level' => flagship_obj&.level || 1,
       'exp'   => flagship_obj&.exp || 0,
       'myfreet' => {
-        'id'     => u[:flagship][:id],
+        'id'     => u[:flagship]['id'],
         'name'   => master_ship ? master_ship.name : u[:name],
         'hp'     => current_hp,
         'max_hp' => max_hp,
@@ -381,10 +381,10 @@ get '/battle/result' do
         'level' => sub_obj&.level || 1,
         'exp'   => sub_obj&.exp || 0,
         'myfreet' => {
-          'id'     => sub[:id],
+          'id'     => sub['id'],
           'name'   => sub_master.name,
-          'hp'     => sub[:hp], # 戦闘後の残りHP
-          'max_hp' => sub[:max_hp],
+          'hp'     => sub['hp'], # 戦闘後の残りHP
+          'max_hp' => sub['max_hp'],
           'atk'    => sub_master.atk,
           'info'   => sub_master.info || "てんぷれーと"
         }
