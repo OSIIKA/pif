@@ -150,7 +150,7 @@
                   <% enemy_session = @enemies.find { |e| e[:col] == col && e[:row] == row } %>
                   <% if enemy_session %>
                     <% enemy_total_hp = enemy_session[:flagship][:hp] + enemy_session[:sub_ships].sum { |s| s[:hp] } %>
-                    <% if enemy_total_hp > 0 %>                    <% if enemy_session && enemy_total_hp > 0 %>
+                    <% if enemy_total_hp > 0 %>
                       <g style="cursor: help;">
                         <title>
                           <% if enemy_session %>
