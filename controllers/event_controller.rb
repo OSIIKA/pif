@@ -6,3 +6,5 @@ GACHA_SCHEDULES = [
   { id: "limited_thunder", start_day: 6, end_day: 8,  name: "迅雷の轟電ピックアップガチャ" },
   { id: "limited_wind",    start_day: 9, end_day: 11, name: "烈風の狂嵐ピックアップガチャ" }
 ]
+ALLIANCE_EVENT_SCHEDULES = [
+]
