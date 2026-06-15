@@ -74,6 +74,14 @@
               <div class="status-text" style="font-size: 0.8em; color: <%= available ? '#00ffbc' : '#ff4a4a' %>;">
                 <%= available ? '配置可能' : '旗艦未配備' %>
               </div>
+              <% if available %>
+                <% flagship_obj = UserMyfreet.find_by(id: f.flagship_id) %>
+                <% if flagship_obj && flagship_obj.allfreet %>
+                  <div style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
+                    HP: <span style="color: #2ecc71;"><%= flagship_obj.allfreet.hp %></span> / <%= flagship_obj.allfreet.hp %>
+                  </div>
+                <% end %>
+              <% end %>
             </div>
           <% end %>
         </div>
