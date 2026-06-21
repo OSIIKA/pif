@@ -12,18 +12,28 @@
       <img src="/img/PIFPNGloginup.png">
     </div>
     <div class="sign_form">
-      <% if @error %>
-        <div class="error-message" style="color: #ff4d4f; font-size: 0.9em; margin-bottom: 15px; text-align: center;">
-          ⚠️ <%= @error %>
-        </div>
-      <% end %>
-      <form class="loginform" action="/users/login" method="post">
-        <input type="text" name="name" placeholder="ニックネーム">
-        <input type="password" name="password" placeholder="パスワード">
-        <div class="submit">
-          <input type="submit" value="ログイン">
-        </div>
-      </form>
+      <input type="radio" id="tab-signup" name="form-switch" style="display: none;">
+      <input type="radio" id="tab-login" name="form-switch" style="display: none;" checked>
+
+      <div style="display: flex; justify-content: center; margin-bottom: 20px; gap: 10px;">
+        <label for="tab-signup" style="padding: 10px 20px; background: #333; color: #aaa; border-radius: 4px; cursor: pointer; font-size: 0.9em; flex: 1; text-align: center;" class="label-signup">新規登録</label>
+        <label for="tab-login" style="padding: 10px 20px; background: #333; color: #aaa; border-radius: 4px; cursor: pointer; font-size: 0.9em; flex: 1; text-align: center;" class="label-login">ログイン</label>
+      </div>
+      <div class="login-content-area">
+        <% if @error %>
+          <div class="error-message" style="color: #ff4d4f; font-size: 0.9em; margin-bottom: 15px; text-align: center;">
+            ⚠️ <%= @error %>
+          </div>
+        <% end %>
+        <form class="loginform" action="/users/login" method="post">
+          <input type="text" name="name" placeholder="ニックネーム">
+          <input type="password" name="password" placeholder="パスワード">
+          <div class="submit">
+            <input type="submit" value="ログイン">
+          </div>
+        </form>
+      </div>
+      
       <div style="margin: 20px 0; text-align: center;">
         <hr style="border: 0; border-top: 1px solid #ccc; margin-bottom: 20px;">
         <a href="/auth/google_oauth2" style="display: inline-block; padding: 10px 20px; background-color: #fff; color: #757575; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 0.9em;">
