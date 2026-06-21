@@ -3,7 +3,7 @@ get '/users/new' do
     # 新規登録画面を表示する
     @error = session.delete(:error) # セッションからエラーを取り出し、同時に中身を消去（リロードで消えるようにする）
     @user = User.new # 👈 空のユーザーを用意しておく（画面側でのエラー防止）
-    erb :sign_up
+    erb :sign_in
 end
 post '/users/new' do
     # 新規登録をする（create ではなく new にして @user に格納する）
@@ -21,7 +21,7 @@ post '/users/new' do
       session[:user] = @user.id
       redirect '/home'
     else
-      erb :sign_up
+      erb :sign_in
     end
 end
 get '/users/login' do
