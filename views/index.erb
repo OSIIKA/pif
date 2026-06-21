@@ -8,19 +8,22 @@
   <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-  <header>
-    <div>
-      <h1>紫鉄艦隊</h1>
-    </div>
-  </header>
-  <main>
-    <div class="title-video">
-      <video src="/video/opening.mp4" autoplay muted loop></video>
-    </div>
-    <div class="index_button">
-      <a href="/users/login" class="index_login"><img src="/img/login_user.png"></a>
-      <a href="/users/new" class="index_new"><img src="/img/new_user.png"></a>
-    </div>
-  </main>
+  <a href="/users/login" class="screen-trigger">
+    <header>
+      <div>
+        <h1>紫鉄艦隊</h1>
+      </div>
+    </header>
+    
+    <main>
+      <div class="title-video">
+        <video src="/video/opening.mp4" autoplay muted loop></video>
+      </div>
+      
+      <div class="click-to-start">
+        <p class="blink-text">CLICK TO START</p>
+      </div>
+    </main>
+  </a>
 </body>
 </html>

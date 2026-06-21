@@ -7,6 +7,18 @@ body {
   background-repeat: no-repeat;  /* 繰り返さない */
   width: 100%;
   min-height: 100vh;             /* 画面の高さに合わせる */
+  margin: 0;                     /* 余白をリセット */
+  overflow: hidden;              /* スクロールバーを隠す */
+}
+/* 【追加】画面全体を覆うリンクの設定 */
+.screen-trigger {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  text-decoration: none;         /* リンクの下線を消す */
+  color: inherit;                /* 文字色をリセット */
+  cursor: pointer;               /* マウスカーソルを指マークにする */
+  position: relative;            /* 子要素の配置の基準にする */
 }
 /* スタート画面の動画の設定1 */
 .title-video {
@@ -23,18 +35,28 @@ body {
   height: 100%;
   object-fit: contain; /* はみ出さずに収める */
 }
-/* スタート画面のボタンの設定1 */
-.index_button {
+/* 【追加】CLICK TO START の配置と文字装飾 */
+.click-to-start {
   position: absolute;
-  bottom: 30px;   /* 画面下からの距離 */
-  right: 30px;    /* 画面右からの距離 */
-  display: flex;
-  flex-direction: row; /* 横並びにする */
-  gap: 20px;      /* ボタン同士の間隔 */
+  bottom: 10%;       /* 画面下部から10%の位置に配置 */
+  width: 100%;
+  text-align: center;
 }
-/* スタート画面のボタンの設定2 */
-.index_button img {
-  width: 250px;
-  height: auto;
-  filter: drop-shadow(0 0 10px rgba(0,0,0,0.7));
+
+.blink-text {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+  letter-spacing: 4px; /* 文字の間隔を広げてスタイリッシュに */
+  /* 文字の周りに光彩（グロウ効果）をつけて視認性を上げる */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+  /* 1.5秒かけて無限に点滅アニメーションを繰り返す */
+  animation: blink 1.5s infinite ease-in-out;
+}
+
+/* 【追加】点滅アニメーションの定義 */
+@keyframes blink {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
 }
