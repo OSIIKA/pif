@@ -33,7 +33,45 @@
           </div>
         </form>
       </div>
-      
+      <div class="signup-content-area">
+        <div class="title">
+          <img src="/img/PIFPNGloginup.png">
+        </div>
+        <div id="terms-error-message" style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; text-align: center; border: 1px solid #f5c6cb; font-size: 14px; font-weight: bold; display: none;">
+            ⚠️ 利用規約とプライバシーポリシーへの同意が必要です。
+        </div>
+        <% if @error %>
+          <div style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin-bottom: 20px; text-align: center; border: 1px solid #f5c6cb; font-size: 14px; font-weight: bold;">
+            ⚠️ <%= @error %>
+          </div>
+        <% end %>
+        <% if @user && @user.errors.any? %>
+          <div class="error-messages" style="color: #ff4d4f; font-size: 0.9em; margin-bottom: 15px;">
+            <ul style="list-style: none; padding: 0;">
+              <% @user.errors.full_messages.each do |message| %>
+                <li>⚠️ <%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <form class="signupform" action="/users/new" method="post">
+          <input type="text" name="name" placeholder="ニックネーム">
+          <input type="email" name="mail" placeholder="メールアドレス">
+          <input type="password" name="password" placeholder="パスワード">
+          <input type="submit" value="新規登録">
+        </form>
+        <div id="terms-error-message" style="color: #ff4d4d; font-size: 14px; margin: 10px 0; display: none; font-weight: bold;">
+          ⚠️ 利用規約とプライバシーポリシーへの同意が必要です。
+        </div>
+        <div style="margin: 15px 0; text-align: center; font-size: 14px;">
+          <label style="cursor: pointer; color: #fff;">
+            <input type="checkbox" id="agree-checkbox" style="transform: scale(1.2); margin-right: 8px; vertical-align: middle;">
+            <a href="/terms" target="_blank" style="color: #adc6ff;">利用規約</a> と 
+            <a href="/privacy" target="_blank" style="color: #adc6ff;">プライバシーポリシー</a> に同意します
+          </label>
+        </div>
+      </div>
+
       <div style="margin: 20px 0; text-align: center;">
         <hr style="border: 0; border-top: 1px solid #ccc; margin-bottom: 20px;">
         <a href="/auth/google_oauth2" style="display: inline-block; padding: 10px 20px; background-color: #fff; color: #757575; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 0.9em;">
