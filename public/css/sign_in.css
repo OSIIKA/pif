@@ -47,18 +47,22 @@
   background-color: #45a049;    /* ホバー時の色を変更 */
 }
 
-/* 切り替え用のラジオボタンとコンテンツの表示制御 */
+/* --- ここから最下行に追記 --- */
+
+/* 新規登録（signup）が選択されている時は、ログインフォームを非表示にする */
 #tab-signup:checked ~ .login-content-area {
   display: none;
 }
-#tab-login:checked ~ .login-content-area {
-  display: block;
+
+/* ログイン（login）が選択されている時は、新規登録フォームを非表示にする */
+#tab-login:checked ~ .signup-content-area {
+  display: none;
 }
 
-/* 選択されている方のボタン（ラベル）を明るくハイライト */
+/* 選択されている方のタブボタン（ラベル）をハイライトする（任意） */
 #tab-signup:checked ~ div .label-signup,
 #tab-login:checked ~ div .label-login {
-  background: rgba(255, 255, 255, 0.4) !important; /* 選択時の背景を少し明るく */
-  color: #000 !important;
+  background: #555 !important;
+  color: #fff !important;
   font-weight: bold;
 }
