@@ -46,3 +46,19 @@
 .submit:hover {
   background-color: #45a049;    /* ホバー時の色を変更 */
 }
+
+/* 切り替え用のラジオボタンとコンテンツの表示制御 */
+#tab-signup:checked ~ .login-content-area {
+  display: none;
+}
+#tab-login:checked ~ .login-content-area {
+  display: block;
+}
+
+/* 選択されている方のボタン（ラベル）を明るくハイライト */
+#tab-signup:checked ~ div .label-signup,
+#tab-login:checked ~ div .label-login {
+  background: rgba(255, 255, 255, 0.4) !important; /* 選択時の背景を少し明るく */
+  color: #000 !important;
+  font-weight: bold;
+}
