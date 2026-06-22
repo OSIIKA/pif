@@ -38,14 +38,57 @@ document.addEventListener('DOMContentLoaded', () => {
           
           const ships = await response.json(); // JSONデータをJavaScriptの配列に変換
 
-          // データベースから届いた艦艇データを1つずつカードにして画面に並べる
+          // データベースから届いた艦艇データを1つずつカードにして画面に並べる（簡易情報のみ）
           listContainer.innerHTML = ships.map(ship => `
-            <div style="background: #333; border: 1px solid #444; border-radius: 6px; padding: 15px; text-align: center;">
+            <div class="ship-card" data-id="${ship.id}" style="background: #333; border: 1px solid #444; border-radius: 6px; padding: 15px; text-align: center; cursor: pointer;">
               <img src="${ship.image_url || '/images/default-ship.png'}" alt="${ship.name}" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 10px;">
-              <div style="font-weight: bold; font-size: 1.1em; margin-bottom: 5px;">${ship.name}</div>
-              <div style="color: #aaa; font-size: 0.9em;">${ship.ship_type || '不明'}</div>
+              <div style="font-weight: bold; font-size: 1.1em; margin-bottom: 5px;">${ship.name || '不明'}</div>
+              <div style="color: #aaa; font-size: 0.9em;">ステージ: ${ship.stage || '不明'}</div>
             </div>
           `).join('');
+
+          // カードクリック時に詳細モーダルを開くイベントを設定
+          listContainer.querySelectorAll('.ship-card').forEach(card => {
+            card.addEventListener('click', () => {
+              const shipId = parseInt(card.dataset.id);
+              const selectedShip = ships.find(s => s.id === shipId);
+
+              if (selectedShip) {
+                const detailContent = document.getElementById('ship-detail-content');
+                const detailOverlay = document.getElementById('ship-detail-overlay');
+
+                // 戦闘に関連するカラムのみを詳細に表示（空なら「不明」）
+                if (detailContent && detailOverlay) {
+                  detailContent.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                      <img src="${selectedShip.image_url || '/images/default-ship.png'}" alt="${selectedShip.name}" style="width: 60%; height: auto; border-radius: 6px;">
+                      <h3 style="font-size: 1.5em; margin: 10px 0 5px 0;">${selectedShip.name || '不明'}</h3>
+                      <span style="background: #444; padding: 2px 8px; border-radius: 4px; font-size: 0.9em;">ステージ: ${selectedShip.stage || '不明'}</span>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                      <tr style="border-bottom: 1px solid #333;">
+                        <td style="padding: 8px; color: #aaa;">HP</td>
+                        <td style="padding: 8px; text-align: right; font-weight: bold;">${selectedShip.hp || '不明'} / ${selectedShip.max_hp || '不明'}</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #333;">
+                        <td style="padding: 8px; color: #aaa;">攻撃力 (ATK)</td>
+                        <td style="padding: 8px; text-align: right; font-weight: bold; color: #ff4d4f;">${selectedShip.atk || '不明'}</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #333;">
+                        <td style="padding: 8px; color: #aaa;">レア度</td>
+                        <td style="padding: 8px; text-align: right;">${selectedShip.rarity || '不明'}</td>
+                      </tr>
+                    </table>
+                    <div style="background: #252525; padding: 12px; border-radius: 4px; font-size: 0.95em; line-height: 1.5; color: #ddd;">
+                      <strong style="color: #fff; display: block; margin-bottom: 5px;">艦艇情報</strong>
+                      ${selectedShip.info || '詳細情報はありません。'}
+                    </div>
+                  `;
+                  detailOverlay.style.display = 'flex';
+                }
+              }
+            });
+          });
 
         } catch (error) {
           if (listContainer) {
@@ -61,6 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeBtn && overlay) {
     closeBtn.addEventListener('click', () => {
       overlay.style.display = 'none';
+    });
+  }
+  // 3. 詳細オーバーレイ（2枚目の壁）の閉じるボタンを押したら閉じる
+  const closeDetailBtn = document.getElementById('close-detail-btn');
+  const detailOverlay = document.getElementById('ship-detail-overlay');
+  if (closeDetailBtn && detailOverlay) {
+    closeDetailBtn.addEventListener('click', () => {
+      detailOverlay.style.display = 'none';
     });
   }
 });
