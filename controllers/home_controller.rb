@@ -38,6 +38,18 @@ post '/users/update_name' do
   redirect '/home' # 💡 もしホームのURLが '/home' でなければ、実際のルートに合わせて書き換えてください
 end
 
+# 図鑑用の全艦艇データを取得するAPI
+# APIとは、画面をリロードせずに、サーバーからデータを取得するための窓口のこと
+get '/api/ships' do
+  # ログインチェック（未ログインなら401エラーを返すなど、セキュリティ用）
+  @user = User.find_by(id: session[:user])
+  redirect '/users/new' if @user.nil?
+  # ここから下は、全艦艇データをJSON形式で返す処理
+  content_type :json
+  ships = Allfreet.all # allfreetテーブルの全レコードを取得
+  ships.to_json
+end
+
 # 💡 [新規追加] ホーム画面からのチャット投稿を受け付ける窓口
 post '/home/chat' do
   @user = User.find_by(id: session[:user])
