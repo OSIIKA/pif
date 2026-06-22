@@ -54,12 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
               const selectedShip = ships.find(s => s.id === shipId);
 
               if (selectedShip) {
-                const detailContent = document.getElementById('ship-detail-content');
+                const mainPanel = document.getElementById('detail-main-panel');
                 const detailOverlay = document.getElementById('ship-detail-overlay');
 
-                // 戦闘に関連するカラムのみを詳細に表示（空なら「不明」）
-                if (detailContent && detailOverlay) {
-                  detailContent.innerHTML = `
+                // ── 内部関数①：ステータスタブのHTMLを組み立てる ──
+                const renderStatusTab = () => {
+                  return `
                     <div style="text-align: center; margin-bottom: 20px;">
                       <img src="${selectedShip.image_url || '/images/default-ship.png'}" alt="${selectedShip.name}" style="width: 60%; height: auto; border-radius: 6px;">
                       <h3 style="font-size: 1.5em; margin: 10px 0 5px 0;">${selectedShip.name || '不明'}</h3>
@@ -84,6 +84,77 @@ document.addEventListener('DOMContentLoaded', () => {
                       ${selectedShip.info || '詳細情報はありません。'}
                     </div>
                   `;
+                };
+
+                // ── 内部関数②：入手方法（ガチャ）タブのHTMLを組み立てる ──
+                const renderGachaTab = () => {
+                  // データベースのフラグから確率の文字列を生成（空 or 偽なら「排出なし」）
+                  const normalProb = selectedShip.normal ? `${selectedShip.normal}%` : '排出なし';
+                  const rareProb = selectedShip.rare ? `${selectedShip.rare}%` : '排出なし';
+                  const limitedProb = selectedShip.limited ? `${selectedShip.limited}%` : '排出なし';
+
+                  return `
+                    <h3 style="font-size: 1.3em; margin-top: 0; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 8px;">🎲 入手方法・ガチャ排出確率</h3>
+                    <p style="font-size: 0.9em; color: #aaa; margin-bottom: 20px;">各ガチャにおけるこの艦艇のストレートな排出確率です。</p>
+                    
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <tr style="border-bottom: 1px solid #333; background: rgba(255,255,255,0.02);">
+                        <td style="padding: 12px; font-weight: bold;">🪙 ノーマルガチャ</td>
+                        <td style="padding: 12px; text-align: right; font-weight: bold; color: ${selectedShip.normal ? '#4caf50' : '#888'};">${normalProb}</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #333; background: rgba(255,255,255,0.04);">
+                        <td style="padding: 12px; font-weight: bold;">💎 レアガチャ</td>
+                        <td style="padding: 12px; text-align: right; font-weight: bold; color: ${selectedShip.rare ? '#2196f3' : '#888'};">${rareProb}</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #333; background: rgba(255,255,255,0.02);">
+                        <td style="padding: 12px; font-weight: bold;">🔥 期間限定ガチャ</td>
+                        <td style="padding: 12px; text-align: right; font-weight: bold; color: ${selectedShip.limited ? '#ff9800' : '#888'};">${limitedProb}</td>
+                      </tr>
+                    </table>
+                  `;
+                };
+
+                // 初期状態として「ステータス」タブの内容を表示
+                if (mainPanel && detailOverlay) {
+                  mainPanel.innerHTML = renderStatusTab();
+                  
+                  // タブボタンの選択状態をリセット（ステータスをアクティブに）
+                  const tabButtons = document.querySelectorAll('.detail-tab-btn');
+                  tabButtons.forEach(btn => {
+                    if (btn.dataset.tab === 'status') {
+                      btn.style.background = '#333';
+                      btn.style.color = '#fff';
+                      btn.style.borderColor = '#555';
+                    } else {
+                      btn.style.background = '#222';
+                      btn.style.color = '#aaa';
+                      btn.style.borderColor = '#333';
+                    }
+                  });
+
+                  // タブのクリックイベントをバインド
+                  tabButtons.forEach(button => {
+                    // 既存のイベントリスナーが重複しないよう、クローン化などでなくシンプルに毎回上書き
+                    button.onclick = (e) => {
+                      // スタイル切り替え
+                      tabButtons.forEach(b => {
+                        b.style.background = '#222';
+                        b.style.color = '#aaa';
+                        b.style.borderColor = '#333';
+                      });
+                      e.target.style.background = '#333';
+                      e.target.style.color = '#fff';
+                      e.target.style.borderColor = '#555';
+
+                      // コンテンツ切り替え
+                      if (e.target.dataset.tab === 'status') {
+                        mainPanel.innerHTML = renderStatusTab();
+                      } else if (e.target.dataset.tab === 'gacha') {
+                        mainPanel.innerHTML = renderGachaTab();
+                      }
+                    };
+                  });
+
                   detailOverlay.style.display = 'flex';
                 }
               }
