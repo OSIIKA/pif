@@ -32,9 +32,9 @@ end
 # 以下、Sinatra のルーティングやモデル定義
 
 # セッション機能
-enable :sessions
-# 環境変数から鍵を取得し、無ければ開発用の仮の鍵を使う
-set :session_secret, ENV.fetch('SESSION_SECRET', 'this_is_a_secret_key_for_development_only_12345')
+# Rack::Session::Pool を使い、セッションをサーバー側に保存して
+# クッキーの4KB制限による保存失敗を回避する
+use Rack::Session::Pool, expire_after: 2592000, secret: ENV.fetch('SESSION_SECRET', 'this_is_a_secret_key_for_development_only_12345')
 set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は4567をデフォルトに設定
 puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#{settings.port} ーーーーーーーーーーーーーーーーーーーー"
 
