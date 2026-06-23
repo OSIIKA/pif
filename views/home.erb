@@ -53,10 +53,11 @@
     <div id="event-info-container" style="max-width: 600px; margin: 15px auto; padding: 15px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #ff6b6b; border-radius: 8px; color: #fff; text-align: center; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);">
       <div style="font-size: 0.9em; color: #ffbc00; font-weight: bold; margin-bottom: 8px;">📢 開催中のイベント</div>
       <div id="event-display" style="font-size: 1.1em; font-weight: bold; color: #fff; min-height: 24px;">
-        <% if (@personal_events && @personal_events.any?) || (@alliance_events && @alliance_events.any?) %>
+        <!-- 常に span を出力し、クライアント側 JS が確実に取得できるようにする -->
+        <% if @active_events && @active_events.any? %>
           <span id="current-event-text"></span>
         <% else %>
-          <span style="color: #aaa;">現在開催中のイベントはありません</span>
+          <span id="current-event-text" style="color: #aaa;">現在開催中のイベントはありません</span>
         <% end %>
       </div>
     </div>
