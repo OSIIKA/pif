@@ -113,42 +113,6 @@
       ⚓ 艦隊
     </a>
     
-    <form action="/home/freet" method="post">
-      <input type="text" name="name" placeholder="艦名">
-      <input type="int" name="hp" placeholder="HP">
-      <input type="int" name="atk" placeholder="攻撃">
-      <input type="text" name="info" placeholder="情報">
-      <input type="submit" value="新規登録">
-    </form>
-    <button id="toggle-storys">表示する</button>
-    <div class="storys" style="display: none;">
-      <form action="/home/battle" method="post">
-        <button type="submit" name="story" value="0">バトル</button>
-        <button type="submit" name="story" value="1">バトル</button>
-      </form>
-      <form action="/home/story" method="post">
-        <!input type="submit" value="第0話">
-        <button type="submit" name="story" value="0">第0話</button>
-        <button type="submit" name="story" value="1">第1話</button>
-      </form>
-    </div>
-    
-    <button id="toggle-units">表示する</button>
-    <div class="units" style="display: none;">
-      <% @freets.each do |freet| %>
-        <div class="unit">
-          <p><%= freet['allfreet']['name'] %></p>
-          <p>Lv：<%= freet['level'] %>Exp：<%= freet['exp'] %></p>
-          <p>HP：<%= freet['allfreet']['max_hp'] %></p>
-          <p>攻撃：<%= freet['allfreet']['atk'] %></p>
-          <p>情報：<%= freet['allfreet']['info'] %></p>
-          <form action="/home/levelup" method="post">
-            <input type="hidden" name="unit_id" value="<%= freet['id'] %>">
-            <button type="submit">レベルアップ</button>
-          </form>
-        </div>
-      <% end %>
-    </div>
     <div id="sortie-overlay" class="sortie-overlay">
       <div class="sortie-overlay-content">
         <h2>出撃メニュー</h2>
