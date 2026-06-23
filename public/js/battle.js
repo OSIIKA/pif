@@ -43,10 +43,39 @@ window.addEventListener('DOMContentLoaded', () => {
   const battleForm = document.getElementById('battleStartForm');
   if (!battleForm) return;
 
-  battleForm.addEventListener('submit', (event) => {
-    const hiddenInputs = Array.from(battleForm.querySelectorAll('input[type="hidden"][name^="fleet_"][name$="_pos"]'));
-    const anyPlaced = hiddenInputs.some((input) => input.value.trim() !== '');
+  const allHiddenInputs = Array.from(battleForm.querySelectorAll('input[type="hidden"][name^="fleet_"][name$="_pos"]'));
 
+  const findHexCell = (node) => {
+    let current = node;
+    while (current) {
+      if (current.classList && current.classList.contains('hex-cell')) {
+        return current;
+      }
+      current = current.parentNode;
+    }
+    return null;
+  };
+
+  const refreshFleetPositions = () => {
+    allHiddenInputs.forEach((input) => { input.value = ''; });
+
+    const placedIcons = document.querySelectorAll('.placed-fleet-icon');
+    placedIcons.forEach((icon) => {
+      const fleetNum = icon.dataset.fleetNum;
+      const cell = findHexCell(icon);
+      if (!fleetNum || !cell) return;
+
+      const hiddenInput = document.getElementById(`input_fleet_${fleetNum}_pos`);
+      if (!hiddenInput) return;
+
+      hiddenInput.value = `${cell.dataset.col},${cell.dataset.row}`;
+    });
+  };
+
+  battleForm.addEventListener('submit', (event) => {
+    refreshFleetPositions();
+
+    const anyPlaced = allHiddenInputs.some((input) => input.value.trim() !== '');
     if (!anyPlaced) {
       event.preventDefault();
       alert('⚠️ まずは1つ以上の艦隊を配置してから、戦闘開始を押してください。');
