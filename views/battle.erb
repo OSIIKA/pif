@@ -38,7 +38,7 @@
       <% if request.path_info == '/battle/set' %>
         <div id="phase-anim-container" style="position: fixed; top: 40%; left: -100%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; transition: all 0.5s ease-out; white-space: nowrap;">
           <h2 style="color: #ffbc00; font-size: 2.5em; font-weight: bold; font-family: monospace; text-shadow: 0 0 20px rgba(255,188,0,0.6); background: rgba(5,5,15,0.8); padding: 15px 40px; border-top: 2px solid #ffbc00; border-bottom: 2px solid #ffbc00;">
-            ⚡ 第一次海域・編成フェーズ進行中 ⚡
+            ⚡ 第<%= @stage %>海域・編成フェーズ進行中 ⚡
           </h2>
         </div>
         <% if @battle_error %>
@@ -93,13 +93,13 @@
       <% elsif request.path_info == '/battle/prepare' %>
         <div id="phase-anim-container" style="position: fixed; top: 40%; left: -100%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; transition: all 0.5s ease-out; white-space: nowrap;">
           <h2 style="color: #ff4a4a; font-size: 2.5em; font-weight: bold; font-family: monospace; text-shadow: 0 0 20px rgba(255,74,74,0.6); background: rgba(15,5,5,0.8); padding: 15px 40px; border-top: 2px solid #ff4a4a; border-bottom: 2px solid #ff4a4a;">
-            ⚡ 第一次海域・哨戒戦技フェーズ進行中 ⚡
+            ⚡ 第<%= @stage %>海域・哨戒戦技フェーズ進行中 ⚡
           </h2>
         </div>
       <% elsif request.path_info == '/battle/start' %>
         <div id="phase-anim-container" style="position: fixed; top: 40%; left: -100%; transform: translate(-50%, -50%); z-index: 10000; pointer-events: none; transition: all 0.5s ease-out; white-space: nowrap;">
           <h2 style="color: #ff4a4a; font-size: 2.5em; font-weight: bold; font-family: monospace; text-shadow: 0 0 20px rgba(255,74,74,0.6); background: rgba(15,5,5,0.8); padding: 15px 40px; border-top: 2px solid #ff4a4a; border-bottom: 2px solid #ff4a4a;">
-            ⚡ 第一次海域・交戦フェーズ進行中 ⚡
+            ⚡ 第<%= @stage %>海域・交戦フェーズ進行中 ⚡
           </h2>
         </div>
       <% else %>
