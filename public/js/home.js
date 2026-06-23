@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
               if (selectedShip) {
                 const mainPanel = document.getElementById('detail-main-panel');
-                const detailOverlay = document.getElementById('ship-detail-overlay');
+                const listContainer = document.getElementById('encyclopedia-list');
+                const detailContent = document.getElementById('ship-detail-content');
 
                 // ── 内部関数①：ステータスタブのHTMLを組み立てる ──
                 const renderStatusTab = () => {
@@ -115,7 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 // 初期状態として「ステータス」タブの内容を表示
-                if (mainPanel && detailOverlay) {
+                if (mainPanel && detailContent) {
+                  // リスト表示を非表示、詳細表示を表示
+                  if (listContainer) listContainer.style.display = 'none';
+                  detailContent.style.display = 'flex';
+                  
                   mainPanel.innerHTML = renderStatusTab();
                   
                   // タブボタンの選択状態をリセット（ステータスをアクティブに）
@@ -154,8 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
                       }
                     };
                   });
-
-                  detailOverlay.style.display = 'flex';
                 }
               }
             });
@@ -177,12 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
       overlay.style.display = 'none';
     });
   }
-  // 3. 詳細オーバーレイ（2枚目の壁）の閉じるボタンを押したら閉じる
-  const closeDetailBtn = document.getElementById('close-detail-btn');
-  const detailOverlay = document.getElementById('ship-detail-overlay');
-  if (closeDetailBtn && detailOverlay) {
-    closeDetailBtn.addEventListener('click', () => {
-      detailOverlay.style.display = 'none';
+  // 3. 詳細表示内の「戻る」ボタンをクリックしたらリスト表示に戻す
+  const backBtn = document.getElementById('detail-back-btn');
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      document.getElementById('encyclopedia-list').style.display = 'grid';
+      document.getElementById('ship-detail-content').style.display = 'none';
     });
   }
 });
