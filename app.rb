@@ -23,7 +23,7 @@ set :views, 'views'
   #set :database, ENV['DATABASE_URL']
 #end
 # 🚀 今日（仮のリリース日）を定義
-RELEASE_DATE = Date.parse("2026-06-13")
+RELEASE_DATE = Date.parse("2026-06-23")
 configure :development do
   # ローカル開発ではローカルのPostgreSQLに接続
   set :database, "postgres://postgres:YAMATO2199@localhost:5433/pif_development"# 自分のローカルデータベースの名前に変更完了

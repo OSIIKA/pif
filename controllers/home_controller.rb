@@ -11,8 +11,46 @@ get '/home' do
     # 💡 [追記] 全体チャットの最新30件を、古い順（時系列順）で取得して画面に渡す
     # 最新の30件を降順で取ってから、画面表示のために reverse で昇順に戻しています
     @global_chats = Chat.where(category: 'global').order(created_at: :desc).limit(30).reverse
-    @personal_events = PERSONAL_EVENT_SCHEDULES
-    @alliance_events = ALLIANCE_EVENT_SCHEDULES
+
+    # イベントの有効化判定（RELEASE_DATE を基準に経過日で判定）
+    begin
+      current_day = (Date.today - RELEASE_DATE).to_i
+    rescue => _e
+      current_day = 0
+    end
+
+    # 期間指定のあるガチャスケジュールから、現在有効なものを抽出
+    active_gacha = GACHA_SCHEDULES.select do |g|
+      g[:start_day].to_i <= current_day && current_day <= g[:end_day].to_i
+    end
+
+    # PERSONAL / ALLIANCE の配列は start/end を持たない場合があるため、
+    # start_day があればそれで判定、なければ常時有効と見なす
+    active_personal = PERSONAL_EVENT_SCHEDULES.select do |e|
+      if e.key?(:start_day)
+        e[:start_day].to_i <= current_day && current_day <= e.fetch(:end_day, e[:start_day]).to_i
+      else
+        true
+      end
+    end
+
+    active_alliance = ALLIANCE_EVENT_SCHEDULES.select do |e|
+      if e.key?(:start_day)
+        e[:start_day].to_i <= current_day && current_day <= e.fetch(:end_day, e[:start_day]).to_i
+      else
+        true
+      end
+    end
+
+    # ビュー側で扱いやすいように総合的な配列を作る
+    @active_events = []
+    active_gacha.each { |g| @active_events << { id: g[:id], name: g[:name], type: 'gacha', color: '#ff8c00' } }
+    active_personal.each { |e| @active_events << { id: e[:id], name: e[:name], type: 'personal', color: '#722ed1' } }
+    active_alliance.each { |e| @active_events << { id: e[:id], name: e[:name], type: 'alliance', color: '#389e0d' } }
+
+    # 後方互換性のため、必要であれば個別配列も渡す
+    @personal_events = active_personal
+    @alliance_events = active_alliance
   end
     
   erb :home

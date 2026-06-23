@@ -61,20 +61,9 @@
       </div>
     </div>
 
-    <!-- JavaScriptデータ埋め込み：イベント配列をJavaScriptでアクセス可能にする -->
+    <!-- JavaScriptデータ埋め込み：サーバー側で判定した @active_events をそのまま渡す -->
     <script>
-      window.eventList = [
-        <% if @personal_events && @personal_events.any? %>
-          <% @personal_events.each do |evt| %>
-            { name: "<%= evt[:name] %>", color: "#722ed1" },
-          <% end %>
-        <% end %>
-        <% if @alliance_events && @alliance_events.any? %>
-          <% @alliance_events.each do |evt| %>
-            { name: "<%= evt[:name] %>", color: "#389e0d" },
-          <% end %>
-        <% end %>
-      ];
+      window.eventList = <%= (@active_events || []).to_json %>;
     </script>
 
     <button id="open-encyclopedia-btn" style="padding: 10px 20px; background: #1890ff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
