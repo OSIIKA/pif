@@ -73,59 +73,38 @@ get '/battle/set' do
 
   @fleets = @user.user_battleunits.order(:fleet_number)
   
-  # 🔍 敵ユニットの位置情報だけをセッションに保存（詳細データは /battle/turn で再構築）
   if session[:battle_stage].blank?
     session[:battle_stage] = @stage
   end
 
   if session[:battle_enemies].blank?
     enemy_units = EnemyBattleunit.where(battle_stage_id: @stage)
-    # 💾 最小限のデータ：id, col, row だけを保存
-    session[:battle_enemies] = enemy_units.map { |unit|
+    session[:battle_enemies] = enemy_units.map do |unit|
+      enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
+      next nil unless enemy_freet_flag
+      flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
+      next nil unless flagship
+
       {
         id: unit.id,
+        name: "👾 #{flagship.name}",
         col: unit.col,
         row: unit.row,
-        flagship_id: unit.flagship_id,
-        sub_ship_ids: (1..6).map { |i| unit.send("sub_ship_#{i}_id") }
+        flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp },
+        sub_ships: (1..6).map { |i|
+          ship_id = unit.send("sub_ship_#{i}_id")
+          next nil if ship_id.blank?
+
+          ef_sub = EnemyFreet.find_by(id: ship_id)
+          next nil unless ef_sub
+          sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+          sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil
+        }.compact
       }
-    }
+    end.compact
   end
 
-  # 敵の位置情報のみをセッションに保存
-  @enemy_positions = session[:battle_enemies] || []
-  
-  # 💾 敵の詳細情報をビュー用に再構築（セッションには保存しない）
-  @enemies = @enemy_positions.map do |enemy_config|
-    enemy_unit = EnemyBattleunit.find_by(id: enemy_config[:id])
-    next nil unless enemy_unit
-
-    enemy_freet_flag = EnemyFreet.find_by(id: enemy_config[:flagship_id])
-    next nil unless enemy_freet_flag
-
-    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
-    next nil unless flagship
-
-    sub_ships = []
-    enemy_config[:sub_ship_ids].each do |ship_id|
-      next if ship_id.blank?
-      ef_sub = EnemyFreet.find_by(id: ship_id)
-      next unless ef_sub
-      sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
-      if sub_ship
-        sub_ships << { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp }
-      end
-    end
-
-    {
-      id: enemy_unit.id,
-      name: "👾 #{flagship.name}",
-      col: enemy_config[:col],
-      row: enemy_config[:row],
-      flagship: { id: enemy_config[:flagship_id], hp: flagship.hp, max_hp: flagship.hp },
-      sub_ships: sub_ships
-    }
-  end.compact
+  @enemies = session[:battle_enemies] || []
 
   # 配置が完了したかどうかを判定
   @battle_allies_deployed = session[:battle_allies_config].present?
@@ -259,6 +238,11 @@ get '/battle/turn' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
 
+  puts "====== /battle/turn 到達 ======"
+  puts "session[:battle_allies_config] = #{session[:battle_allies_config].inspect}"
+  puts "session[:battle_enemies] = #{session[:battle_enemies].inspect}"
+  puts "========================================"
+
   # 💾 セッションに保存された配置情報から詳細データを再構築
   if session[:battle_allies_config].blank? || session[:battle_enemies].blank?
     redirect '/battle/set'
@@ -299,37 +283,8 @@ get '/battle/turn' do
     }
   end
 
-  # 🔨 敵データの再構築
-  @enemies = session[:battle_enemies].map do |enemy_config|
-    enemy_unit = EnemyBattleunit.find_by(id: enemy_config[:id])
-    next nil unless enemy_unit
-
-    enemy_freet_flag = EnemyFreet.find_by(id: enemy_config[:flagship_id])
-    next nil unless enemy_freet_flag
-
-    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
-    next nil unless flagship
-
-    sub_ships = []
-    enemy_config[:sub_ship_ids].each do |ship_id|
-      next if ship_id.blank?
-      ef_sub = EnemyFreet.find_by(id: ship_id)
-      next unless ef_sub
-      sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
-      if sub_ship
-        sub_ships << { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp }
-      end
-    end
-
-    {
-      id: enemy_unit.id,
-      name: "👾 #{flagship.name}",
-      col: enemy_config[:col],
-      row: enemy_config[:row],
-      flagship: { id: enemy_config[:flagship_id], hp: flagship.hp, max_hp: flagship.hp },
-      sub_ships: sub_ships
-    }
-  end.compact
+  # 🔨 敵データは既存セッションの詳細データをそのまま使う
+  @enemies = session[:battle_enemies] || []
 
   @turn_logs = []
 
