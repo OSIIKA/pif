@@ -41,6 +41,11 @@
             ⚡ 第一次海域・編成フェーズ進行中 ⚡
           </h2>
         </div>
+        <% if @battle_error %>
+          <div style="background: #3d0a0a; color: #ffdddd; border: 1px solid #ff4a4a; padding: 14px; margin-bottom: 18px; border-radius: 8px;">
+            ⚠️ <%= @battle_error %>
+          </div>
+        <% end %>
         <div style="background: #222; border: 1px solid #444; padding: 20px; text-align: left; max-width: 500px; margin: 0 auto; border-radius: 6px;">
           <h3 style="color: #ffbc00; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px;">
             📊 出撃艦隊データ確認
@@ -213,7 +218,7 @@
 
       <% if request.path_info == '/battle/set' %>
         <div style="margin-top: 40px;">
-          <form action="/battle/start" method="post" style="display: inline-block; margin-right: 10px;">
+          <form id="battleStartForm" action="/battle/start" method="post" style="display: inline-block; margin-right: 10px;">
             <input type="hidden" name="stage" value="<%= @stage %>">
             <input type="hidden" id="input_fleet_1_pos" name="fleet_1_pos" value="">
             <input type="hidden" id="input_fleet_2_pos" name="fleet_2_pos" value="">

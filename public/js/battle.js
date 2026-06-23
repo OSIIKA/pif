@@ -38,6 +38,22 @@ function handlePaletteDragStart(event) {
   event.dataTransfer.setData('application/json', JSON.stringify(fleetData));
 }
 
+// フォーム送信前に少なくとも1つの艦隊が配置されているかを確認する
+window.addEventListener('DOMContentLoaded', () => {
+  const battleForm = document.getElementById('battleStartForm');
+  if (!battleForm) return;
+
+  battleForm.addEventListener('submit', (event) => {
+    const hiddenInputs = Array.from(battleForm.querySelectorAll('input[type="hidden"][name^="fleet_"][name$="_pos"]'));
+    const anyPlaced = hiddenInputs.some((input) => input.value.trim() !== '');
+
+    if (!anyPlaced) {
+      event.preventDefault();
+      alert('⚠️ まずは1つ以上の艦隊を配置してから、戦闘開始を押してください。');
+    }
+  });
+});
+
 // 配置済みアイコンの再ドラッグ（位置調整）開始
 function handlePlacedIconDragStart(event) {
   const icon = event.target;

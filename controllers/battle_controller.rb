@@ -104,6 +104,9 @@ get '/battle/set' do
   @enemies = session[:battle_enemies] || [] # 👈 後ろに「|| []」を追記
   @allies = session[:battle_allies]   # 布陣前は nil、出撃後はデータが入る
 
+  # 失敗時のエラーメッセージを画面に渡す
+  @battle_error = session.delete(:battle_error)
+
   # パラメータによるフェーズ管理は廃止。実データ（@allies）があるかどうかで準備状態を自動判定
   if @allies
     @prep_logs = ["両軍、布陣完了。これより戦闘フェーズに移行します！"]
@@ -155,6 +158,11 @@ post '/battle/start' do
       flagship: flagship_data,
       sub_ships: sub_ships_data
     }
+  end
+
+  if battle_allies.empty?
+    session[:battle_error] = "少なくとも1つの艦隊を配置してから出撃してください。"
+    redirect '/battle/set'
   end
 
   session[:battle_allies] = battle_allies
