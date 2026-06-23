@@ -69,46 +69,72 @@ get '/battle/set' do
   @stage = session[:battle_stage] || 1
   
   # 古い味方配置を一旦クリアする
-  session[:battle_allies] = nil if params[:phase].blank? && !session[:battle_enemies].blank?
+  session[:battle_allies_config] = nil if params[:phase].blank?
 
   @fleets = @user.user_battleunits.order(:fleet_number)
   
-  # 🔍 もしストーリーから直接GETへ飛んできて敵データがまだ無ければ、ここで正しくロードする
-  if session[:battle_enemies].blank?
-    enemy_units = EnemyBattleunit.where(battle_stage_id: @stage)
-    session[:battle_enemies] = enemy_units.map do |unit|
-      enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
-      next nil unless enemy_freet_flag
-      flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
-      next nil unless flagship
-      
-      {
-        id: unit.id, 
-        name: "👾 #{flagship.name}", 
-        col: unit.col, 
-        row: unit.row, 
-        flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
-        sub_ships: (1..6).map { |i| 
-          ship_id = unit.send("sub_ship_#{i}_id")
-          next nil if ship_id.blank? 
-          ef_sub = EnemyFreet.find_by(id: ship_id)
-          next nil unless ef_sub
-          sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
-          sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
-        }.compact 
-      }
-    end.compact
+  # 🔍 敵ユニットの位置情報だけをセッションに保存（詳細データは /battle/turn で再構築）
+  if session[:battle_stage].blank?
+    session[:battle_stage] = @stage
   end
 
-  # POSTで生成された「本物の敵データ」がここに入る（リロードしても絶対に消えない）
-  @enemies = session[:battle_enemies] || [] # 👈 後ろに「|| []」を追記
-  @allies = session[:battle_allies]   # 布陣前は nil、出撃後はデータが入る
+  if session[:battle_enemies].blank?
+    enemy_units = EnemyBattleunit.where(battle_stage_id: @stage)
+    # 💾 最小限のデータ：id, col, row だけを保存
+    session[:battle_enemies] = enemy_units.map { |unit|
+      {
+        id: unit.id,
+        col: unit.col,
+        row: unit.row,
+        flagship_id: unit.flagship_id,
+        sub_ship_ids: (1..6).map { |i| unit.send("sub_ship_#{i}_id") }
+      }
+    }
+  end
+
+  # 敵の位置情報のみをセッションに保存
+  @enemy_positions = session[:battle_enemies] || []
+  
+  # 💾 敵の詳細情報をビュー用に再構築（セッションには保存しない）
+  @enemies = @enemy_positions.map do |enemy_config|
+    enemy_unit = EnemyBattleunit.find_by(id: enemy_config[:id])
+    next nil unless enemy_unit
+
+    enemy_freet_flag = EnemyFreet.find_by(id: enemy_config[:flagship_id])
+    next nil unless enemy_freet_flag
+
+    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
+    next nil unless flagship
+
+    sub_ships = []
+    enemy_config[:sub_ship_ids].each do |ship_id|
+      next if ship_id.blank?
+      ef_sub = EnemyFreet.find_by(id: ship_id)
+      next unless ef_sub
+      sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+      if sub_ship
+        sub_ships << { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp }
+      end
+    end
+
+    {
+      id: enemy_unit.id,
+      name: "👾 #{flagship.name}",
+      col: enemy_config[:col],
+      row: enemy_config[:row],
+      flagship: { id: enemy_config[:flagship_id], hp: flagship.hp, max_hp: flagship.hp },
+      sub_ships: sub_ships
+    }
+  end.compact
+
+  # 配置が完了したかどうかを判定
+  @battle_allies_deployed = session[:battle_allies_config].present?
 
   # 失敗時のエラーメッセージを画面に渡す
   @battle_error = session.delete(:battle_error)
 
-  # パラメータによるフェーズ管理は廃止。実データ（@allies）があるかどうかで準備状態を自動判定
-  if @allies
+  # 配置完了後のログを表示
+  if @battle_allies_deployed
     @prep_logs = ["両軍、布陣完了。これより戦闘フェーズに移行します！"]
   end
 
@@ -183,36 +209,18 @@ post '/battle/start' do
     redirect '/battle/set'
   end
 
-  session[:battle_allies] = battle_allies
+  # 💾 セッションサイズ削減：最小限のデータだけを保存
+  # fleet_number, col, row だけをセッションに保存し、詳細データは /battle/turn で再構築
+  session[:battle_allies_config] = battle_allies.map { |a| 
+    { fleet_number: a[:fleet_number], col: a[:col], row: a[:row] }
+  }
 
   # 👾 敵のデータ構築（enemy_battleunits -> enemy_freets -> allfreets）
+  # 敵データは既に get '/battle/set' で session に入っているはず
+  # ここでは敵の詳細データ（大量メモリ）をセッションから削除し、
+  # 必要な時に /battle/turn で再構築するようにする
   stage = (params[:stage] || 1).to_i
-  if session[:battle_enemies].blank?
-    enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
-    session[:battle_enemies] = enemy_units.map do |unit|
-      enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
-      next nil unless enemy_freet_flag
-    
-      flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
-      next nil unless flagship
-
-      {
-        id: unit.id, 
-        name: "👾 #{flagship.name}", 
-        col: unit.col, 
-        row: unit.row, 
-        flagship: { id: unit.flagship_id, hp: flagship.hp, max_hp: flagship.hp }, 
-        sub_ships: (1..6).map { |i| 
-          ship_id = unit.send("sub_ship_#{i}_id")
-          next nil if ship_id.blank? 
-          ef_sub = EnemyFreet.find_by(id: ship_id)
-          next nil unless ef_sub
-          sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
-          sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
-        }.compact 
-      }
-    end.compact
-  end
+  session[:battle_stage] = stage
 
   session[:battle_logs] = []
   redirect '/battle/turn' #  /battle/turn へ
@@ -251,12 +259,78 @@ get '/battle/turn' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
 
-  if session[:battle_allies].blank? || session[:battle_enemies].blank?
+  # 💾 セッションに保存された配置情報から詳細データを再構築
+  if session[:battle_allies_config].blank? || session[:battle_enemies].blank?
     redirect '/battle/set'
   end
 
-  @allies = session[:battle_allies]
-  @enemies = session[:battle_enemies]
+  # 🔨 味方データの再構築
+  @allies = []
+  session[:battle_allies_config].each do |config|
+    fleet_num = config[:fleet_number]
+    fleet_data = @user.user_battleunits.find_by(fleet_number: fleet_num)
+    next unless fleet_data
+
+    flagship = UserMyfreet.find_by(id: fleet_data.flagship_id)
+    next unless flagship
+
+    base_flag_hp = flagship.allfreet.hp
+    base_flag_hp *= 10 if fleet_num == 1
+
+    flagship_data = { id: fleet_data.flagship_id, hp: base_flag_hp, max_hp: base_flag_hp }
+
+    sub_ships_data = []
+    (1..6).each do |i|
+      ship_id = fleet_data.send("sub_ship_#{i}_id")
+      next if ship_id.blank?
+      sub_ship = UserMyfreet.find_by(id: ship_id)
+      if sub_ship
+        sub_ships_data << { id: ship_id, hp: sub_ship.allfreet.hp, max_hp: sub_ship.allfreet.hp }
+      end
+    end
+
+    @allies << {
+      fleet_number: fleet_num,
+      name: "第#{fleet_num}艦隊",
+      col: config[:col],
+      row: config[:row],
+      flagship: flagship_data,
+      sub_ships: sub_ships_data
+    }
+  end
+
+  # 🔨 敵データの再構築
+  @enemies = session[:battle_enemies].map do |enemy_config|
+    enemy_unit = EnemyBattleunit.find_by(id: enemy_config[:id])
+    next nil unless enemy_unit
+
+    enemy_freet_flag = EnemyFreet.find_by(id: enemy_config[:flagship_id])
+    next nil unless enemy_freet_flag
+
+    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
+    next nil unless flagship
+
+    sub_ships = []
+    enemy_config[:sub_ship_ids].each do |ship_id|
+      next if ship_id.blank?
+      ef_sub = EnemyFreet.find_by(id: ship_id)
+      next unless ef_sub
+      sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+      if sub_ship
+        sub_ships << { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp }
+      end
+    end
+
+    {
+      id: enemy_unit.id,
+      name: "👾 #{flagship.name}",
+      col: enemy_config[:col],
+      row: enemy_config[:row],
+      flagship: { id: enemy_config[:flagship_id], hp: flagship.hp, max_hp: flagship.hp },
+      sub_ships: sub_ships
+    }
+  end.compact
+
   @turn_logs = []
 
   # 行動順リストの作成
