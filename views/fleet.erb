@@ -143,9 +143,11 @@
     <br><br>
     <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
     <a href="/home" style="color: #1890ff; text-decoration: none;">➔ ホームに戻る</a>
+  <% end %>
+
+  <% if screen == 'formation' %>
     <div id="fleetModalOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
       <div style="background: #1a1a2e; border: 2px solid #ffbc00; border-radius: 10px; width: 90%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; padding: 20px; box-shadow: 0 0 20px rgba(255,188,0,0.3);">
-    
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
           <h3 style="color: #ffbc00; margin: 0; font-size: 1.2em;">🚢 配備艦船の選択</h3>
           <button type="button" onclick="closeSelectionModal()" style="background: none; border: none; color: #aaa; font-size: 1.5em; cursor: pointer;">&times;</button>
@@ -155,7 +157,6 @@
                style="width: 100%; padding: 10px; background: #111; color: #fff; border: 1px solid #555; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box;">
 
         <div id="modalShipList" style="overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
-      
           <form id="modalFleetForm" action="/fleet/set_ship" method="post">
             <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
             <input type="hidden" name="screen" value="formation">
@@ -164,7 +165,6 @@
 
             <% @my_ships.each do |ms| %>
               <% next if assigned_ids.include?(ms.id) %>
-          
               <div class="modal-ship-card" data-name="<%= ms.allfreet.name %>" onclick="submitModalSelection(<%= ms.id %>)"
                    style="background: #222; border: 1px solid #444; padding: 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;">
                 <div>
@@ -175,7 +175,6 @@
               </div>
             <% end %>
           </form>
-
         </div>
       </div>
     </div>
