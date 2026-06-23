@@ -66,6 +66,7 @@ post '/fleet/set_ship' do
     end
   end
 
-  # ✨ 配置が終わったら、選んでいた艦隊のタブを開いた状態でリダイレクト！
-  redirect "/fleet?fleet_num=#{fleet_num}"
+  # ✨ 配置が終わったら、編成画面に戻るよう screen パラメータを保持
+  screen = params[:screen] || 'formation'
+  redirect "/fleet?screen=#{screen}&fleet_num=#{fleet_num}"
 end

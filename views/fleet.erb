@@ -19,6 +19,9 @@
           <a href="/fleet?screen=owned" style="display: inline-block; padding: 14px 22px; background: #096dd9; color: #fff; border-radius: 6px; text-decoration: none; font-weight: bold;">
             所持艦一覧
           </a>
+          <a href="/home" style="display: inline-block; padding: 14px 22px; background: #444; color: #fff; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            ホームに戻る
+          </a>
         </div>
       </div>
 
@@ -58,6 +61,7 @@
             <form action="/fleet/set_ship" method="post" style="margin-top: 8px;">
               <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
               <input type="hidden" name="slot_type" value="flagship">
+              <input type="hidden" name="screen" value="formation">
               <input type="hidden" name="user_myfreet_id" value="">
               <button type="submit" style="font-size: 0.75em; background: #c0392b; color: #fff; border: none; padding: 2px 8px; border-radius: 3px; cursor: pointer;">外す</button>
             </form>
@@ -79,6 +83,7 @@
                 <form action="/fleet/set_ship" method="post" style="margin-top: 5px;">
                   <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
                   <input type="hidden" name="slot_type" value="sub_<%= i %>">
+                  <input type="hidden" name="screen" value="formation">
                   <input type="hidden" name="user_myfreet_id" value="">
                   <button type="submit" style="font-size: 0.7em; background: #555; color: #fff; border: none; padding: 1px 5px; border-radius: 3px; cursor: pointer;">外す</button>
                 </form>
@@ -153,6 +158,7 @@
       
           <form id="modalFleetForm" action="/fleet/set_ship" method="post">
             <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
+            <input type="hidden" name="screen" value="formation">
             <input type="hidden" id="modalSlotType" name="slot_type" value="">
             <input type="hidden" id="modalUserMyfreetId" name="user_myfreet_id" value="">
 
