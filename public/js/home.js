@@ -127,3 +127,28 @@ if (eventClose && eventOverlay) {
     sortieOverlay.style.display = 'flex';  // 出撃メニューを再表示
   });
 }
+
+// ▼ イベント情報の3秒ごとのスライドショー
+document.addEventListener('DOMContentLoaded', () => {
+  const eventDisplay = document.getElementById('current-event-text');
+  
+  // イベント配列が存在し、イベントがある場合のみ処理
+  if (window.eventList && window.eventList.length > 0 && eventDisplay) {
+    let currentIndex = 0;
+    
+    // 最初のイベントを表示
+    const displayEvent = () => {
+      const event = window.eventList[currentIndex];
+      eventDisplay.textContent = event.name;
+      eventDisplay.style.color = event.color;
+    };
+    
+    displayEvent();
+    
+    // 3秒ごとにイベントを切り替え
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % window.eventList.length;
+      displayEvent();
+    }, 3000);
+  }
+});
