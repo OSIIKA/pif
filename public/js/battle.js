@@ -75,6 +75,13 @@ window.addEventListener('DOMContentLoaded', () => {
   battleForm.addEventListener('submit', (event) => {
     refreshFleetPositions();
 
+    // 🔍 【デバッグ】フォーム送信時にhidden inputの値をコンソール出力
+    console.log("=== フォーム送信直前の hidden input 値 ===");
+    allHiddenInputs.forEach((input) => {
+      console.log(`${input.name}: '${input.value}'`);
+    });
+    console.log("========================================");
+
     const anyPlaced = allHiddenInputs.some((input) => input.value.trim() !== '');
     if (!anyPlaced) {
       event.preventDefault();

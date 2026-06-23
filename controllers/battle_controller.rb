@@ -119,13 +119,25 @@ post '/battle/start' do
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
 
+  # 🔍 【デバッグ】受け取ったすべてのパラメータをログ出力
+  puts "====== /battle/start へのPOSTリクエスト ======"
+  puts "受け取ったパラメータ:"
+  (1..6).each do |fleet_num|
+    value = params["fleet_#{fleet_num}_pos"]
+    puts "  fleet_#{fleet_num}_pos: '#{value}' (blank? = #{value.blank?})"
+  end
+  puts "========================================="
+
   battle_allies = []
 
   (1..6).each do |fleet_num|
     pos_str = params["fleet_#{fleet_num}_pos"]
     next if pos_str.blank?
 
+    # 🔍 【デバッグ】座標の解析を確認
     col, row = pos_str.split(',').map(&:to_i)
+    puts "Fleet #{fleet_num}: col=#{col}, row=#{row}"
+
     fleet_data = @user.user_battleunits.find_by(fleet_number: fleet_num)
     next unless fleet_data
 
@@ -158,6 +170,12 @@ post '/battle/start' do
       flagship: flagship_data,
       sub_ships: sub_ships_data
     }
+  end
+
+  # 🔍 【デバッグ】battle_allies の最終結果をログ出力
+  puts "作成された battle_allies の数: #{battle_allies.length}"
+  battle_allies.each do |ally|
+    puts "  - Fleet #{ally[:fleet_number]}: col=#{ally[:col]}, row=#{ally[:row]}"
   end
 
   if battle_allies.empty?
