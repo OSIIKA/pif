@@ -5,17 +5,37 @@
     <title>艦隊管理 - 紫鉄艦隊</title>
 </head>
 <body style="background: #141414; color: #fff; padding: 20px; font-family: sans-serif;">
+    <% screen = @screen %>
 
-    <h1>⚓ 艦隊管理運用（所持一覧）</h1>
-    <% 
-      # すでにどこかの艦隊に登録されている艦のIDをすべて集める
-      assigned_ids = UserBattleunit.all.map { |f| [f.flagship_id, f.sub_ship_1_id, f.sub_ship_2_id, f.sub_ship_3_id, f.sub_ship_4_id, f.sub_ship_5_id, f.sub_ship_6_id] }.flatten.compact.uniq
-    %>
-    <div style="background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+    <%# 初回アクセス時は画面選択メニューを表示する %>
+    <% if screen == 'menu' %>
+      <h1>⚓ 艦隊管理メニュー</h1>
+      <div style="background: #111; border: 1px solid #333; padding: 30px; border-radius: 10px; text-align: center; max-width: 520px; margin: 40px auto;">
+        <p style="color: #ccc; margin-bottom: 25px;">操作したい画面を選択してください。</p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="/fleet?screen=formation&fleet_num=1" style="display: inline-block; padding: 14px 22px; background: #ffbc00; color: #000; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            編成
+          </a>
+          <a href="/fleet?screen=owned" style="display: inline-block; padding: 14px 22px; background: #096dd9; color: #fff; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            所持艦一覧
+          </a>
+        </div>
+      </div>
+
+    <% elsif screen == 'formation' %>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <h1>⚓ 艦隊編成</h1>
+        <a href="/fleet" style="display: inline-block; padding: 10px 16px; background: #222; color: #fff; border-radius: 6px; text-decoration: none; border: 1px solid #555;">メニューに戻る</a>
+      </div>
+      <% 
+        # すでにどこかの艦隊に登録されている艦のIDをすべて集める
+        assigned_ids = UserBattleunit.all.map { |f| [f.flagship_id, f.sub_ship_1_id, f.sub_ship_2_id, f.sub_ship_3_id, f.sub_ship_4_id, f.sub_ship_5_id, f.sub_ship_6_id] }.flatten.compact.uniq
+      %>
+      <div style="background: #111; border: 1px solid #333; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
   
-      <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+      <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
         <% (1..6).each do |num| %>
-          <a href="/fleet?fleet_num=<%= num %>" 
+          <a href="/fleet?screen=formation&fleet_num=<%= num %>" 
              style="padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: bold; 
                     background: <%= @current_fleet_num == num ? '#ffbc00' : '#222' %>; 
                     color: <%= @current_fleet_num == num ? '#000' : '#fff' %>; 
@@ -76,11 +96,14 @@
     </div>
 
     <hr style="border: 0; border-top: 1px solid #333; margin: 40px 0;">
+  <% elsif screen == 'owned' %>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+        <h1>⚓ 所持艦一覧</h1>
+        <a href="/fleet" style="display: inline-block; padding: 10px 16px; background: #222; color: #fff; border-radius: 6px; text-decoration: none; border: 1px solid #555;">メニューに戻る</a>
+      </div>
+      <p>司令官: <strong><%= @user.name %></strong> が現在保有している戦力一覧です。</p>
 
-    <p>司令官: <strong><%= @user.name %></strong> が現在保有している戦力一覧です。</p>
-
-    <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-
+      <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
       
       <% if @my_ships.any? %>
@@ -159,5 +182,6 @@
         box-shadow: 0 0 8px rgba(255,188,0,0.2);
       }
     </style>
+  <% end %>
 </body>
 </html>

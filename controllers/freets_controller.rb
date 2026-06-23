@@ -15,6 +15,8 @@ get '/fleet' do
 
   # 📑 現在表示する艦隊番号を取得（指定がなければ第1艦隊にする）
   @current_fleet_num = (params[:fleet_num] || 1).to_i
+  # 🧭 画面状態。最初はメニュー画面を見せ、ボタン押下で各画面へ遷移する
+  @screen = params[:screen] || 'menu'
   
   # 🔍 選択された艦隊の編成データをピンポイントで取得
   @current_fleet = @user.user_battleunits.find_by(fleet_number: @current_fleet_num)
