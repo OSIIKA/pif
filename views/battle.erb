@@ -68,24 +68,25 @@
             <% 
               available = !f.flagship_id.nil?
               fleet_name = "第#{%w(一 二 三 四 五 六)[f.fleet_number-1]}艦隊"
+              flagship_obj = UserMyfreet.find_by(id: f.flagship_id)
+              fleet_hp = flagship_obj&.allfreet&.hp || 0
             %>
             <div class="draggable-fleet-card <%= 'available' if available %>" 
                 draggable="<%= available %>"
                 data-fleet-num="<%= f.fleet_number %>"
                 data-fleet-name="🚢：<%= fleet_name %>"
+                data-fleet-hp="<%= fleet_hp %>"
+                data-fleet-max-hp="<%= fleet_hp %>"
                 ondragstart="handlePaletteDragStart(event)"
                 style="background: #222; border: 1px solid #444; padding: 10px; border-radius: 4px; width: 140px; text-align: center; color: #fff; cursor: <%= available ? 'grab' : 'not-allowed' %>; user-select: none; transition: 0.2s; <%= 'opacity: 0.4;' unless available %>">
               <div style="font-weight: bold;"><%= fleet_name %></div>
               <div class="status-text" style="font-size: 0.8em; color: <%= available ? '#00ffbc' : '#ff4a4a' %>;">
                 <%= available ? '配置可能' : '旗艦未配備' %>
               </div>
-              <% if available %>
-                <% flagship_obj = UserMyfreet.find_by(id: f.flagship_id) %>
-                <% if flagship_obj && flagship_obj.allfreet %>
-                  <div style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
-                    HP: <span style="color: #2ecc71;"><%= flagship_obj.allfreet.hp %></span> / <%= flagship_obj.allfreet.hp %>
-                  </div>
-                <% end %>
+              <% if available && flagship_obj && flagship_obj.allfreet %>
+                <div style="font-size: 0.8em; color: #aaa; margin-top: 5px;">
+                  HP: <span style="color: #2ecc71;"><%= flagship_obj.allfreet.hp %></span> / <%= flagship_obj.allfreet.hp %>
+                </div>
               <% end %>
             </div>
           <% end %>

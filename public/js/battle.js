@@ -29,11 +29,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // パレットからの新規ドラッグ開始
 function handlePaletteDragStart(event) {
-  const card = event.target;
+  const card = event.target.closest('.draggable-fleet-card');
+  if (!card) return;
   const fleetData = {
     type: 'palette',
     fleet_num: card.dataset.fleetNum,
-    fleet_name: card.dataset.fleetName
+    fleet_name: card.dataset.fleetName,
+    fleet_hp: card.dataset.fleetHp,
+    fleet_max_hp: card.dataset.fleetMaxHp
   };
   event.dataTransfer.setData('application/json', JSON.stringify(fleetData));
 }
@@ -92,8 +95,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // 配置済みアイコンの再ドラッグ（位置調整）開始
 function handlePlacedIconDragStart(event) {
-  const icon = event.target;
+  const icon = event.target.closest('.placed-fleet-icon');
+  if (!icon) return;
   const cell = icon.closest('.hex-cell');
+  if (!cell) return;
   const fleetData = {
     type: 'move',
     fleet_num: icon.dataset.fleetNum,
@@ -132,22 +137,38 @@ function handleFleetDrop(event) {
     // -----------------------------------------------------------
     // 【パターンA: パレットからの新規配置】
     // -----------------------------------------------------------
-    const newIcon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    newIcon.setAttribute('x', targetX);
-    newIcon.setAttribute('y', parseFloat(targetY) - 6); // 座標表示と被らないように少し上へ
-    newIcon.setAttribute('fill', '#ffbc00');
-    newIcon.setAttribute('font-size', '11');
-    newIcon.setAttribute('font-weight', 'bold');
-    newIcon.setAttribute('text-anchor', 'middle');
+    const newIcon = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     newIcon.setAttribute('class', 'placed-fleet-icon');
     newIcon.setAttribute('draggable', 'true');
     newIcon.setAttribute('ondragstart', 'handlePlacedIconDragStart(event)');
     newIcon.setAttribute('data-fleet-num', data.fleet_num);
     newIcon.setAttribute('data-fleet-name', data.fleet_name);
     newIcon.style.cursor = 'grab';
-    newIcon.textContent = data.fleet_name;
 
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', targetX);
+    label.setAttribute('y', parseFloat(targetY) - 10);
+    label.setAttribute('fill', '#ffbc00');
+    label.setAttribute('font-size', '11');
+    label.setAttribute('font-weight', 'bold');
+    label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('class', 'placed-fleet-icon-label');
+    label.textContent = data.fleet_name;
+
+    const hpLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    hpLabel.setAttribute('x', targetX);
+    hpLabel.setAttribute('y', parseFloat(targetY) + 8);
+    hpLabel.setAttribute('fill', '#88ffbc');
+    hpLabel.setAttribute('font-size', '9');
+    hpLabel.setAttribute('font-family', 'monospace');
+    hpLabel.setAttribute('text-anchor', 'middle');
+    hpLabel.setAttribute('class', 'placed-fleet-hp');
+    hpLabel.textContent = `HP ${data.fleet_hp}/${data.fleet_max_hp}`;
+
+    newIcon.appendChild(label);
+    newIcon.appendChild(hpLabel);
     targetCell.appendChild(newIcon);
+
     // 元のパレットカードを「配置中」に更新してドラッグ不可にする
     const paletteCard = document.querySelector(`.draggable-fleet-card[data-fleet-num="${data.fleet_num}"]`);
     if (paletteCard) {
@@ -169,8 +190,13 @@ function handleFleetDrop(event) {
 
     // 新しいマスへ要素ごと引っ越し、座標を再セット
     targetCell.appendChild(icon);
-    icon.setAttribute('x', targetX);
-    icon.setAttribute('y', parseFloat(targetY) - 6);
+
+    const iconLabel = icon.querySelector('.placed-fleet-icon-label');
+    const hpLabel = icon.querySelector('.placed-fleet-hp');
+    if (iconLabel) iconLabel.setAttribute('x', targetX);
+    if (iconLabel) iconLabel.setAttribute('y', parseFloat(targetY) - 10);
+    if (hpLabel) hpLabel.setAttribute('x', targetX);
+    if (hpLabel) hpLabel.setAttribute('y', parseFloat(targetY) + 8);
   }
   // 📝 🟢 ここを追記：ドロップまたは移動が発生したら、フォームのhiddenに最新座標をセット
   // data.fleet_num（1〜6）に対応するhiddenを狙い撃ちして、「col,row」の文字列を入れる
