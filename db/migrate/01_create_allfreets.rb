@@ -6,6 +6,7 @@ class CreateAllfreets < ActiveRecord::Migration[6.1]
       t.integer :hp
       t.integer :max_hp
       t.integer :atk
+      t.integer :speed
       t.integer :skill1_id
       t.integer :skill2_id
       t.integer :skill3_id
