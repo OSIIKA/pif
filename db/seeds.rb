@@ -90,20 +90,20 @@ end
 # 敵・味方データ
 # ===========================
 # ステージ1の敵（2体）
-Allfreet.find_or_create_by!(id: 1, stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 2, stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 1, stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, speed: 10, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 2, stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, speed: 12, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 # ステージ2の敵（3体）
-Allfreet.find_or_create_by!(id: 3, stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 4, stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 5, stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 3, stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, speed: 15, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 4, stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, speed: 11, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 5, stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, speed: 9,  skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 # レアガチャに入る敵（？）
-Allfreet.find_or_create_by!(id: 6, stage: 0, name: "Mk.628", hp: 200, max_hp: 200, atk: 50, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-Allfreet.find_or_create_by!(id: 7, stage: 0, name: "デプリクト", hp: 250, max_hp: 250, atk: 60, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-Allfreet.find_or_create_by!(id: 8, stage: 0, name: "Mk.628α", hp: 300, max_hp: 300, atk: 70, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
+Allfreet.find_or_create_by!(id: 6, stage: 0, name: "Mk.628", hp: 200, max_hp: 200, atk: 50, speed: 25, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
+Allfreet.find_or_create_by!(id: 7, stage: 0, name: "デプリクト", hp: 250, max_hp: 250, atk: 60, speed: 30, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
+Allfreet.find_or_create_by!(id: 8, stage: 0, name: "Mk.628α", hp: 300, max_hp: 300, atk: 70, speed: 28, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
 # 味方データ
-Allfreet.find_or_create_by!(id: 9, name: "味方1", hp: 100, max_hp: 100, atk: 25, skill1_id: 2, info: "てんぷれーと", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 10, name: "味方2", hp: 100, max_hp: 100, atk: 25, skill1_id: 2, info: "てんぷれーと", normal: 40, rare: 150, rarity: 2)
-Allfreet.find_or_create_by!(id: 11, name: "味方3", hp: 100, max_hp: 100, atk: 25, skill1_id: 2, info: "てんぷれーと", normal: 20, rare: 40, rarity: 3)
+Allfreet.find_or_create_by!(id: 9, name: "味方1", hp: 100, max_hp: 100, atk: 25, speed: 18, skill1_id: 2, info: "てんぷれーと", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 10, name: "味方2", hp: 100, max_hp: 100, atk: 25, speed: 20, skill1_id: 2, info: "てんぷれーと", normal: 40, rare: 150, rarity: 2)
+Allfreet.find_or_create_by!(id: 11, name: "味方3", hp: 100, max_hp: 100, atk: 25, speed: 22, skill1_id: 2, info: "てんぷれーと", normal: 20, rare: 40, rarity: 3)
 # ===========================
 # スキルデータ
 # ===========================

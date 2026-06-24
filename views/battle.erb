@@ -249,24 +249,77 @@
   <% if request.path_info == '/battle/prepare' %>
     <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 5, 15, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(4px); font-family: monospace;">
     
-      <div style="width: 90%; max-width: 600px; background: #111; border: 2px solid #ffbc00; padding: 30px; border-radius: 8px; box-shadow: 0 0 25px rgba(255,188,0,0.3); text-align: center;">
+      <div style="width: 95%; max-width: 700px; background: #111; border: 2px solid #ffbc00; padding: 30px; border-radius: 8px; box-shadow: 0 0 25px rgba(255,188,0,0.3); text-align: center;">
       
         <h1 style="color: #ffbc00; margin-top: 0; font-size: 1.8em; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ffbc00; padding-bottom: 15px; margin-bottom: 25px;">
           ⚡ 哨戒戦技発動・準備フェーズ ⚡
         </h1>
 
-        <div style="background: #222; border: 1px solid #444; padding: 20px; border-radius: 6px; text-align: left; max-height: 250px; overflow-y: auto;">
-          <h4 style="color: #00ffbc; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">📜 作戦海域 ログアナウンス</h4>
-          <ul style="list-style: none; padding-left: 0; line-height: 1.8; margin: 0; font-size: 1.05em;">
+        <!-- 📜 作戦海域 ログアナウンス -->
+        <div style="background: #1a1a2e; border: 1px solid #3f3f5f; padding: 15px; border-radius: 6px; text-align: left; max-height: 120px; overflow-y: auto; margin-bottom: 20px;">
+          <h4 style="color: #00ffbc; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid #2a2a4e; padding-bottom: 5px; font-size: 0.95em;">📜 作戦海域 ログアナウンス</h4>
+          <ul style="list-style: none; padding-left: 0; line-height: 1.6; margin: 0; font-size: 0.95em;">
             <% @prep_logs.each do |log| %>
-              <li style="margin-bottom: 8px; color: #fff; border-left: 3px solid #ffbc00; padding-left: 10px;">
+              <li style="margin-bottom: 6px; color: #fff; border-left: 3px solid #ffbc00; padding-left: 8px;">
                 <%= log %>
               </li>
             <% end %>
           </ul>
         </div>
 
-        <div style="margin-top: 30px;">
+        <!-- ⚡ スキル発動順序（速力順） -->
+        <div style="background: #1a1a1a; border: 1px solid #333; padding: 15px; border-radius: 6px; text-align: left; margin-bottom: 25px;">
+          <h4 style="color: #ffbc00; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 0.95em;">⚡ スキル自動発動順序（速力順・同速はランダム）</h4>
+          <div style="max-height: 250px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85em; text-align: left; line-height: 1.4;">
+              <thead>
+                <tr style="border-bottom: 1px solid #444; color: #aaa; font-size: 0.9em;">
+                  <th style="padding: 6px 4px; width: 45px;">順序</th>
+                  <th style="padding: 6px 4px; width: 60px;">所属</th>
+                  <th style="padding: 6px 4px;">艦船名</th>
+                  <th style="padding: 6px 4px; text-align: right; width: 55px;">速力</th>
+                  <th style="padding: 6px 4px; width: 330px;">所持スキル（① / ② / ③）</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @sorted_ships.blank? %>
+                  <tr>
+                    <td colspan="5" style="padding: 10px; text-align: center; color: #888;">配備されている艦船がありません。</td>
+                  </tr>
+                <% else %>
+                  <% @sorted_ships.each_with_index do |ship, index| %>
+                    <tr style="border-bottom: 1px solid #2a2a2a; color: <%= ship[:side] == '味方' ? '#fff' : '#ff8888' %>;">
+                      <td style="padding: 8px 4px; font-weight: bold; color: #ffbc00; font-size: 1.1em;"><%= index + 1 %></td>
+                      <td style="padding: 8px 4px;">
+                        <span style="background: <%= ship[:side] == '味方' ? '#0b6623' : '#7f1d1d' %>; color: #fff; padding: 2px 5px; border-radius: 3px; font-size: 0.8em; font-weight: bold;">
+                          <%= ship[:side] %>
+                        </span>
+                      </td>
+                      <td style="padding: 8px 4px;">
+                        <span style="font-weight: bold;"><%= ship[:name] %></span>
+                        <span style="display: block; font-size: 0.75em; color: #888;"><%= ship[:fleet] %></span>
+                      </td>
+                      <td style="padding: 8px 4px; text-align: right; font-weight: bold; color: #00ffbc; font-size: 1.05em;"><%= ship[:speed] %></td>
+                      <td style="padding: 8px 4px;">
+                        <span style="background: #2a2a2a; padding: 2px 4px; border-radius: 3px; margin-right: 2px; font-size: 0.85em; display: inline-block;">
+                          ① <%= ship[:skill1_name] %>
+                        </span>
+                        <span style="background: #2a2a2a; padding: 2px 4px; border-radius: 3px; margin-right: 2px; font-size: 0.85em; display: inline-block;">
+                          ② <%= ship[:skill2_name] %>
+                        </span>
+                        <span style="background: #2a2a2a; padding: 2px 4px; border-radius: 3px; font-size: 0.85em; display: inline-block;">
+                          ③ <%= ship[:skill3_name] %>
+                        </span>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="margin-top: 25px;">
           <a href="/battle/turn" style="display: inline-block; background: #ff4a4a; color: #fff; padding: 12px 35px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 1.1em; box-shadow: 0 0 15px rgba(255,74,74,0.4); transition: 0.2s;">
             🚀 進撃開始（戦闘フェーズへ）
           </a>

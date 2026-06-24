@@ -254,6 +254,85 @@ get '/battle/prepare' do
       max_hp: flagship_hp + sub_hp_total
     }
   end
+
+  # 🚢 【味方艦船データのロード】
+  deployed_allies = []
+  (session[:battle_allies_config] || []).each do |config|
+    fleet_num = config[:fleet_number]
+    fleet_data = @fleets.find_by(fleet_number: fleet_num)
+    next unless fleet_data
+
+    # 👑 旗艦
+    flagship = UserMyfreet.find_by(id: fleet_data.flagship_id)
+    if flagship && flagship.allfreet
+      deployed_allies << {
+        name: flagship.allfreet.name,
+        speed: flagship.allfreet.speed.to_i,
+        skill1_name: flagship.allfreet.skill1&.name || "なし",
+        skill2_name: flagship.allfreet.skill2&.name || "なし",
+        skill3_name: flagship.allfreet.skill3&.name || "なし",
+        side: "味方",
+        fleet: "第#{fleet_num}艦隊 (旗艦)"
+      }
+    end
+
+    # ⚓ 随伴艦
+    (1..6).each do |i|
+      ship_id = fleet_data.send("sub_ship_#{i}_id")
+      next if ship_id.blank?
+      sub_ship = UserMyfreet.find_by(id: ship_id)
+      if sub_ship && sub_ship.allfreet
+        deployed_allies << {
+          name: sub_ship.allfreet.name,
+          speed: sub_ship.allfreet.speed.to_i,
+          skill1_name: sub_ship.allfreet.skill1&.name || "なし",
+          skill2_name: sub_ship.allfreet.skill2&.name || "なし",
+          skill3_name: sub_ship.allfreet.skill3&.name || "なし",
+          side: "味方",
+          fleet: "第#{fleet_num}艦隊 (随伴)"
+        }
+      end
+    end
+  end
+
+  # 👾 【敵艦船データのロード】
+  deployed_enemies = []
+  @enemies.each do |enemy_unit|
+    # 👑 敵旗艦
+    ef_flag = EnemyFreet.find_by(id: enemy_unit[:flagship][:id])
+    if ef_flag && ef_flag.allfreet
+      deployed_enemies << {
+        name: ef_flag.allfreet.name,
+        speed: ef_flag.allfreet.speed.to_i,
+        skill1_name: ef_flag.allfreet.skill1&.name || "なし",
+        skill2_name: ef_flag.allfreet.skill2&.name || "なし",
+        skill3_name: ef_flag.allfreet.skill3&.name || "なし",
+        side: "敵",
+        fleet: "#{enemy_unit[:name]} (旗艦)"
+      }
+    end
+
+    # ⚓ 敵随伴艦
+    (enemy_unit[:sub_ships] || []).each do |sub|
+      ef_sub = EnemyFreet.find_by(id: sub[:id])
+      if ef_sub && ef_sub.allfreet
+        deployed_enemies << {
+          name: ef_sub.allfreet.name,
+          speed: ef_sub.allfreet.speed.to_i,
+          skill1_name: ef_sub.allfreet.skill1&.name || "なし",
+          skill2_name: ef_sub.allfreet.skill2&.name || "なし",
+          skill3_name: ef_sub.allfreet.skill3&.name || "なし",
+          side: "敵",
+          fleet: "#{enemy_unit[:name]} (随伴)"
+        }
+      end
+    end
+  end
+
+  # ⚡ 【速力順ソート（同じ速力ならランダムに決定）】
+  # shuffleで並び順をランダム化した後に、sort_byで速力の降順にソートすることで、同速艦の順序をランダム化します。
+  @sorted_ships = (deployed_allies + deployed_enemies).shuffle.sort_by { |s| -s[:speed] }
+
   @prep_logs = session[:battle_logs].presence || ["哨戒戦技を展開中…！艦隊配置は完了しています。"]
   session[:battle_phase] = 'prepare'
 

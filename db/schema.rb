@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 33) do
+ActiveRecord::Schema.define(version: 34) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 33) do
     t.integer "hp"
     t.integer "max_hp"
     t.integer "atk"
+    t.integer "speed"
     t.integer "skill1_id"
     t.integer "skill2_id"
     t.integer "skill3_id"
