@@ -72,6 +72,19 @@ get '/battle/set' do
   session[:battle_allies_config] = nil if params[:phase].blank?
 
   @fleets = @user.user_battleunits.order(:fleet_number)
+  # ⚡【デバッグ：艦隊データが0件の場合の救済措置】
+  if @fleets.empty?
+    puts "⚠️ 警告: user_battleunits が0件のため、デバッグ用のダミー艦隊を生成します"
+    # 本来は初期登録などで作成されるべきデータですが、開発用にその場でインスタンスを作ります
+    # (セーブはせず、この画面を表示するためだけのダミーデータです)
+    dummy_fleet = OpenStruct.new(
+      fleet_number: 1,
+      flagship_id: 1, # 一時的にID 1 を指定（マスタにUserMyfreetがある前提）
+      sub_ship_1_id: nil, sub_ship_2_id: nil, sub_ship_3_id: nil,
+      sub_ship_4_id: nil, sub_ship_5_id: nil, sub_ship_6_id: nil
+    )
+    @fleets = [dummy_fleet]
+  end
   
   if session[:battle_stage].blank?
     session[:battle_stage] = @stage
