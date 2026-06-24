@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 32) do
+ActiveRecord::Schema.define(version: 33) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,6 +21,12 @@ ActiveRecord::Schema.define(version: 32) do
     t.integer "hp"
     t.integer "max_hp"
     t.integer "atk"
+    t.integer "skill1_id"
+    t.integer "skill2_id"
+    t.integer "skill3_id"
+    t.integer "weapon1_id"
+    t.integer "weapon2_id"
+    t.integer "weapon3_id"
     t.string "info"
     t.integer "rarity", default: 1
     t.integer "normal", default: 0
@@ -101,6 +107,15 @@ ActiveRecord::Schema.define(version: 32) do
     t.integer "max_hp"
     t.integer "atk"
     t.string "info"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "effect_type", null: false
+    t.integer "value", default: 0
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "stories", force: :cascade do |t|

@@ -90,20 +90,33 @@ end
 # 敵・味方データ
 # ===========================
 # ステージ1の敵（2体）
-Allfreet.find_or_create_by!(id: 1, stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 2, stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 1, stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 2, stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 # ステージ2の敵（3体）
-Allfreet.find_or_create_by!(id: 3, stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 4, stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 5, stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 3, stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 4, stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 5, stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 # レアガチャに入る敵（？）
-Allfreet.find_or_create_by!(id: 6, stage: 0, name: "Mk.628", hp: 200, max_hp: 200, atk: 50, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-Allfreet.find_or_create_by!(id: 7, stage: 0, name: "デプリクト", hp: 250, max_hp: 250, atk: 60, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-Allfreet.find_or_create_by!(id: 8, stage: 0, name: "Mk.628α", hp: 300, max_hp: 300, atk: 70, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
+Allfreet.find_or_create_by!(id: 6, stage: 0, name: "Mk.628", hp: 200, max_hp: 200, atk: 50, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
+Allfreet.find_or_create_by!(id: 7, stage: 0, name: "デプリクト", hp: 250, max_hp: 250, atk: 60, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
+Allfreet.find_or_create_by!(id: 8, stage: 0, name: "Mk.628α", hp: 300, max_hp: 300, atk: 70, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
 # 味方データ
-Allfreet.find_or_create_by!(id: 9, name: "味方1", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 10, name: "味方2", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 40, rare: 150, rarity: 2)
-Allfreet.find_or_create_by!(id: 11, name: "味方3", hp: 100, max_hp: 100, atk: 25, info: "てんぷれーと", normal: 20, rare: 40, rarity: 3)
+Allfreet.find_or_create_by!(id: 9, name: "味方1", hp: 100, max_hp: 100, atk: 25, skill1_id: 2, info: "てんぷれーと", normal: 100, rare: 100, rarity: 1)
+Allfreet.find_or_create_by!(id: 10, name: "味方2", hp: 100, max_hp: 100, atk: 25, skill1_id: 2, info: "てんぷれーと", normal: 40, rare: 150, rarity: 2)
+Allfreet.find_or_create_by!(id: 11, name: "味方3", hp: 100, max_hp: 100, atk: 25, skill1_id: 2, info: "てんぷれーと", normal: 20, rare: 40, rarity: 3)
+# ===========================
+# スキルデータ
+# ===========================
+puts "🌱 スキルデータのシードを開始します..."
+Skill.destroy_all
+
+Skill.create!(id: 1, name: "応急修理", effect_type: "heal_all", value: 20, description: "味方全体のHPを20%回復する。")
+Skill.create!(id: 2, name: "右翼火力増強", effect_type: "buff_rightmost_atk", value: 30, description: "味方艦のうち最も右側に位置する艦の攻撃力を30%上昇させる。")
+Skill.create!(id: 3, name: "妨害電波", effect_type: "debuff_enemy_atk", value: 15, description: "敵全体の攻撃力を15%減少させる。")
+Skill.create!(id: 4, name: "先制爆撃", effect_type: "debuff_enemy_hp", value: 10, description: "敵全体のHPを10%減少させる。")
+Skill.create!(id: 5, name: "電磁シールド", effect_type: "shield_random_ally", value: 25, description: "ランダムな味方艦のHPにシールド（発動した艦のHPの25%）を付与する。")
+
+# ===========================
 # ===========================
 # 敵データ
 # ===========================
@@ -252,4 +265,5 @@ if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
   ActiveRecord::Base.connection.execute("SELECT setval('myfreets_id_seq', COALESCE((SELECT MAX(id) FROM myfreets), 1))")
   ActiveRecord::Base.connection.execute("SELECT setval('allfreets_id_seq', COALESCE((SELECT MAX(id) FROM allfreets), 1))")
   ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
+  ActiveRecord::Base.connection.execute("SELECT setval('skills_id_seq', COALESCE((SELECT MAX(id) FROM skills), 1))")
 end
