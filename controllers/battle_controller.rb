@@ -109,7 +109,21 @@ get '/battle/set' do
   # 配置が完了したかどうかを判定
   @battle_allies_deployed = session[:battle_allies_config].present?
   @battle_allies_positions = (session[:battle_allies_config] || []).map do |a|
-    { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] }
+    fleet_data = @fleets.find_by(fleet_number: a[:fleet_number])
+    flagship = fleet_data && UserMyfreet.find_by(id: fleet_data.flagship_id)
+    flagship_hp = flagship&.allfreet&.hp.to_i
+    sub_hp_total = (1..6).sum do |i|
+      ship_id = fleet_data&.send("sub_ship_#{i}_id")
+      sub = ship_id.present? && UserMyfreet.find_by(id: ship_id)
+      sub ? sub.allfreet.hp : 0
+    end
+    {
+      col: a[:col].to_i,
+      row: a[:row].to_i,
+      fleet_number: a[:fleet_number],
+      hp: flagship_hp + sub_hp_total,
+      max_hp: flagship_hp + sub_hp_total
+    }
   end
 
   # 失敗時のエラーメッセージを画面に渡す
@@ -224,7 +238,21 @@ get '/battle/prepare' do
 
   @battle_allies_deployed = true
   @battle_allies_positions = (session[:battle_allies_config] || []).map do |a|
-    { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] }
+    fleet_data = @fleets.find_by(fleet_number: a[:fleet_number])
+    flagship = fleet_data && UserMyfreet.find_by(id: fleet_data.flagship_id)
+    flagship_hp = flagship&.allfreet&.hp.to_i
+    sub_hp_total = (1..6).sum do |i|
+      ship_id = fleet_data&.send("sub_ship_#{i}_id")
+      sub = ship_id.present? && UserMyfreet.find_by(id: ship_id)
+      sub ? sub.allfreet.hp : 0
+    end
+    {
+      col: a[:col].to_i,
+      row: a[:row].to_i,
+      fleet_number: a[:fleet_number],
+      hp: flagship_hp + sub_hp_total,
+      max_hp: flagship_hp + sub_hp_total
+    }
   end
   @prep_logs = session[:battle_logs].presence || ["哨戒戦技を展開中…！艦隊配置は完了しています。"]
   session[:battle_phase] = 'prepare'
@@ -423,9 +451,24 @@ get '/battle/turn' do
   @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
   @battle_allies_deployed = @allies.present? || session[:battle_allies_config].present?
   @battle_allies_positions = if @allies.present?
-    @allies.map { |a| { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] } }
+    @allies.map do |a|
+      sub_hp_total = a[:sub_ships].sum { |s| s[:hp] }
+      total_hp = a[:flagship][:hp] + sub_hp_total
+      total_max = a[:flagship][:max_hp] + a[:sub_ships].sum { |s| s[:max_hp] }
+      { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number], hp: total_hp, max_hp: total_max }
+    end
   else
-    (session[:battle_allies_config] || []).map { |a| { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] } }
+    (session[:battle_allies_config] || []).map do |a|
+      fleet_data = @fleets.find_by(fleet_number: a[:fleet_number])
+      flagship = fleet_data && UserMyfreet.find_by(id: fleet_data.flagship_id)
+      flagship_hp = flagship&.allfreet&.hp.to_i
+      sub_hp_total = (1..6).sum do |i|
+        ship_id = fleet_data&.send("sub_ship_#{i}_id")
+        sub = ship_id.present? && UserMyfreet.find_by(id: ship_id)
+        sub ? sub.allfreet.hp : 0
+      end
+      { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number], hp: flagship_hp + sub_hp_total, max_hp: flagship_hp + sub_hp_total }
+    end
   end
   puts "@battle_allies_positions = #{@battle_allies_positions.inspect}"
   @phase = 'turn'
