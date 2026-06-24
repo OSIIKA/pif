@@ -29,7 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // パレットからの新規ドラッグ開始
 function handlePaletteDragStart(event) {
-  const card = event.target.closest('.draggable-fleet-card');
+  const card = event.currentTarget || event.target.closest('.draggable-fleet-card');
   if (!card) return;
   const fleetData = {
     type: 'palette',
@@ -38,11 +38,24 @@ function handlePaletteDragStart(event) {
     fleet_hp: card.dataset.fleetHp,
     fleet_max_hp: card.dataset.fleetMaxHp
   };
-  event.dataTransfer.setData('application/json', JSON.stringify(fleetData));
+  event.dataTransfer.effectAllowed = 'copy';
+  try {
+    event.dataTransfer.setData('application/json', JSON.stringify(fleetData));
+  } catch (e) {
+    // 一部ブラウザではカスタム MIME タイプを受け付けないため、text/plain もセット
+  }
+  event.dataTransfer.setData('text/plain', JSON.stringify(fleetData));
+  if (event.dataTransfer.setDragImage) {
+    event.dataTransfer.setDragImage(card, card.offsetWidth / 2, card.offsetHeight / 2);
+  }
 }
 
 // フォーム送信前に少なくとも1つの艦隊が配置されているかを確認する
 window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.draggable-fleet-card.available').forEach((card) => {
+    card.addEventListener('dragstart', handlePaletteDragStart);
+  });
+
   const battleForm = document.getElementById('battleStartForm');
   if (!battleForm) return;
 
@@ -95,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // 配置済みアイコンの再ドラッグ（位置調整）開始
 function handlePlacedIconDragStart(event) {
-  const icon = event.target.closest('.placed-fleet-icon');
+  const icon = event.currentTarget || event.target.closest('.placed-fleet-icon');
   if (!icon) return;
   const cell = icon.closest('.hex-cell');
   if (!cell) return;
@@ -106,7 +119,9 @@ function handlePlacedIconDragStart(event) {
     from_col: cell.dataset.col,
     from_row: cell.dataset.row
   };
+  event.dataTransfer.effectAllowed = 'move';
   event.dataTransfer.setData('application/json', JSON.stringify(fleetData));
+  event.dataTransfer.setData('text/plain', JSON.stringify(fleetData));
 }
 
 // ドロップを許可する判定
@@ -117,11 +132,17 @@ function allowFleetDrop(event) {
 // ドロップ時のメイン処理
 function handleFleetDrop(event) {
   event.preventDefault();
-  const dragDataJson = event.dataTransfer.getData('application/json');
+  const dragDataJson = event.dataTransfer.getData('application/json') || event.dataTransfer.getData('text/plain');
   if (!dragDataJson) return;
 
-  const data = JSON.parse(dragDataJson);
-  const targetCell = event.currentTarget;
+  let data;
+  try {
+    data = JSON.parse(dragDataJson);
+  } catch (e) {
+    data = { type: 'palette', fleet_num: null, fleet_name: null, fleet_hp: 0, fleet_max_hp: 0 };
+  }
+  const targetCell = event.currentTarget.closest('.hex-cell') || event.target.closest('.hex-cell');
+  if (!targetCell) return;
 
   // 重複チェック（ドロップ先にすでに別の艦隊がいる場合は弾く）
   const alreadyPlaced = targetCell.querySelector('.placed-fleet-icon');
@@ -140,24 +161,26 @@ function handleFleetDrop(event) {
     const newIcon = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     newIcon.setAttribute('class', 'placed-fleet-icon');
     newIcon.setAttribute('draggable', 'true');
-    newIcon.setAttribute('ondragstart', 'handlePlacedIconDragStart(event)');
+    newIcon.addEventListener('dragstart', handlePlacedIconDragStart);
     newIcon.setAttribute('data-fleet-num', data.fleet_num);
     newIcon.setAttribute('data-fleet-name', data.fleet_name);
+    newIcon.setAttribute('data-fleet-hp', data.fleet_hp || 0);
+    newIcon.setAttribute('data-fleet-max-hp', data.fleet_max_hp || 0);
     newIcon.style.cursor = 'grab';
 
-    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    label.setAttribute('x', targetX);
-    label.setAttribute('y', parseFloat(targetY) - 10);
-    label.setAttribute('fill', '#ffbc00');
-    label.setAttribute('font-size', '11');
-    label.setAttribute('font-weight', 'bold');
-    label.setAttribute('text-anchor', 'middle');
-    label.setAttribute('class', 'placed-fleet-icon-label');
-    label.textContent = data.fleet_name;
+    const nameLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    nameLabel.setAttribute('x', targetX);
+    nameLabel.setAttribute('y', parseFloat(targetY) - 12);
+    nameLabel.setAttribute('fill', '#ffbc00');
+    nameLabel.setAttribute('font-size', '11');
+    nameLabel.setAttribute('font-weight', 'bold');
+    nameLabel.setAttribute('text-anchor', 'middle');
+    nameLabel.setAttribute('class', 'placed-fleet-icon-label');
+    nameLabel.textContent = data.fleet_name;
 
     const hpLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     hpLabel.setAttribute('x', targetX);
-    hpLabel.setAttribute('y', parseFloat(targetY) + 8);
+    hpLabel.setAttribute('y', parseFloat(targetY) + 10);
     hpLabel.setAttribute('fill', '#88ffbc');
     hpLabel.setAttribute('font-size', '9');
     hpLabel.setAttribute('font-family', 'monospace');
@@ -165,7 +188,11 @@ function handleFleetDrop(event) {
     hpLabel.setAttribute('class', 'placed-fleet-hp');
     hpLabel.textContent = `HP ${data.fleet_hp}/${data.fleet_max_hp}`;
 
-    newIcon.appendChild(label);
+    const hoverTitle = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+    hoverTitle.textContent = `${data.fleet_name} - HP ${data.fleet_hp}/${data.fleet_max_hp}`;
+
+    newIcon.appendChild(hoverTitle);
+    newIcon.appendChild(nameLabel);
     newIcon.appendChild(hpLabel);
     targetCell.appendChild(newIcon);
 

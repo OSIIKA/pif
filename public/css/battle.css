@@ -29,3 +29,13 @@ html, body {
 .hex-cell:hover .hex-coord-text {
   fill: #00ffbc !important;
 }
+
+/* 配置済み艦隊のラベル表示 */
+.placed-fleet-icon-label,
+.placed-fleet-hp {
+  pointer-events: none;
+  user-select: none;
+}
+.placed-fleet-hp {
+  opacity: 0.95;
+}
