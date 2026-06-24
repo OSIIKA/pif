@@ -148,7 +148,6 @@ get '/battle/set' do
     @prep_logs = ["両軍、布陣完了。これより戦闘フェーズに移行します！"]
   end
 
-  erb :battle
   # ⚡【デバッグ：編成フェーズ表示不具合の調査】
   puts "====== 🔮 編成フェーズGETデータチェック ======"
   puts "現在の request.path_info: #{request.path_info}"
@@ -162,6 +161,8 @@ get '/battle/set' do
     end
   end
   puts "==============================================="
+  # 👑 必ずこのブロックの一番最後で erb を呼び出す
+  erb :battle
 end
 
 post '/battle/start' do
