@@ -135,6 +135,19 @@ get '/battle/set' do
   end
 
   erb :battle
+  # ⚡【デバッグ：編成フェーズ表示不具合の調査】
+  puts "====== 🔮 編成フェーズGETデータチェック ======"
+  puts "現在の request.path_info: #{request.path_info}"
+  @user = User.find_by(id: session[:user])
+  puts "ログインユーザー: #{@user&.name} (ID: #{@user&.id})"
+  if @user
+    test_fleets = @user.user_battleunits.order(:fleet_number)
+    puts "取得できた艦隊（user_battleunits）の数: #{test_fleets.count}"
+    test_fleets.each do |f|
+      puts "  - 第#{f.fleet_number}艦隊: 旗艦ID=#{f.flagship_id.inspect}"
+    end
+  end
+  puts "==============================================="
 end
 
 post '/battle/start' do
