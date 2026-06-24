@@ -194,7 +194,7 @@
                   <% end %>
 
                   <% if @battle_allies_deployed %>
-                    <% ally_config = session[:battle_allies_config]&.find { |a| a[:col] == col && a[:row] == row } %>
+                    <% ally_config = (@battle_allies_positions || []).find { |a| a[:col] == col && a[:row] == row } %>
                     <% if ally_config %>
                       <g style="cursor: help;">
                         <title><%= "第#{ally_config[:fleet_number]}艦隊が配置されています" %></title>

@@ -108,6 +108,9 @@ get '/battle/set' do
 
   # 配置が完了したかどうかを判定
   @battle_allies_deployed = session[:battle_allies_config].present?
+  @battle_allies_positions = (session[:battle_allies_config] || []).map do |a|
+    { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] }
+  end
 
   # 失敗時のエラーメッセージを画面に渡す
   @battle_error = session.delete(:battle_error)
@@ -220,6 +223,9 @@ get '/battle/prepare' do
   end
 
   @battle_allies_deployed = true
+  @battle_allies_positions = (session[:battle_allies_config] || []).map do |a|
+    { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] }
+  end
   @prep_logs = session[:battle_logs].presence || ["哨戒戦技を展開中…！艦隊配置は完了しています。"]
   session[:battle_phase] = 'prepare'
 
@@ -415,6 +421,13 @@ get '/battle/turn' do
   @stage = session[:battle_stage] || 1
   @fleets = @user.user_battleunits.order(:fleet_number)
   @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
+  @battle_allies_deployed = @allies.present? || session[:battle_allies_config].present?
+  @battle_allies_positions = if @allies.present?
+    @allies.map { |a| { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] } }
+  else
+    (session[:battle_allies_config] || []).map { |a| { col: a[:col].to_i, row: a[:row].to_i, fleet_number: a[:fleet_number] } }
+  end
+  puts "@battle_allies_positions = #{@battle_allies_positions.inspect}"
   @phase = 'turn'
   session[:battle_phase] = 'turn'
 
