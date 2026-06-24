@@ -71,8 +71,10 @@ get '/battle/set' do
   # 古い味方配置を一旦クリアする
   session[:battle_allies_config] = nil if params[:phase].blank?
 
+  # 👑 1. まずデータを取得する
   @fleets = @user.user_battleunits.order(:fleet_number)
-  # ⚡【デバッグ：艦隊データが0件の場合の救済措置】
+
+  # ⚡【最優先に移動：艦隊データが0件の場合の救済措置】
   if @fleets.empty?
     puts "⚠️ 警告: user_battleunits が0件のため、デバッグ用のダミー艦隊を生成します"
     # 本来は初期登録などで作成されるべきデータですが、開発用にその場でインスタンスを作ります
