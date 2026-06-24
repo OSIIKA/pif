@@ -202,7 +202,28 @@ post '/battle/start' do
   session[:battle_stage] = stage
 
   session[:battle_logs] = []
-  redirect '/battle/turn' #  /battle/turn へ
+  session[:battle_phase] = 'prepare'
+  redirect '/battle/prepare' # まず哨戒戦技フェーズへ
+end
+
+get '/battle/prepare' do
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' unless @user
+
+  @stage = session[:battle_stage] || 1
+  @fleets = @user.user_battleunits.order(:fleet_number)
+  @enemies = session[:battle_enemies] || []
+
+  if session[:battle_allies_config].blank? || @enemies.blank?
+    session[:battle_error] = "艦隊配置または敵データが不足しています。編成フェーズからやり直してください。"
+    redirect '/battle/set'
+  end
+
+  @battle_allies_deployed = true
+  @prep_logs = session[:battle_logs].presence || ["哨戒戦技を展開中…！艦隊配置は完了しています。"]
+  session[:battle_phase] = 'prepare'
+
+  erb :battle
 end
 
 
@@ -395,6 +416,7 @@ get '/battle/turn' do
   @fleets = @user.user_battleunits.order(:fleet_number)
   @enemy_fleets = EnemyBattleunit.where(battle_stage_id: @stage)
   @phase = 'turn'
+  session[:battle_phase] = 'turn'
 
   erb :battle
 end
