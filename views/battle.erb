@@ -9,6 +9,7 @@
   <script src="/js/battle.js?v=2" defer></script>
 </head>
 <body class="question-view">
+  <% tactical_phase = ['/battle/prepare', '/battle/turn'].include?(request.path_info) %>
   <header>
     <div style="color: #ffbc00; font-weight: bold; font-size: 1.2em; font-family: monospace;">
       🛸 紫鉄艦隊 - BATTLE CONTROL
@@ -106,7 +107,31 @@
         
       <% end %>
 
+      <% if tactical_phase %>
+        <div class="tactical-battle-layout">
+          <div class="battle-visual-frame">
+            <div class="battle-visual-header">
+              <span>3D TACTICAL VIEW</span>
+              <span class="battle-visual-status">STANDBY</span>
+            </div>
+            <div class="battle-visual-stage">
+              <div class="battle-visual-core">
+                <div class="battle-visual-radar"></div>
+                <div class="battle-visual-ring battle-visual-ring-a"></div>
+                <div class="battle-visual-ring battle-visual-ring-b"></div>
+                <div class="battle-visual-message">
+                  <strong>中央3D表示枠</strong>
+                  <p>.blend 直読込は未接続です。後続で GLB / glTF 変換済みモデルをここへ表示できます。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="battle-map-wrapper battle-map-wrapper-compact" style="background: #0d0d1a; border: 2px solid #007bff; border-radius: 8px; padding: 20px; display: inline-block; box-shadow: 0 0 15px rgba(0,123,255,0.2);">
+            <div class="battle-map-caption">TACTICAL HEX GRID</div>
+      <% else %>
       <div class="battle-map-wrapper" style="background: #0d0d1a; border: 2px solid #007bff; border-radius: 8px; padding: 20px; display: inline-block; box-shadow: 0 0 15px rgba(0,123,255,0.2);">
+      <% end %>
         <%
           hex_width = 80
           hex_height = 70
@@ -212,7 +237,12 @@
             <% end %>
           </g>
         </svg>
+      <% if tactical_phase %>
+          </aside>
+        </div>
+      <% else %>
       </div>
+      <% end %>
 
       <% if request.path_info == '/battle/set' %>
         <div style="margin-top: 40px;">
