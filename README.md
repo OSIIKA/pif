@@ -13,7 +13,7 @@ public\css\battle.css
 db\migrate\01_create_allfreets.rb
 
 ・未解決：
-編成フェーズにおいて、艦隊を編成する枠が非表示になってしまっている。艦隊のアイコンも表示されていない
+
 
 ・方針：
 準備フェーズの本格的な構築
