@@ -7,67 +7,6 @@
 # セッションを用いてフェーズ間のデータを安全に受け渡します。
 # 主に、GETメソッドは画面表示用、POSTメソッドはデータ処理用ですが、例外がある可能性を考慮してください。
 # ===========================
-# 編成フェーズPOST
-# ===========================
-post '/battle/set' do
-  # ユーザー認証チェック（削除禁止）
-  @user = User.find_by(id: session[:user])
-  redirect '/users/login' unless @user
-  # ストーリーから送られてきたステージIDをセット（なければデフォルト1）（削除禁止）
-  stage = (params[:stage] || 1).to_i
-  session[:battle_stage] = stage
-  # 【クリーンアップ処理】画面表示直後、前回のログや味方データを完全に初期化する（削除禁止）
-  session[:battle_logs] = []
-  session[:battle_allies] = nil
-
-  # 【敵データの初回ロード】DB（EnemyBattleunit）から今回のステージの敵を呼び出し、
-  # HPを持たせた戦闘用セッションを作る（削除禁止）
-  enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
-  # 敵艦隊の1ユニットごとにデータを構築（削除禁止）
-  enemy_data_array = enemy_units.map do |unit|
-    # 1. 旗艦のデータをEnemyFreet（中間テーブル）から探す（削除禁止）
-    enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
-    next nil unless enemy_freet_flag
-    # 2. そのEnemyFreetが持っているallfreet_id（外部キー）を使って、
-    # ベースとなる能力（Allfreet）を検索する（削除禁止）
-    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
-    next nil unless flagship
-
-    {
-      id: unit.id, 
-      name: "👾 #{flagship.name}", 
-      col: unit.col, 
-      row: unit.row, 
-      flagship: { 
-        id: unit.flagship_id, # EnemyFreetのID
-        hp: flagship.hp,      # 今後は level を掛け算するロジックなどもここに入れられます！
-        max_hp: flagship.hp 
-      }, 
-      sub_ships: (1..6).map { |i| 
-        ship_id = unit.send("sub_ship_#{i}_id") # EnemyFreetのIDが入ってくる
-        next nil if ship_id.blank? 
-
-        # 随伴艦も同様に EnemyFreet -> Allfreet の順で探す
-        ef_sub = EnemyFreet.find_by(id: ship_id)
-        next nil unless ef_sub
-
-        sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
-        
-        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
-      }.compact 
-    }
-  end.compact
-
-  # 🎁 作成したデータを、リダイレクトしても消えないセッションに大切に保管する！（削除禁止）
-  session[:battle_enemies] = enemy_data_array
-  puts "====== 敵データロードテスト ======"
-  puts "セッションに入れた敵データ: "
-  pp session[:battle_enemies]
-  STDOUT.flush
-  # 全てのデータ初期化の完了を見届けた上で、描画担当のGETへリダイレクト！（削除禁止）
-  redirect '/battle/set'
-end
-# ===========================
 # 編成フェーズGET
 # ===========================
 get '/battle/set' do
@@ -172,6 +111,67 @@ get '/battle/set' do
   puts "==============================================="
   # 👑 必ずこのブロックの一番最後で erb を呼び出す
   erb :battle
+end
+# ===========================
+# 編成フェーズPOST
+# ===========================
+post '/battle/set' do
+  # ユーザー認証チェック（削除禁止）
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' unless @user
+  # ストーリーから送られてきたステージIDをセット（なければデフォルト1）（削除禁止）
+  stage = (params[:stage] || 1).to_i
+  session[:battle_stage] = stage
+  # 【クリーンアップ処理】画面表示直後、前回のログや味方データを完全に初期化する（削除禁止）
+  session[:battle_logs] = []
+  session[:battle_allies] = nil
+
+  # 【敵データの初回ロード】DB（EnemyBattleunit）から今回のステージの敵を呼び出し、
+  # HPを持たせた戦闘用セッションを作る（削除禁止）
+  enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
+  # 敵艦隊の1ユニットごとにデータを構築（削除禁止）
+  enemy_data_array = enemy_units.map do |unit|
+    # 1. 旗艦のデータをEnemyFreet（中間テーブル）から探す（削除禁止）
+    enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
+    next nil unless enemy_freet_flag
+    # 2. そのEnemyFreetが持っているallfreet_id（外部キー）を使って、
+    # ベースとなる能力（Allfreet）を検索する（削除禁止）
+    flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
+    next nil unless flagship
+
+    {
+      id: unit.id, 
+      name: "👾 #{flagship.name}", 
+      col: unit.col, 
+      row: unit.row, 
+      flagship: { 
+        id: unit.flagship_id, # EnemyFreetのID
+        hp: flagship.hp,      # 今後は level を掛け算するロジックなどもここに入れられます！
+        max_hp: flagship.hp 
+      }, 
+      sub_ships: (1..6).map { |i| 
+        ship_id = unit.send("sub_ship_#{i}_id") # EnemyFreetのIDが入ってくる
+        next nil if ship_id.blank? 
+
+        # 随伴艦も同様に EnemyFreet -> Allfreet の順で探す
+        ef_sub = EnemyFreet.find_by(id: ship_id)
+        next nil unless ef_sub
+
+        sub_ship = Allfreet.find_by(id: ef_sub.allfreet_id)
+        
+        sub_ship ? { id: ship_id, hp: sub_ship.hp, max_hp: sub_ship.hp } : nil 
+      }.compact 
+    }
+  end.compact
+
+  # 🎁 作成したデータを、リダイレクトしても消えないセッションに大切に保管する！（削除禁止）
+  session[:battle_enemies] = enemy_data_array
+  puts "====== 敵データロードテスト ======"
+  puts "セッションに入れた敵データ: "
+  pp session[:battle_enemies]
+  STDOUT.flush
+  # 全てのデータ初期化の完了を見届けた上で、描画担当のGETへリダイレクト！（削除禁止）
+  redirect '/battle/set'
 end
 
 post '/battle/start' do

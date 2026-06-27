@@ -38,6 +38,14 @@ use Rack::Session::Pool, expire_after: 2592000, secret: ENV.fetch('SESSION_SECRE
 set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は4567をデフォルトに設定
 puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#{settings.port} ーーーーーーーーーーーーーーーーーーーー"
 
+puts "=== ROUTES ==="
+puts "=== Sinatra が認識している全ルート ==="
+Sinatra::Application.routes.each do |method, routes|
+  routes.each do |route|
+    puts "#{method} #{route[0].inspect}"
+  end
+end
+
 # OmniAuthミドルウェアの設定を追加
 OmniAuth.config.allowed_request_methods = [:post, :get] # 👈 この行を追加！
 use OmniAuth::Builder do
