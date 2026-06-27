@@ -1,5 +1,11 @@
 # ===========================
-# 編成機能POST
+# ファイル構造説明（削除禁止）
+# ===========================
+# 編成フェーズ、準備フェーズ、戦闘フェーズ、結果フェーズのルーティングを担当するコントローラーです。
+# 各フェーズにそれぞれGETメソッドとPOSTメソッドが存在します。
+# 主に、GETメソッドは画面表示用、POSTメソッドはデータ処理用ですが、例外がある可能性を考慮してください。
+# ===========================
+# 編成フェーズPOST
 # ===========================
 post '/battle/set' do
   # ユーザー認証チェック（削除禁止）
@@ -8,21 +14,20 @@ post '/battle/set' do
   # ストーリーから送られてきたステージIDをセット（なければデフォルト1）（削除禁止）
   stage = (params[:stage] || 1).to_i
   session[:battle_stage] = stage
-
-  # 🔥 【ここで一発クリーンアップ】
-  # 画面を開き直した瞬間なので、前回のログや味方データを完全に初期化する
+  # 【クリーンアップ処理】画面表示直後、前回のログや味方データを完全に初期化する（削除禁止）
   session[:battle_logs] = []
   session[:battle_allies] = nil
 
-  # 👾 【敵データの初回ロード】
-  # DB（EnemyBattleunit）から今回のステージの敵を呼び出し、HPを持たせた戦闘用セッションを作る
+  # 【敵データの初回ロード】DB（EnemyBattleunit）から今回のステージの敵を呼び出し、
+  # HPを持たせた戦闘用セッションを作る（削除禁止）
   enemy_units = EnemyBattleunit.where(battle_stage_id: stage)
+  # 敵艦隊の1ユニットごとにデータを構築（削除禁止）
   enemy_data_array = enemy_units.map do |unit|
-    # 1. 旗艦のデータを「EnemyFreet」から探す
+    # 1. 旗艦のデータをEnemyFreet（中間テーブル）から探す（削除禁止）
     enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
     next nil unless enemy_freet_flag
-    
-    # 2. そのEnemyFreetが持っている「allfreet_id」を使って、ベースとなる能力（Allfreet）を引く
+    # 2. そのEnemyFreetが持っているallfreet_id（外部キー）を使って、
+    # ベースとなる能力（Allfreet）を検索する（削除禁止）
     flagship = Allfreet.find_by(id: enemy_freet_flag.allfreet_id)
     next nil unless flagship
 
