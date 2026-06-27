@@ -61,8 +61,12 @@ post '/battle/set' do
   # 🎁 作成したデータを、リダイレクトしても消えないセッションに大切に保管する！（削除禁止）
   session[:battle_enemies] = enemy_data_array
   puts "====== 敵データロードテスト ======"
+  puts "🟢 [BATTLE/SET] POST 初期化ルートを通過しました"
+  puts "    ├─ 敵データ初期化済み (session[:battle_enemies] に格納)"
+  puts "    └─ ステージ: #{session[:battle_stage]}"
   puts "セッションに入れた敵データ: "
   pp session[:battle_enemies]
+  puts "================================"
   STDOUT.flush
   # 全てのデータ初期化の完了を見届けた上で、描画担当のGETへリダイレクト！（削除禁止）
   redirect '/battle/set'
@@ -71,20 +75,20 @@ end
 # 編成フェーズGET
 # ===========================
 get '/battle/set' do
+  # ① ユーザー認証チェック（削除禁止）
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
-
-  # 📦 画面に必要な家具を、リロードに強いセッションから安全に復元するだけ！
+  # ② ステージ番号の復元（削除禁止）
+  # 　もし無ければデフォルト1（安全策）
   @stage = session[:battle_stage] || 1
-  
-  # 古い味方配置を一旦クリアする
+  # ③ 古い味方配置を削除・ただし、phase パラメータがある場合は消さない（削除禁止）
   session[:battle_allies_config] = nil if params[:phase].blank?
 
-  # 👑 1. まずデータを取得する
+  # ① ユーザーの艦隊データを取得（削除禁止）
   @fleets = @user.user_battleunits.order(:fleet_number)
-
   # ⚡【確実な救済措置：0件ならDBに第1艦隊を自動生成する】
   if @fleets.empty?
+    # ターミナルに警告を出す（削除禁止）
     puts "⚠️ 警告: user_battleunits が0件のため、初期艦隊をDBに作成します"
     @user.user_battleunits.create!(
       fleet_number: 1,
@@ -92,15 +96,22 @@ get '/battle/set' do
       sub_ship_1_id: nil, sub_ship_2_id: nil, sub_ship_3_id: nil,
       sub_ship_4_id: nil, sub_ship_5_id: nil, sub_ship_6_id: nil
     )
-    # 作成した状態で再取得して ActiveRecord::Relation を維持する
+    # 作成した状態で再取得して ActiveRecord::Relation を維持する（削除禁止）
     @fleets = @user.user_battleunits.order(:fleet_number)
   end
   
+  # ④ ステージデータの復元（削除禁止）
   if session[:battle_stage].blank?
     session[:battle_stage] = @stage
   end
-
+  # ⑤ 敵データの復元（削除禁止）
   if session[:battle_enemies].blank?
+    # バックアップが作動したことをターミナルに出力（削除禁止）
+    puts "⚠️ [BATTLE/SET] GET バックアップ処理が発動しました"
+    puts "    ├─ 理由: session[:battle_enemies] が空でした"
+    puts "    ├─ 再構築対象ステージ: #{@stage}"
+    puts "    └─ ※POST が正常に動いていない可能性があります"
+
     enemy_units = EnemyBattleunit.where(battle_stage_id: @stage)
     session[:battle_enemies] = enemy_units.map do |unit|
       enemy_freet_flag = EnemyFreet.find_by(id: unit.flagship_id)
@@ -125,8 +136,10 @@ get '/battle/set' do
         }.compact
       }
     end.compact
+    puts "🟢 [BATTLE/SET] GET バックアップ処理完了"
   end
 
+  # session のデータを使う（敵データ復元）（削除禁止）
   @enemies = session[:battle_enemies] || []
 
   # 配置が完了したかどうかを判定
