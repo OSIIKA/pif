@@ -188,6 +188,7 @@ get '/battle/set' do
 end
 
 post '/battle/start' do
+  # ① ユーザー認証チェック（削除禁止）
   @user = User.find_by(id: session[:user])
   redirect '/users/login' unless @user
 

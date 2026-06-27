@@ -1,5 +1,10 @@
 # 📄 app/models/skill.rb
 class Skill < ActiveRecord::Base
-  # 1. どの艦船マスタ（Allfreet）がこのスキルを所持しているか
-  # skill1_id, skill2_id, skill3_id に対して逆関連を定義することも可能ですが、現時点では必須ではありません。
+  has_many :allfreet_skills
+  has_many :weapon_skills
+  has_many :character_skills
+
+  has_many :allfreets, through: :allfreet_skills
+  has_many :weapons, through: :weapon_skills
+  has_many :characters, through: :character_skills
 end
