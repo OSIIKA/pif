@@ -7,9 +7,12 @@
   <link rel="stylesheet" href="/css/style.css"?v=4>
   <link rel="stylesheet" href="/css/battle.css?v=2">
   <script src="/js/battle.js?v=2" defer></script>
+  <% tactical_phase = ['/battle/prepare', '/battle/turn'].include?(request.path_info) %>
+  <% if tactical_phase %>
+    <script type="module" src="/js/battle_viewport.js?v=1"></script>
+  <% end %>
 </head>
 <body class="question-view">
-  <% tactical_phase = ['/battle/prepare', '/battle/turn'].include?(request.path_info) %>
   <header>
     <div style="color: #ffbc00; font-weight: bold; font-size: 1.2em; font-family: monospace;">
       🛸 紫鉄艦隊 - BATTLE CONTROL
@@ -127,13 +130,42 @@
                   <div class="battle-visual-ship-engine"></div>
                 </div>
                 <div class="battle-visual-hud battle-visual-hud-top-left">MODEL SLOT A-01</div>
-                <div class="battle-visual-hud battle-visual-hud-top-right">READY FOR GLTF</div>
-                <div class="battle-visual-hud battle-visual-hud-bottom">ここが 3D モデル描画マウント領域です。.blend は直接表示不可のため、GLB / glTF 変換後に接続します。</div>
+                <div id="battle-viewport-status" class="battle-visual-hud battle-visual-hud-top-right">READY FOR GLTF</div>
+                <div class="battle-visual-hud battle-visual-hud-bottom">SecondObject.glb を味方・敵の全艦艇へ仮適用し、真上視点でヘックス配置を再現します。</div>
                 <div class="battle-visual-pulse"></div>
                 <div class="battle-visual-message">
                   <strong>TACTICAL OBJECT VIEWPORT</strong>
-                  <p>現在は演出付きの表示枠として稼働中です。後続で WebGL ビューアをこの領域へ接続できます。</p>
+                  <p>現在のヘックス配置を 3D で俯瞰表示します。モデル読込失敗時は代替シルエットで継続表示します。</p>
                 </div>
+                <% viewport_units = [] %>
+                <% (@battle_allies_positions || []).each do |ally| %>
+                  <% viewport_units << {
+                    side: 'ally',
+                    fleet_number: ally[:fleet_number],
+                    col: ally[:col].to_i,
+                    row: ally[:row].to_i,
+                    hp: ally[:hp],
+                    max_hp: ally[:max_hp]
+                  } %>
+                <% end %>
+                <% (@enemies || []).each_with_index do |enemy, index| %>
+                  <% enemy_total_hp = enemy[:flagship][:hp] + enemy[:sub_ships].sum { |ship| ship[:hp] } %>
+                  <% enemy_total_max_hp = enemy[:flagship][:max_hp] + enemy[:sub_ships].sum { |ship| ship[:max_hp] } %>
+                  <% viewport_units << {
+                    side: 'enemy',
+                    fleet_number: index + 1,
+                    col: enemy[:col].to_i,
+                    row: enemy[:row].to_i,
+                    hp: enemy_total_hp,
+                    max_hp: enemy_total_max_hp
+                  } %>
+                <% end %>
+                <script id="battle-viewport-data" type="application/json"><%= JSON.generate({
+                  cols: 6,
+                  rows: 5,
+                  modelUrl: '/object/SecondObject.glb',
+                  units: viewport_units
+                }) %></script>
               </div>
             </div>
           </div>
