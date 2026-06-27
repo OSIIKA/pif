@@ -16,10 +16,7 @@ class CreateAllfreets < ActiveRecord::Migration[6.1]
       t.string :info
       # 艦艇が持つスキル
       # ???
-      # スキルを持つ装備への参照は、weapon_skillsテーブルを通じて行う
-      t.integer :weapon_id
-      # スキルを持つキャラクターへの参照は、character_skillsテーブルを通じて行う
-      t.integer :character_id
+      
       # ガチャに関する情報（今のところ不変のため辞書扱い）
       t.integer :rarity, default: 1
       t.integer :normal, default: 0

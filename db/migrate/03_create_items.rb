@@ -4,11 +4,18 @@
 class CreateItems < ActiveRecord::Migration[6.1]
   def change
     create_table :items do |t|
-      t.string :name, null: false # アイテム名
-      t.text :description # アイテム説明
-      t.integer :type, null: false # アイテムの種類（例: 0=紫鉄（ガチャ石）、1=ガチャチケ、2=その他数値アイテム、3=その他単品アイテム）
-      t.integer :each_id, null: false # アイテムの個別識別ID
-      t.integer :rarity, null: false # レアリティ（例: 1=普通、2=レア、3=超レアなど）
+      # アイテム名
+      t.string :name, null: false
+      # 説明文
+      t.text :description
+      # アイテムカテゴリ
+      # 1→紫鉄（石）
+      # 2→ガチャチケ
+      # 3→素材など
+      t.integer :category, null: false
+      # レアリティ
+      t.integer :rarity, null: false
+      t.timestamps
     end
   end
 end

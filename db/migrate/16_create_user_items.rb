@@ -3,16 +3,25 @@ class CreateUserItems < ActiveRecord::Migration[6.1]
     create_table :user_items do |t|
       t.integer :user_id, null: false # どのユーザーが
       t.integer :item_id, null: false # どのアイテムを
-      t.integer :count, default: 0, null: false # 何個持っているか
+
       # どの辞書（0?_系列）を参照するか
       # 0: allfreets系列
       # 1: characters系列
       # 2: weapons系列
+      # 3: items系列
       t.integer :object_id, default: 0, null: false
-      # 中間テーブルとしての機能
+
+      # ① 個数アイテム中間テーブルとしての追加機能
+      t.integer :count, default: 0, null: false # 何個持っているか
+      # ② 艦・キャラ・武装中間テーブルとしての機能
       t.integer :level, default: 1, null: false # アイテムのレベル（強化度合い）
       t.integer :exp, default: 0, null: false # アイテムの経験値（強化度合い）
-      # 念の為の timestamps
+      # ③ 艦中間テーブルとしての機能
+      # スキルを持つ装備への参照は、weapon_skillsテーブルを通じて行う
+      t.integer :weapon_id
+      # スキルを持つキャラクターへの参照は、character_skillsテーブルを通じて行う
+      t.integer :character_id
+      # ④ 念の為の timestamps
       t.timestamps
     end
 
