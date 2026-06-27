@@ -16,42 +16,35 @@ html, body {
 /* 準備フェーズ・戦闘フェーズ専用の戦術レイアウト */
 .tactical-battle-layout {
   position: relative;
-  min-height: 720px;
-  margin-top: 30px;
-  padding-top: 12px;
+  min-height: calc(100vh - 220px);
+  margin-top: 12px;
+  border: 1px solid #1f1f1f;
+  border-radius: 12px;
+  background: #000;
+  overflow: hidden;
 }
 
 .battle-visual-frame {
   position: relative;
-  width: calc(100% - min(36vw, 460px) - 26px);
-  max-width: 860px;
-  margin: 0 0 0 0;
-  min-height: 540px;
-  padding: 18px;
-  border: 1px solid rgba(0, 255, 188, 0.35);
-  border-radius: 18px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  min-height: calc(100vh - 240px);
+  padding: 12px;
+  border: 0;
+  border-radius: 0;
   background: #000;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 0 18px rgba(0, 0, 0, 0.65);
+  box-shadow: none;
   overflow: hidden;
 }
 
 .battle-visual-frame::before,
 .battle-visual-frame::after {
-  content: '';
-  position: absolute;
-  inset: 18px;
-  border: 1px solid rgba(255, 188, 0, 0.12);
-  border-radius: 12px;
-  pointer-events: none;
+  display: none;
 }
 
 .battle-visual-frame::after {
-  inset: auto 32px 24px 32px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 188, 0.5), transparent);
-  border: 0;
+  display: none;
 }
 
 .battle-visual-header {
@@ -62,31 +55,26 @@ html, body {
   font-family: monospace;
   font-size: 0.92rem;
   letter-spacing: 0.12em;
-  margin-bottom: 16px;
-}
-
-.battle-visual-status {
-  color: #00ffbc;
-  text-shadow: 0 0 8px rgba(0, 255, 188, 0.4);
+  margin-bottom: 8px;
 }
 
 .battle-visual-stage {
   position: relative;
-  min-height: 470px;
+  min-height: calc(100vh - 310px);
   display: flex;
   align-items: center;
   justify-content: center;
   background: #000;
-  border-radius: 14px;
+  border-radius: 6px;
 }
 
 .battle-visual-core {
   position: relative;
-  width: min(100%, 620px);
-  height: 420px;
-  max-width: 100%;
-  border-radius: 26px;
-  border: 1px solid rgba(0, 255, 188, 0.18);
+  width: 100%;
+  height: calc(100vh - 310px);
+  max-width: none;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
   background: #000;
   display: flex;
   align-items: center;
@@ -333,72 +321,19 @@ html, body {
   display: none;
 }
 
-.battle-visual-hud {
-  position: absolute;
-  z-index: 1;
-  padding: 8px 12px;
-  background: rgba(5, 10, 18, 0.72);
-  border: 1px solid rgba(0, 255, 188, 0.22);
-  border-radius: 10px;
-  color: #91f4ff;
-  font-family: monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-}
-
-.battle-visual-hud-top-left {
-  top: 18px;
-  left: 18px;
-}
-
-.battle-visual-hud-top-right {
-  top: 18px;
-  right: 18px;
-}
-
-.battle-visual-hud-bottom {
-  left: 20px;
-  right: 20px;
-  bottom: 18px;
-  text-align: center;
-}
-
-.battle-visual-message {
-  position: relative;
-  z-index: 1;
-  position: absolute;
-  right: 24px;
-  bottom: 64px;
-  width: min(42%, 320px);
-  padding: 18px 16px;
-  background: rgba(5, 10, 18, 0.78);
-  border: 1px solid rgba(255, 188, 0, 0.2);
-  border-radius: 14px;
-  text-align: center;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.28);
-}
-
-.battle-visual-message strong {
-  display: block;
-  color: #ffbc00;
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-
-.battle-visual-message p {
-  margin: 0;
-  color: #c6d4e1;
-  line-height: 1.7;
-  font-size: 0.94rem;
-}
-
 .battle-map-wrapper-compact {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: min(32vw, 400px);
+  top: 8px;
+  right: 8px;
+  width: min(12.5vw, 180px);
+  min-width: 140px;
   margin: 0;
-  z-index: 2;
+  z-index: 7;
+  background: rgba(0, 0, 0, 0.94);
+  border: 1px solid #2f6aa5;
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.75);
 }
 
 .battle-map-wrapper-compact svg {
@@ -407,12 +342,82 @@ html, body {
 }
 
 .battle-map-caption {
-  margin-bottom: 10px;
+  margin-bottom: 4px;
   color: #7fd6ff;
   font-family: monospace;
-  font-size: 0.82rem;
+  font-size: 0.58rem;
   letter-spacing: 0.12em;
   text-align: left;
+}
+
+.tactical-log-overlay {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  width: min(34vw, 430px);
+  z-index: 7;
+  background: rgba(0, 0, 0, 0.92);
+  border: 1px solid #ff4a4a;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+}
+
+.tactical-log-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 74, 74, 0.3);
+  color: #ff9b9b;
+  font-size: 0.78rem;
+  font-family: monospace;
+}
+
+.tactical-log-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.tactical-log-btn {
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-family: monospace;
+  border-radius: 3px;
+  padding: 3px 6px;
+}
+
+.tactical-log-btn-primary {
+  background: #ffbc00;
+  color: #000;
+}
+
+.tactical-log-btn-secondary {
+  background: #222;
+  color: #bbb;
+  border: 1px solid #444;
+}
+
+.tactical-log-overlay-body {
+  max-height: 130px;
+  overflow-y: auto;
+  padding: 6px 8px;
+}
+
+.tactical-log-overlay-body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tactical-log-overlay-body li {
+  margin-bottom: 4px;
+  padding-left: 6px;
+  border-left: 2px solid rgba(255, 74, 74, 0.45);
+  color: #fff;
+  font-size: 0.75rem;
+  font-family: monospace;
+  word-break: break-word;
 }
 
 @keyframes battle-radar-spin {
@@ -453,88 +458,63 @@ html, body {
   }
 }
 
-.prepare-phase-panel {
-  width: min(92%, 980px);
-  margin: 28px auto 0;
-  font-family: monospace;
-}
-
-.prepare-phase-panel-inner {
-  background: rgba(10, 10, 18, 0.96);
-  border: 2px solid #ffbc00;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 0 25px rgba(255,188,0,0.24);
-  text-align: center;
-}
-
 @media (max-width: 1100px) {
   .tactical-battle-layout {
     min-height: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
   }
 
   .battle-visual-frame {
     width: 100%;
-    min-height: 460px;
+    min-height: 480px;
     margin: 0;
   }
 
   .battle-map-wrapper-compact {
-    position: static;
-    width: 100%;
+    width: min(20vw, 160px);
+    min-width: 120px;
   }
 
-  .battle-visual-message {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: min(72%, 360px);
-    margin-top: 16px;
+  .tactical-log-overlay {
+    width: min(52vw, 360px);
   }
 }
 
 @media (max-width: 700px) {
   .battle-visual-frame {
-    padding: 14px;
-    min-height: 380px;
+    padding: 8px;
+    min-height: 400px;
   }
 
   .battle-visual-stage {
-    min-height: 320px;
+    min-height: 340px;
   }
 
   .battle-visual-core {
     width: 100%;
-    height: 280px;
+    height: 340px;
     border-radius: 24px;
   }
 
-  .battle-visual-hologram {
-    width: 190px;
-    height: 170px;
+  .battle-map-wrapper-compact {
+    width: 118px;
+    min-width: 118px;
+    padding: 4px;
   }
 
-  .battle-visual-hud-top-left,
-  .battle-visual-hud-top-right {
-    font-size: 0.68rem;
-    padding: 6px 8px;
+  .battle-map-caption {
+    font-size: 0.52rem;
+    margin-bottom: 2px;
   }
 
-  .battle-visual-hud-bottom {
-    left: 10px;
-    right: 10px;
-    font-size: 0.68rem;
+  .tactical-log-overlay {
+    left: 6px;
+    right: 6px;
+    width: auto;
+    bottom: 6px;
   }
 
-  .battle-visual-message {
-    width: calc(100% - 28px);
-  }
-
-  .prepare-phase-panel-inner {
-    padding: 18px;
+  .tactical-log-overlay-body {
+    max-height: 100px;
   }
 }
 

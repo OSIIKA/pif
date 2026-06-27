@@ -9,7 +9,7 @@
   <script src="/js/battle.js?v=2" defer></script>
   <% tactical_phase = ['/battle/prepare', '/battle/turn'].include?(request.path_info) %>
   <% if tactical_phase %>
-    <script type="module" src="/js/battle_viewport.js?v=1"></script>
+    <script type="module" src="/js/battle_viewport.js?v=2"></script>
   <% end %>
 </head>
 <body class="question-view">
@@ -115,7 +115,6 @@
           <div class="battle-visual-frame">
             <div class="battle-visual-header">
               <span>3D TACTICAL VIEW</span>
-              <span class="battle-visual-status">STANDBY</span>
             </div>
             <div class="battle-visual-stage">
               <div id="battle-3d-stage" class="battle-visual-core">
@@ -129,14 +128,7 @@
                   <div class="battle-visual-ship-wing battle-visual-ship-wing-right"></div>
                   <div class="battle-visual-ship-engine"></div>
                 </div>
-                <div class="battle-visual-hud battle-visual-hud-top-left">MODEL SLOT A-01</div>
-                <div id="battle-viewport-status" class="battle-visual-hud battle-visual-hud-top-right">READY FOR GLTF</div>
-                <div class="battle-visual-hud battle-visual-hud-bottom">SecondObject.glb を味方・敵の全艦艇へ仮適用し、真上視点でヘックス配置を再現します。</div>
                 <div class="battle-visual-pulse"></div>
-                <div class="battle-visual-message">
-                  <strong>TACTICAL OBJECT VIEWPORT</strong>
-                  <p>現在のヘックス配置を 3D で俯瞰表示します。モデル読込失敗時は代替シルエットで継続表示します。</p>
-                </div>
                 <% viewport_units = [] %>
                 <% (@battle_allies_positions || []).each do |ally| %>
                   <% viewport_units << {
@@ -172,7 +164,7 @@
             </div>
           </div>
 
-          <aside class="battle-map-wrapper battle-map-wrapper-compact" style="background: #0d0d1a; border: 2px solid #007bff; border-radius: 8px; padding: 20px; display: inline-block; box-shadow: 0 0 15px rgba(0,123,255,0.2);">
+          <aside class="battle-map-wrapper battle-map-wrapper-compact">
             <div class="battle-map-caption">TACTICAL HEX GRID</div>
       <% else %>
       <div class="battle-map-wrapper" style="background: #0d0d1a; border: 2px solid #007bff; border-radius: 8px; padding: 20px; display: inline-block; box-shadow: 0 0 15px rgba(0,123,255,0.2);">
@@ -283,6 +275,31 @@
           </g>
         </svg>
       <% if tactical_phase %>
+          <div class="tactical-log-overlay">
+            <div class="tactical-log-overlay-header">
+              <span>📡 BATTLE LOG</span>
+              <div class="tactical-log-actions">
+                <% if request.path_info == '/battle/prepare' %>
+                  <a href="/battle/turn" class="tactical-log-btn tactical-log-btn-primary">🚀 進撃開始</a>
+                <% elsif request.path_info == '/battle/turn' %>
+                  <a href="/battle/turn" class="tactical-log-btn tactical-log-btn-primary">🔄 次のターン</a>
+                <% end %>
+                <a href="/home" class="tactical-log-btn tactical-log-btn-secondary">🏳️ 撤退</a>
+              </div>
+            </div>
+            <div class="tactical-log-overlay-body">
+              <ul>
+                <% logs_for_overlay = request.path_info == '/battle/turn' ? (@turn_logs || []) : (@prep_logs || []) %>
+                <% if logs_for_overlay.blank? %>
+                  <li>ログはまだありません。</li>
+                <% else %>
+                  <% logs_for_overlay.each do |log| %>
+                    <li><%= log %></li>
+                  <% end %>
+                <% end %>
+              </ul>
+            </div>
+          </div>
           </aside>
         </div>
       <% else %>
@@ -320,120 +337,5 @@
       <% end %>
     </div>
   </main>
-  <!-- フェーズごとの特別なオーバーレイ表示 -->
-  <% if request.path_info == '/battle/prepare' %>
-    <div class="prepare-phase-panel">
-      <div class="prepare-phase-panel-inner">
-      
-        <h1 style="color: #ffbc00; margin-top: 0; font-size: 1.8em; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ffbc00; padding-bottom: 15px; margin-bottom: 25px;">
-          ⚡ 哨戒戦技発動・準備フェーズ ⚡
-        </h1>
-
-        <!-- 📜 作戦海域 ログアナウンス -->
-        <div style="background: #1a1a2e; border: 1px solid #3f3f5f; padding: 15px; border-radius: 6px; text-align: left; max-height: 120px; overflow-y: auto; margin-bottom: 20px;">
-          <h4 style="color: #00ffbc; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid #2a2a4e; padding-bottom: 5px; font-size: 0.95em;">📜 作戦海域 ログアナウンス</h4>
-          <ul style="list-style: none; padding-left: 0; line-height: 1.6; margin: 0; font-size: 0.95em;">
-            <% @prep_logs.each do |log| %>
-              <li style="margin-bottom: 6px; color: #fff; border-left: 3px solid #ffbc00; padding-left: 8px;">
-                <%= log %>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-
-        <!-- ⚡ スキル発動順序（速力順） -->
-        <div style="background: #1a1a1a; border: 1px solid #333; padding: 15px; border-radius: 6px; text-align: left; margin-bottom: 25px;">
-          <h4 style="color: #ffbc00; margin-top: 0; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 0.95em;">⚡ スキル自動発動順序（速力順・同速はランダム）</h4>
-          <div style="max-height: 250px; overflow-y: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.85em; text-align: left; line-height: 1.4;">
-              <thead>
-                <tr style="border-bottom: 1px solid #444; color: #aaa; font-size: 0.9em;">
-                  <th style="padding: 6px 4px; width: 45px;">順序</th>
-                  <th style="padding: 6px 4px; width: 60px;">所属</th>
-                  <th style="padding: 6px 4px;">艦船名</th>
-                  <th style="padding: 6px 4px; text-align: right; width: 55px;">速力</th>
-                  <th style="padding: 6px 4px; width: 330px;">所持スキル（① / ② / ③）</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if @sorted_ships.blank? %>
-                  <tr>
-                    <td colspan="5" style="padding: 10px; text-align: center; color: #888;">配備されている艦船がありません。</td>
-                  </tr>
-                <% else %>
-                  <% @sorted_ships.each_with_index do |ship, index| %>
-                    <tr style="border-bottom: 1px solid #2a2a2a; color: <%= ship[:side] == '味方' ? '#fff' : '#ff8888' %>;">
-                      <td style="padding: 8px 4px; font-weight: bold; color: #ffbc00; font-size: 1.1em;"><%= index + 1 %></td>
-                      <td style="padding: 8px 4px;">
-                        <span style="background: <%= ship[:side] == '味方' ? '#0b6623' : '#7f1d1d' %>; color: #fff; padding: 2px 5px; border-radius: 3px; font-size: 0.8em; font-weight: bold;">
-                          <%= ship[:side] %>
-                        </span>
-                      </td>
-                      <td style="padding: 8px 4px;">
-                        <span style="font-weight: bold;"><%= ship[:name] %></span>
-                        <span style="display: block; font-size: 0.75em; color: #888;"><%= ship[:fleet] %></span>
-                      </td>
-                      <td style="padding: 8px 4px; text-align: right; font-weight: bold; color: #00ffbc; font-size: 1.05em;"><%= ship[:speed] %></td>
-                      <td style="padding: 8px 4px;">
-                        <span style="background: #2a2a2a; padding: 2px 4px; border-radius: 3px; margin-right: 2px; font-size: 0.85em; display: inline-block;">
-                          ① <%= ship[:skill1_name] %>
-                        </span>
-                        <span style="background: #2a2a2a; padding: 2px 4px; border-radius: 3px; margin-right: 2px; font-size: 0.85em; display: inline-block;">
-                          ② <%= ship[:skill2_name] %>
-                        </span>
-                        <span style="background: #2a2a2a; padding: 2px 4px; border-radius: 3px; font-size: 0.85em; display: inline-block;">
-                          ③ <%= ship[:skill3_name] %>
-                        </span>
-                      </td>
-                    </tr>
-                  <% end %>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div style="margin-top: 25px;">
-          <a href="/battle/turn" style="display: inline-block; background: #ff4a4a; color: #fff; padding: 12px 35px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 1.1em; box-shadow: 0 0 15px rgba(255,74,74,0.4); transition: 0.2s;">
-            🚀 進撃開始（戦闘フェーズへ）
-          </a>
-        </div>
-      
-      </div>
-    </div>
-  <% end %>
-  <% if request.path_info == '/battle/turn' %>
-    <div style="position: fixed; bottom: 20px; left: 20px; width: 400px; background: rgba(15, 10, 10, 0.85); border: 1px solid #ff4a4a; padding: 12px; border-radius: 6px; box-shadow: 0 0 15px rgba(255,74,74,0.3); z-index: 9999; backdrop-filter: blur(3px); font-family: monospace; text-align: left;">
-    
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #331111; padding-bottom: 5px;">
-        <span style="color: #ff8888; font-weight: bold; font-size: 0.85em; letter-spacing: 1px;">📡 REALTIME BATTLE LOG</span>
-        <div>
-          <a href="/battle/turn" style="display: inline-block; background: #ffbc00; color: #000; padding: 4px 10px; border-radius: 3px; text-decoration: none; font-weight: bold; font-size: 0.8em; box-shadow: 0 0 8px rgba(255,188,0,0.2); margin-right: 5px; transition: 0.2s;">
-            🔄 次のターン
-          </a>
-          <a href="/home" style="display: inline-block; background: #222; color: #aaa; padding: 4px 8px; border-radius: 3px; text-decoration: none; font-size: 0.8em; border: 1px solid #444;">
-            🏳️ 撤退
-          </a>
-        </div>
-      </div>
-
-      <div style="background: rgba(0, 0, 0, 0.6); padding: 8px; border-radius: 4px; max-height: 80px; overflow-y: auto; box-shadow: inset 0 0 5px rgba(0,0,0,0.8);">
-        <ul style="list-style: none; padding-left: 0; line-height: 1.4; margin: 0; font-size: 0.85em;">
-          <% @turn_logs.each do |log| %>
-            <%
-              color = "#fff"
-              color = "#66ff66" if log.include?("💡") || log.include?("🎉")
-              color = "#ff4a4a" if log.include?("🚨") || log.include?("🏳️")
-              color = "#ffbc00" if log.include?("⚔️")
-            %>
-            <li style="margin-bottom: 4px; color: <%= color %>; border-left: 2px solid rgba(255,74,74,0.4); padding-left: 6px; word-break: break-all;">
-              <%= log %>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-
-    </div>
-  <% end %>
 </body>
 </html>

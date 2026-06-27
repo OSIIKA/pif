@@ -1,6 +1,5 @@
 const container = document.getElementById('battle-3d-stage');
 const dataNode = document.getElementById('battle-viewport-data');
-const statusNode = document.getElementById('battle-viewport-status');
 
 if (!container || !dataNode) {
   // 戦術フェーズ以外では何もしない
@@ -27,7 +26,8 @@ if (!container || !dataNode) {
   };
 
   const updateStatus = (message) => {
-    if (statusNode) statusNode.textContent = message;
+    // UIへは表示しない。必要時のデバッグ用フック。 
+    container.dataset.viewportState = message;
   };
 
   const createViewportLabel = (unit) => {
@@ -67,13 +67,13 @@ if (!container || !dataNode) {
   };
 
   renderFallbackLayout();
-  updateStatus(`FALLBACK READY : ${viewportData.units.length} UNITS`);
+  updateStatus(`FALLBACK_READY_${viewportData.units.length}`);
   window.addEventListener('resize', renderFallbackLayout);
 
   const bootThreeViewport = async () => {
     try {
-      const THREE = await import('https://unpkg.com/three@0.166.1/build/three.module.js');
-      const { GLTFLoader } = await import('https://unpkg.com/three@0.166.1/examples/jsm/loaders/GLTFLoader.js');
+      const THREE = await import('https://esm.sh/three@0.166.1');
+      const { GLTFLoader } = await import('https://esm.sh/three@0.166.1/examples/jsm/loaders/GLTFLoader.js');
 
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x000000);
@@ -308,10 +308,10 @@ if (!container || !dataNode) {
       resizeRenderer();
       window.addEventListener('resize', resizeRenderer);
       fallbackLayer.style.display = 'none';
-      updateStatus(`GLTF READY : ${viewportData.units.length} UNITS`);
+      updateStatus(`GLTF_READY_${viewportData.units.length}`);
       animate();
     } catch (error) {
-      updateStatus(`FALLBACK VIEW : ${error.message || 'LOAD ERROR'}`);
+      updateStatus(`FALLBACK_ERROR_${error.message || 'LOAD_ERROR'}`);
       renderFallbackLayout();
     }
   };
