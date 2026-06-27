@@ -18,13 +18,15 @@ html, body {
   position: relative;
   min-height: 720px;
   margin-top: 30px;
+  padding-top: 12px;
 }
 
 .battle-visual-frame {
   position: relative;
-  width: min(62vw, 860px);
+  width: calc(100% - min(36vw, 460px) - 26px);
+  max-width: 860px;
+  margin: 0 0 0 0;
   min-height: 540px;
-  margin: 0 auto;
   padding: 18px;
   border: 1px solid rgba(0, 255, 188, 0.35);
   border-radius: 18px;
@@ -84,17 +86,30 @@ html, body {
 
 .battle-visual-core {
   position: relative;
-  width: min(48vw, 620px);
-  height: min(48vw, 620px);
+  width: min(100%, 620px);
+  height: 420px;
   max-width: 100%;
-  max-height: 420px;
-  border-radius: 50%;
+  border-radius: 26px;
   border: 1px solid rgba(0, 255, 188, 0.18);
-  background: radial-gradient(circle, rgba(0, 123, 255, 0.16), rgba(0, 0, 0, 0.08) 62%, rgba(0, 0, 0, 0.22) 100%);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(0, 123, 255, 0.22), rgba(0, 0, 0, 0.08) 45%, rgba(0, 0, 0, 0.26) 100%),
+    linear-gradient(180deg, rgba(0, 255, 188, 0.04), rgba(0, 0, 0, 0));
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.battle-visual-core::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.22;
+  pointer-events: none;
 }
 
 .battle-visual-radar,
@@ -128,11 +143,122 @@ html, body {
   height: 84%;
 }
 
+.battle-visual-grid {
+  position: absolute;
+  left: -12%;
+  right: -12%;
+  bottom: -10%;
+  height: 48%;
+  background:
+    linear-gradient(transparent 0%, rgba(0, 255, 188, 0.12) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 255, 188, 0.16) 0 2px, transparent 2px 54px),
+    repeating-linear-gradient(rgba(0, 255, 188, 0.16) 0 2px, transparent 2px 54px);
+  transform: perspective(420px) rotateX(72deg);
+  transform-origin: center bottom;
+  opacity: 0.46;
+}
+
+.battle-visual-hologram {
+  position: relative;
+  z-index: 1;
+  width: 260px;
+  height: 220px;
+  filter: drop-shadow(0 0 25px rgba(0, 255, 188, 0.28));
+  animation: battle-hologram-float 4.8s ease-in-out infinite;
+}
+
+.battle-visual-ship-body,
+.battle-visual-ship-wing,
+.battle-visual-ship-engine {
+  position: absolute;
+  background: linear-gradient(180deg, rgba(123, 243, 255, 0.95), rgba(0, 255, 188, 0.3));
+  border: 1px solid rgba(174, 255, 246, 0.65);
+  box-shadow: 0 0 20px rgba(0, 255, 188, 0.22);
+}
+
+.battle-visual-ship-body {
+  left: 50%;
+  top: 22px;
+  width: 86px;
+  height: 148px;
+  transform: translateX(-50%) perspective(260px) rotateX(16deg);
+  clip-path: polygon(50% 0%, 100% 22%, 92% 100%, 8% 100%, 0% 22%);
+}
+
+.battle-visual-ship-wing {
+  top: 84px;
+  width: 106px;
+  height: 44px;
+  clip-path: polygon(0% 50%, 100% 0%, 88% 100%);
+}
+
+.battle-visual-ship-wing-left {
+  left: 18px;
+  transform: perspective(220px) rotateY(28deg) rotate(-10deg);
+}
+
+.battle-visual-ship-wing-right {
+  right: 18px;
+  transform: perspective(220px) rotateY(-28deg) scaleX(-1) rotate(-10deg);
+}
+
+.battle-visual-ship-engine {
+  left: 50%;
+  bottom: 18px;
+  width: 58px;
+  height: 58px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(0, 255, 188, 0.34) 46%, rgba(0, 0, 0, 0) 72%);
+}
+
+.battle-visual-pulse {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border: 1px solid rgba(0, 255, 188, 0.34);
+  border-radius: 50%;
+  animation: battle-pulse-ring 2.8s ease-out infinite;
+}
+
+.battle-visual-hud {
+  position: absolute;
+  z-index: 1;
+  padding: 8px 12px;
+  background: rgba(5, 10, 18, 0.72);
+  border: 1px solid rgba(0, 255, 188, 0.22);
+  border-radius: 10px;
+  color: #91f4ff;
+  font-family: monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.battle-visual-hud-top-left {
+  top: 18px;
+  left: 18px;
+}
+
+.battle-visual-hud-top-right {
+  top: 18px;
+  right: 18px;
+}
+
+.battle-visual-hud-bottom {
+  left: 20px;
+  right: 20px;
+  bottom: 18px;
+  text-align: center;
+}
+
 .battle-visual-message {
   position: relative;
   z-index: 1;
-  width: min(72%, 360px);
-  padding: 22px 20px;
+  position: absolute;
+  right: 24px;
+  bottom: 64px;
+  width: min(42%, 320px);
+  padding: 18px 16px;
   background: rgba(5, 10, 18, 0.78);
   border: 1px solid rgba(255, 188, 0, 0.2);
   border-radius: 14px;
@@ -156,9 +282,9 @@ html, body {
 
 .battle-map-wrapper-compact {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: min(34vw, 420px);
+  top: 0;
+  right: 0;
+  width: min(32vw, 400px);
   margin: 0;
   z-index: 2;
 }
@@ -186,6 +312,41 @@ html, body {
   }
 }
 
+@keyframes battle-hologram-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes battle-pulse-ring {
+  0% {
+    transform: scale(0.82);
+    opacity: 0.78;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+.prepare-phase-panel {
+  width: min(92%, 980px);
+  margin: 28px auto 0;
+  font-family: monospace;
+}
+
+.prepare-phase-panel-inner {
+  background: rgba(10, 10, 18, 0.96);
+  border: 2px solid #ffbc00;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(255,188,0,0.24);
+  text-align: center;
+}
+
 @media (max-width: 1100px) {
   .tactical-battle-layout {
     min-height: auto;
@@ -197,11 +358,20 @@ html, body {
   .battle-visual-frame {
     width: 100%;
     min-height: 460px;
+    margin: 0;
   }
 
   .battle-map-wrapper-compact {
     position: static;
     width: 100%;
+  }
+
+  .battle-visual-message {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: min(72%, 360px);
+    margin-top: 16px;
   }
 }
 
@@ -221,8 +391,29 @@ html, body {
     border-radius: 24px;
   }
 
+  .battle-visual-hologram {
+    width: 190px;
+    height: 170px;
+  }
+
+  .battle-visual-hud-top-left,
+  .battle-visual-hud-top-right {
+    font-size: 0.68rem;
+    padding: 6px 8px;
+  }
+
+  .battle-visual-hud-bottom {
+    left: 10px;
+    right: 10px;
+    font-size: 0.68rem;
+  }
+
   .battle-visual-message {
     width: calc(100% - 28px);
+  }
+
+  .prepare-phase-panel-inner {
+    padding: 18px;
   }
 }
 

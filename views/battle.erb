@@ -5,7 +5,7 @@
   <title>紫鉄艦隊</title>
   <link rel="icon" href="/img/favicon.ico">
   <link rel="stylesheet" href="/css/style.css"?v=4>
-  <link rel="stylesheet" href="/css/battle.css">
+  <link rel="stylesheet" href="/css/battle.css?v=2">
   <script src="/js/battle.js?v=2" defer></script>
 </head>
 <body class="question-view">
@@ -115,13 +115,24 @@
               <span class="battle-visual-status">STANDBY</span>
             </div>
             <div class="battle-visual-stage">
-              <div class="battle-visual-core">
+              <div id="battle-3d-stage" class="battle-visual-core">
                 <div class="battle-visual-radar"></div>
                 <div class="battle-visual-ring battle-visual-ring-a"></div>
                 <div class="battle-visual-ring battle-visual-ring-b"></div>
+                <div class="battle-visual-grid"></div>
+                <div class="battle-visual-hologram">
+                  <div class="battle-visual-ship-body"></div>
+                  <div class="battle-visual-ship-wing battle-visual-ship-wing-left"></div>
+                  <div class="battle-visual-ship-wing battle-visual-ship-wing-right"></div>
+                  <div class="battle-visual-ship-engine"></div>
+                </div>
+                <div class="battle-visual-hud battle-visual-hud-top-left">MODEL SLOT A-01</div>
+                <div class="battle-visual-hud battle-visual-hud-top-right">READY FOR GLTF</div>
+                <div class="battle-visual-hud battle-visual-hud-bottom">ここが 3D モデル描画マウント領域です。.blend は直接表示不可のため、GLB / glTF 変換後に接続します。</div>
+                <div class="battle-visual-pulse"></div>
                 <div class="battle-visual-message">
-                  <strong>中央3D表示枠</strong>
-                  <p>.blend 直読込は未接続です。後続で GLB / glTF 変換済みモデルをここへ表示できます。</p>
+                  <strong>TACTICAL OBJECT VIEWPORT</strong>
+                  <p>現在は演出付きの表示枠として稼働中です。後続で WebGL ビューアをこの領域へ接続できます。</p>
                 </div>
               </div>
             </div>
@@ -277,9 +288,8 @@
   </main>
   <!-- フェーズごとの特別なオーバーレイ表示 -->
   <% if request.path_info == '/battle/prepare' %>
-    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5, 5, 15, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(4px); font-family: monospace;">
-    
-      <div style="width: 95%; max-width: 700px; background: #111; border: 2px solid #ffbc00; padding: 30px; border-radius: 8px; box-shadow: 0 0 25px rgba(255,188,0,0.3); text-align: center;">
+    <div class="prepare-phase-panel">
+      <div class="prepare-phase-panel-inner">
       
         <h1 style="color: #ffbc00; margin-top: 0; font-size: 1.8em; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #ffbc00; padding-bottom: 15px; margin-bottom: 25px;">
           ⚡ 哨戒戦技発動・準備フェーズ ⚡
