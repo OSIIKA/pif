@@ -26,8 +26,8 @@ get '/story' do
 
     # 次の step に進めてから戦闘へ
     session[:step] += 1
-
-    redirect '/battle/set'
+    # Sinatra は redirect で POST を維持するには 307 を使う
+    redirect '/battle/set', 307
   end
 
   # ★ 通常の会話処理
