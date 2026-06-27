@@ -1,4 +1,4 @@
-# 02_create_stories.rb
+# 02_create_stories.rb（モデル確認済み）
 # 0?_から始まるマイグレーションファイルは、データベースの初期設定を行うためのものです。
 # これにはUserなどと接続する外部キーは付属せず、必ず最初に実行し、辞書目的でのみ使用されます。
 class CreateStories < ActiveRecord::Migration[6.1]

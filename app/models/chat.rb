@@ -1,4 +1,4 @@
-# 📄 app/models/chat.rb
+# 📄 app/models/chat.rb（モデル確認済み）
 class Chat < ActiveRecord::Base
   # 1. チャットの発言は、特定の1人のユーザーに所属している
   belongs_to :user

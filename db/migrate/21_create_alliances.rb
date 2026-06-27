@@ -1,3 +1,4 @@
+# 21_create_alliances.rb（モデル確認済み）
 class CreateAlliances < ActiveRecord::Migration[6.1]
   def change
     create_table :alliances do |t|

@@ -8,8 +8,6 @@ class User < ActiveRecord::Base
   has_one :user_base, dependent: :destroy
   # ユーザーはたくさんのチャット発言を持つ
   has_many :chats, dependent: :destroy
-  # ユーザーはたくさんの自分のフリートを持つ
-  has_many :user_myfreets, dependent: :destroy
   # ユーザーはたくさんの艦隊配置を持つ
   has_many :user_battleunits, dependent: :destroy
   # ユーザーはたくさんのアイテム所持データを持つ
@@ -17,8 +15,6 @@ class User < ActiveRecord::Base
   # アイテムとの多対多の関係を中間テーブル（user_items）を経由して定義
   has_many :items, through: :user_items
 
-  # 既存のリレーション（そのまま残します）
-  belongs_to :user_lank, foreign_key: :level, optional: true
   # ユーザーはどこかの同盟に所属する（無所属もOKにするため optional: true）
   belongs_to :alliance, optional: true
   # セキュリティシステムとバリデーションの追加
@@ -42,6 +38,14 @@ class User < ActiveRecord::Base
       "✉️ 申請中"
     else
       "無所属"
+    end
+  end
+  def rank_name
+    case level
+    when 1..10  then "ブロンズ"
+    when 11..20 then "シルバー"
+    when 21..30 then "ゴールド"
+    else "プラチナ"
     end
   end
 end

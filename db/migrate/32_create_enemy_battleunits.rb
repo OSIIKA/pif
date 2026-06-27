@@ -1,3 +1,5 @@
+# 32_create_enemy_battleunits.rb（モデル確認済み）
+# 3?_から始まるマイグレーションファイルは、敵関連の動的処理を行うためのものです。
 class CreateEnemyBattleunits < ActiveRecord::Migration[6.1]
   def change
     create_table :enemy_battleunits do |t|

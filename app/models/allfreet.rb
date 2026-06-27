@@ -1,12 +1,7 @@
 # 📄 app/models/allfreet.rb
 class Allfreet < ActiveRecord::Base
-  # 艦艇スキル（多対多）
-  has_many :allfreet_skills
-  has_many :skills, through: :allfreet_skills
-
-  # 艦艇にキャラと武装を直接載せる
-  belongs_to :character, optional: true
-  belongs_to :weapon, optional: true
+  # 1艦1スキル（辞書に直付け）
+  belongs_to :skill, optional: true
 
   # 🟢 数字をレア度の文字列に変換する翻訳機
   def rarity_text

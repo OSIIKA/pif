@@ -1,8 +1,10 @@
+# 15_create_usersteps.rb（モデル確認済み）
+# 1?_から始まるマイグレーションファイルは、ユーザー関連の動的処理を行うためのものです。
 class CreateUsersteps < ActiveRecord::Migration[6.1]
   def change
     create_table :usersteps do |t|
       t.integer :user_id, null: false # どのユーザーのステップか
-      t.integer :limited_gacha_step, :integer, default: 1 # 現在のステップ（例: 1, 2, 3 ...）
+      t.integer :limited_gacha_step, default: 1 # 現在のステップ（例: 1, 2, 3 ...）
 
     end
 

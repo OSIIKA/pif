@@ -1,3 +1,5 @@
+# 13_create_user_items.rb（モデル確認済み）
+# 1?_から始まるマイグレーションファイルは、ユーザー関連の動的処理を行うためのものです。
 class CreateUserItems < ActiveRecord::Migration[6.1]
   def change
     create_table :user_items do |t|

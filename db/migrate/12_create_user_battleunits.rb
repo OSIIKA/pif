@@ -1,3 +1,5 @@
+# 12_create_user_battleunits.rb（モデル確認済み）
+# 1?_から始まるマイグレーションファイルは、ユーザー関連の動的処理を行うためのものです。
 class CreateUserBattleunits < ActiveRecord::Migration[6.1]
   def change
     create_table :user_battleunits do |t|

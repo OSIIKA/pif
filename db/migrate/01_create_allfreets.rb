@@ -1,4 +1,4 @@
-# 01_create_allfreets.rb
+# 01_create_allfreets.rb（モデル確認済み）
 # 0?_から始まるマイグレーションファイルは、データベースの初期設定を行うためのものです。
 # これにはUserなどと接続する外部キーは付属せず、必ず最初に実行し、辞書目的でのみ使用されます。
 class CreateAllfreets < ActiveRecord::Migration[6.1]
@@ -15,7 +15,7 @@ class CreateAllfreets < ActiveRecord::Migration[6.1]
       t.integer :speed
       t.string :info
       # 艦艇が持つスキル
-      # ???
+      t.integer :skill_id
       
       # ガチャに関する情報（今のところ不変のため辞書扱い）
       t.integer :rarity, default: 1
