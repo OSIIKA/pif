@@ -110,11 +110,11 @@ Allfreet.find_or_create_by!(id: 11, name: "味方3", hp: 100, max_hp: 100, atk: 
 puts "🌱 スキルデータのシードを開始します..."
 Skill.destroy_all
 
-Skill.create!(id: 1, name: "応急修理", effect_type: "heal_all", value: 20, description: "味方全体のHPを20%回復する。")
-Skill.create!(id: 2, name: "右翼火力増強", effect_type: "buff_rightmost_atk", value: 30, description: "味方艦のうち最も右側に位置する艦の攻撃力を30%上昇させる。")
-Skill.create!(id: 3, name: "妨害電波", effect_type: "debuff_enemy_atk", value: 15, description: "敵全体の攻撃力を15%減少させる。")
-Skill.create!(id: 4, name: "先制爆撃", effect_type: "debuff_enemy_hp", value: 10, description: "敵全体のHPを10%減少させる。")
-Skill.create!(id: 5, name: "電磁シールド", effect_type: "shield_random_ally", value: 25, description: "ランダムな味方艦のHPにシールド（発動した艦のHPの25%）を付与する。")
+Skill.find_or_create_by!(id: 1, name: "応急修理", effect_type: "heal_all", value: 20, description: "味方全体のHPを20%回復する。")
+Skill.find_or_create_by!(id: 2, name: "右翼火力増強", effect_type: "buff_rightmost_atk", value: 30, description: "味方艦のうち最も右側に位置する艦の攻撃力を30%上昇させる。")
+Skill.find_or_create_by!(id: 3, name: "妨害電波", effect_type: "debuff_enemy_atk", value: 15, description: "敵全体の攻撃力を15%減少させる。")
+Skill.find_or_create_by!(id: 4, name: "先制爆撃", effect_type: "debuff_enemy_hp", value: 10, description: "敵全体のHPを10%減少させる。")
+Skill.find_or_create_by!(id: 5, name: "電磁シールド", effect_type: "shield_random_ally", value: 25, description: "ランダムな味方艦のHPにシールド（発動した艦のHPの25%）を付与する。")
 
 # ===========================
 # ===========================
