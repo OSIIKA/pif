@@ -1,3 +1,4 @@
+# 📄 app/models/user.rb
 class User < ActiveRecord::Base
   # bcryptとpassword_digestを連動させる魔法の1行
   has_secure_password

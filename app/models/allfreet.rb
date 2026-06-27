@@ -1,3 +1,4 @@
+# 📄 app/models/allfreet.rb
 class Allfreet < ActiveRecord::Base
   # 艦艇スキル（多対多）
   has_many :allfreet_skills

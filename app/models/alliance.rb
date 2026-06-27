@@ -1,3 +1,4 @@
+# 📄 app/models/alliance.rb
 class Alliance < ActiveRecord::Base
   # 1. 1つの同盟には、たくさんのユーザー（メンバー）が所属する関係（1対多）
   has_many :users

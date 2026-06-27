@@ -1,3 +1,4 @@
+# 📄 app/models/enemy_freet.rb
 class EnemyFreet < ActiveRecord::Base
   # 📂 マスタデータ（Allfreet）との紐付け
   # これにより「enemy_freet.allfreet.name」のようにマスタのデータにアクセスできるようになります

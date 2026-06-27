@@ -1,3 +1,4 @@
+# 📄 app/models/enemy_battleunit.rb
 class EnemyBattleunit < ActiveRecord::Base
   # 👑 旗艦・随伴艦（1〜6）のアソシエーション定義
   # すべて同じ「EnemyFreet」モデルを指すため、class_name と foreign_key を明示します。

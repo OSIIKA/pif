@@ -1,3 +1,4 @@
+# 📄 app/models/item.rb
 class Item < ActiveRecord::Base
   # 🟢 【この1行を追加！】ActiveRecordの自動STI機能を無効化し、typeカラムを自由に使えるようにします
   self.inheritance_column = :_type_disabled
