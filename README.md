@@ -7,12 +7,15 @@
 controllers\battle_controller.rb
 public\js\battle.js
 public\js\battle_detail.js
+public\js\battle_viewport.js
 views\battle.erb
 public\css\battle.css
 db\migrate\01_create_allfreets.rb
 
 ・未解決：
-
+画面上で 3D モデルが出ず代替表示だけになる
+味方艦名や敵名のラベルを 3D ビューポート上にも重ねて、位置関係をさらに分かりやすくする
+既存のエフェクト付き背景は削除し、真っ黒な背景に差し替え、その上に方針に従い3Dオブジェクトを配置
 
 ・方針：
 編成フェーズはまだ何も変えない

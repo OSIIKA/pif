@@ -141,6 +141,7 @@
                 <% (@battle_allies_positions || []).each do |ally| %>
                   <% viewport_units << {
                     side: 'ally',
+                    name: "第#{ally[:fleet_number]}艦隊",
                     fleet_number: ally[:fleet_number],
                     col: ally[:col].to_i,
                     row: ally[:row].to_i,
@@ -153,6 +154,7 @@
                   <% enemy_total_max_hp = enemy[:flagship][:max_hp] + enemy[:sub_ships].sum { |ship| ship[:max_hp] } %>
                   <% viewport_units << {
                     side: 'enemy',
+                    name: enemy[:name],
                     fleet_number: index + 1,
                     col: enemy[:col].to_i,
                     row: enemy[:row].to_i,

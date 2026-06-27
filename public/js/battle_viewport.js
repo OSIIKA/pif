@@ -22,6 +22,10 @@ if (!container || !dataNode) {
   renderer.domElement.className = 'battle-viewport-canvas';
   container.appendChild(renderer.domElement);
 
+  const overlay = document.createElement('div');
+  overlay.className = 'battle-viewport-label-layer';
+  container.appendChild(overlay);
+
   const camera = new THREE.OrthographicCamera(-8, 8, 8, -8, 0.1, 100);
   camera.position.set(0, 18, 0.01);
   camera.lookAt(0, 0, 0);
@@ -44,6 +48,7 @@ if (!container || !dataNode) {
 
   const shipGroup = new THREE.Group();
   scene.add(shipGroup);
+  const labelEntries = [];
 
   const hexRadius = 1.35;
   const xSpacing = hexRadius * 1.65;
@@ -105,10 +110,10 @@ if (!container || !dataNode) {
 
   const floorGeometry = new THREE.CircleGeometry(Math.max(worldWidth, worldHeight) * 0.9, 64);
   const floorMaterial = new THREE.MeshPhongMaterial({
-    color: 0x082038,
+    color: 0x000000,
     transparent: true,
-    opacity: 0.55,
-    emissive: 0x05111e,
+    opacity: 0.9,
+    emissive: 0x000000,
     side: THREE.DoubleSide
   });
   const floorMesh = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -182,6 +187,12 @@ if (!container || !dataNode) {
 
     shipGroup.add(instance);
 
+    const label = document.createElement('div');
+    label.className = `battle-viewport-label battle-viewport-label-${unit.side}`;
+    label.innerHTML = `<strong>${unit.name || (unit.side === 'ally' ? `第${unit.fleet_number}艦隊` : `敵艦隊${unit.fleet_number}`)}</strong><span>HP ${unit.hp}/${unit.max_hp}</span>`;
+    overlay.appendChild(label);
+    labelEntries.push({ label, target: instance, unit });
+
     const marker = new THREE.Mesh(
       new THREE.RingGeometry(0.55, 0.7, 32),
       new THREE.MeshBasicMaterial({
@@ -208,34 +219,61 @@ if (!container || !dataNode) {
     });
   };
 
-  loader.load(
-    viewportData.modelUrl,
-    (gltf) => {
-      const modelRoot = gltf.scene;
-      modelRoot.updateMatrixWorld(true);
+  const normalizeModel = (modelRoot) => {
+    modelRoot.updateMatrixWorld(true);
+    const bounds = new THREE.Box3().setFromObject(modelRoot);
+    const size = new THREE.Vector3();
+    bounds.getSize(size);
+    const maxSize = Math.max(size.x, size.y, size.z, 0.01);
+    const normalizeScale = 1.8 / maxSize;
+    modelRoot.scale.setScalar(normalizeScale);
 
-      const bounds = new THREE.Box3().setFromObject(modelRoot);
-      const size = new THREE.Vector3();
-      bounds.getSize(size);
-      const maxSize = Math.max(size.x, size.y, size.z, 0.01);
-      const normalizeScale = 1.8 / maxSize;
-      modelRoot.scale.setScalar(normalizeScale);
+    const centeredBounds = new THREE.Box3().setFromObject(modelRoot);
+    const center = new THREE.Vector3();
+    centeredBounds.getCenter(center);
+    modelRoot.position.sub(center);
+    return modelRoot;
+  };
 
-      // モデル中心を原点に寄せて、真上視点でヘックス配置しやすくする
-      const centeredBounds = new THREE.Box3().setFromObject(modelRoot);
-      const center = new THREE.Vector3();
-      centeredBounds.getCenter(center);
-      modelRoot.position.sub(center);
+  const loadViewportModel = async () => {
+    try {
+      const response = await fetch(viewportData.modelUrl, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
+      const buffer = await response.arrayBuffer();
+      const gltf = await new Promise((resolve, reject) => {
+        loader.parse(buffer, '/', resolve, reject);
+      });
+
+      const modelRoot = normalizeModel(gltf.scene);
       populateShips(modelRoot);
       updateStatus(`GLTF READY : ${viewportData.units.length} UNITS`);
-    },
-    undefined,
-    () => {
+    } catch (error) {
       populateShips(null);
-      updateStatus(`FALLBACK VIEW : ${viewportData.units.length} UNITS`);
+      updateStatus(`FALLBACK VIEW : ${error.message || 'LOAD ERROR'}`);
     }
-  );
+  };
+
+  const updateLabels = () => {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const projected = new THREE.Vector3();
+
+    labelEntries.forEach(({ label, target }) => {
+      projected.copy(target.position);
+      projected.y += 1.1;
+      projected.project(camera);
+
+      const x = (projected.x * 0.5 + 0.5) * width;
+      const y = (-projected.y * 0.5 + 0.5) * height;
+      const visible = projected.z >= -1 && projected.z <= 1;
+
+      label.style.opacity = visible ? '1' : '0';
+      label.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
+    });
+  };
 
   const clock = new THREE.Clock();
   const animate = () => {
@@ -250,11 +288,13 @@ if (!container || !dataNode) {
       }
     });
 
+    updateLabels();
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   };
 
   resizeRenderer();
   window.addEventListener('resize', resizeRenderer);
+  loadViewportModel();
   animate();
 }
