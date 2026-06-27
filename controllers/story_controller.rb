@@ -26,8 +26,8 @@ get '/story' do
 
     # 次の step に進めてから戦闘へ
     session[:step] += 1
-    # Sinatra は redirect で POST を維持するには 307 を使う
-    redirect '/battle/set', 307
+    # ★ Sinatra の内部ルーティングを用いて POST /battle/set を内部呼び出し
+    return call env.merge("REQUEST_METHOD" => "POST", "PATH_INFO" => "/battle/set")
   end
 
   # ★ 通常の会話処理
