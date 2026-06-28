@@ -1,66 +1,65 @@
-# ホーム画面関係
+# ===========================
+# 📚ホーム画面GET
+# ===========================
 get '/home' do
-  # ホーム画面を表示する
-  if session[:user]
-    # ユーザー認証チェック（削除禁止）
-    @user = User.find_by(id: session[:user])
-    redirect '/users/login' unless @user
-    # 紫鉄アイテム所持数（count）
-    @iron_count = @user.iron_count
+  # ユーザー認証チェック（削除禁止）
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' unless @user
+  # 紫鉄アイテム所持数（count）
+  @iron_count = @user.iron_count
 
-    # 所持艦（object_id = 0）を取得
-    @freets = @user.user_items
-                   .where(object_id: 0)
-                   .includes(:allfreet)  # 辞書をJOIN
-                   .map do |item|
-                     master = item.allfreet
-                     # 装備武器（UserItem）
-                     weapon_item = item.weapon_id ? UserItem.find_by(id: item.weapon_id) : nil
-                     weapon_name = weapon_item&.allfreet&.name || "なし"
-
-                     # 装備キャラ（UserItem）
-                     char_item = item.character_id ? UserItem.find_by(id: item.character_id) : nil
-                     char_name = char_item&.allfreet&.name || "なし"
-                     {
-                       id: item.id,
-                       level: item.level,
-                       exp: item.exp,
-                       name: master.name,
-                       hp: master.hp,
-                       atk: master.atk,
-                       speed: master.speed,
-                       rarity: master.rarity,
-                       weapon_name: weapon_name,
-                       char_name: char_name
-                     }
-                   end
-    # セッションに巨大データを入れるのは危険なので廃止
-    # session[:my_freets] = @freets
-    # 所持艦一覧をターミナルに出力して確認（新設計対応）
-    puts "🟢 [HOME] 所持艦一覧（#{@freets.size}件）"
-    @freets.each do |f|
-      puts "  - #{f[:name]} | HP: #{f[:hp]} | ATK: #{f[:atk]} | SPD: #{f[:speed]} | Lv: #{f[:level]}"
-      puts "      武器: #{f[:weapon_name]} / キャラ: #{f[:char_name]}"
-    end
-
-    # 💡 [追記] 全体チャットの最新30件を、古い順（時系列順）で取得して画面に渡す
-    latest_chats = Chat.where(category: 'global')
-                       .order(created_at: :desc)
-                       .limit(30)
-    @global_chats = latest_chats.sort_by { |c| c.created_at }
-    puts "💬 [HOME] 全体チャット（最新30件・昇順）"
-    @global_chats.each do |chat|
-      puts "  #{chat.created_at.strftime('%H:%M:%S')} | #{chat.user&.name || '???'}: #{chat.body}"
-    end
-    
-    # イベントの有効化判定
-    today = Date.today
-    @active_events_raw = Event.where("start_date <= ? AND end_date >= ?", today, today)
-    # イベントスケジュールから、現在有効なものを抽出
-    @active_gacha    = @active_events_raw.where(event_type: 'gacha')
-    @active_personal = @active_events_raw.where(event_type: 'personal')
-    @active_alliance = @active_events_raw.where(event_type: 'alliance')
+  # 所持艦（object_id = 0）を取得
+  @freets = @user.user_items
+                 .where(object_id: 0)
+                 .includes(:allfreet)  # 辞書をJOIN
+                 .map do |item|
+                   master = item.allfreet
+                   # 装備武器（UserItem）
+                   weapon_item = item.weapon_id ? UserItem.find_by(id: item.weapon_id) : nil
+                   weapon_name = weapon_item&.allfreet&.name || "なし"
+                   # 装備キャラ（UserItem）
+                   char_item = item.character_id ? UserItem.find_by(id: item.character_id) : nil
+                   char_name = char_item&.allfreet&.name || "なし"
+                   {
+                     id: item.id,
+                     level: item.level,
+                     exp: item.exp,
+                     name: master.name,
+                     hp: master.hp,
+                     atk: master.atk,
+                     speed: master.speed,
+                     rarity: master.rarity,
+                     weapon_name: weapon_name,
+                     char_name: char_name
+                   }
+                 end
+  # セッションに巨大データを入れるのは危険なので廃止
+  # session[:my_freets] = @freets
+  # 所持艦一覧をターミナルに出力して確認（新設計対応）
+  puts "🟢 [HOME] 所持艦一覧（#{@freets.size}件）"
+  @freets.each do |f|
+    puts "  - #{f[:name]} | HP: #{f[:hp]} | ATK: #{f[:atk]} | SPD: #{f[:speed]} | Lv: #{f[:level]}"
+    puts "      武器: #{f[:weapon_name]} / キャラ: #{f[:char_name]}"
   end
+
+  # 💡 [追記] 全体チャットの最新30件を、古い順（時系列順）で取得して画面に渡す
+  latest_chats = Chat.where(category: 'global')
+                     .order(created_at: :desc)
+                     .limit(30)
+  @global_chats = latest_chats.sort_by { |c| c.created_at }
+  puts "💬 [HOME] 全体チャット（最新30件・昇順）"
+  @global_chats.each do |chat|
+    puts "  #{chat.created_at.strftime('%H:%M:%S')} | #{chat.user&.name || '???'}: #{chat.body}"
+  end
+    
+  # イベントの有効化判定
+  today = Date.today
+  @active_events_raw = Event.where("start_date <= ? AND end_date >= ?", today, today)
+  # イベントスケジュールから、現在有効なものを抽出
+  @active_gacha    = @active_events_raw.where(event_type: 'gacha')
+  @active_personal = @active_events_raw.where(event_type: 'personal')
+  @active_alliance = @active_events_raw.where(event_type: 'alliance')
+  
     
   erb :home
 end
