@@ -13,5 +13,7 @@ class CreateChats < ActiveRecord::Migration[6.1]
     # 検索を爆速にするためのインデックス
     add_index :chats, :category
     add_index :chats, :alliance_id
+    add_index :chats, :created_at
+    add_index :chats, [:category, :created_at]
   end
 end

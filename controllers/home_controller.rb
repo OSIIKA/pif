@@ -113,9 +113,11 @@ post '/users/update_name' do
   # 4. ホーム画面（あるいは元の画面）へリダイレクト
   redirect '/home' # 💡 もしホームのURLが '/home' でなければ、実際のルートに合わせて書き換えてください
 end
-
-# 図鑑用の全艦艇データを取得するAPI
+# ===========================
+# 📚ホーム画面API
+# ===========================
 # APIとは、画面をリロードせずに、サーバーからデータを取得するための窓口のこと
+# 📕図鑑用の全艦艇データを取得するAPI
 get '/api/ships' do
   # ログインチェック（未ログインなら401エラーを返すなど、セキュリティ用）
   @user = User.find_by(id: session[:user])
@@ -125,8 +127,7 @@ get '/api/ships' do
   ships = Allfreet.all # allfreetテーブルの全レコードを取得
   ships.to_json
 end
-
-# 💡 [新規追加] ホーム画面からのチャット投稿を受け付ける窓口
+# 📕ホーム画面からのチャット投稿を受け付けるAPI
 post '/home/chat' do
   @user = User.find_by(id: session[:user])
   redirect '/users/new' if @user.nil?
@@ -139,6 +140,24 @@ post '/home/chat' do
     category: 'global'
   )
 
-  # 書き込みが終わったら、ホーム画面にリダイレクトして最新のチャットを表示
-  redirect '/home?chat=open'
+  status 200
+end
+# 📕ホーム画面に最新チャットを返すAPI
+get '/chat/global' do
+  content_type :json
+
+  chats = Chat.includes(:user)
+              .where(category: 'global')
+              .order(created_at: :desc)
+              .limit(30)
+              .sort_by(&:created_at)
+
+  chats.map { |c|
+    {
+      id: c.id,
+      user: c.user&.name || "???",
+      body: c.body,
+      time: c.created_at.strftime("%H:%M:%S")
+    }
+  }.to_json
 end

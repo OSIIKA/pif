@@ -32,3 +32,39 @@ document.addEventListener("DOMContentLoaded", function() {
       scrollToBottom();
     }
 });
+// 最新チャットを取得して画面に反映
+function loadChats() {
+  fetch('/chat/global')
+    .then(res => res.json())
+    .then(data => {
+      const box = document.getElementById('global-chat-box');
+      box.innerHTML = '';
+
+      data.forEach(chat => {
+        const line = document.createElement('div');
+        line.textContent = `${chat.time} | ${chat.user}: ${chat.body}`;
+        box.appendChild(line);
+      });
+    });
+}
+
+// チャット送信
+function sendChat() {
+  const text = document.getElementById('chat-input').value;
+  if (!text.trim()) return;
+
+  fetch('/home/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `chat_body=${encodeURIComponent(text)}`
+  }).then(() => {
+    document.getElementById('chat-input').value = '';
+    loadChats(); // 即時反映
+  });
+}
+
+// 2秒ごとにチャット更新
+setInterval(loadChats, 2000);
+
+// 初回ロード
+loadChats();
