@@ -7,8 +7,6 @@ class CreateItemtimelines < ActiveRecord::Migration[6.1]
       t.integer :big_type, null: false # ガチャボーナス、ログインボーナス、イベントボーナス、クエスト報酬などの大分類
       t.integer :small_type, null: false # それぞれの細かな分類
       t.integer :step, null: false # その何回目か
-      # 報酬の名前を辞書側に持たせる
-      t.string :reward_name
       # ⭕️ 追加：二段構えの身元引受人カラム
       t.integer :item_type, null: false
       t.integer :item_each_id, null: false

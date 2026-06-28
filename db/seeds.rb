@@ -1,5 +1,9 @@
-# 📄 db/seeds.rb の1行目に追記
+# 📄 db/seeds.rb
 require_relative '../app'
+# ===========================
+# ファイル概要
+# 📚ユーザー（システム）データ
+# ===========================
 # ===========================
 # 📚ユーザー（システム）データ
 # ===========================
@@ -195,49 +199,93 @@ end
 # ===========================
 # 📚アイテム配布データ
 # ===========================
-Itemtimeline.find_or_create_by!(step: 1, item_type: 0, item_each_id: 1, count: 100) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
+timelines = [
+  # ===========================
+  # 📕ガチャボーナス（レアガチャ）
+  # ===========================
+  {
+    big_type: 1, small_type: 1, step: 1,
+    item_type: 3, item_each_id: 2, count: 1
+  },
+  {
+    big_type: 1, small_type: 1, step: 2,
+    item_type: 3, item_each_id: 1, count: 50
+  },
+  # ===========================
+  # 📕ログインボーナス（7日間）
+  # ===========================
+  {
+    big_type: 2, small_type: 1, step: 1,
+    item_type: 3, item_each_id: 1, count: 10
+  },
+  {
+    big_type: 2, small_type: 1, step: 2,
+    item_type: 3, item_each_id: 1, count: 20
+  },
+  {
+    big_type: 2, small_type: 1, step: 7,
+    item_type: 3, item_each_id: 2, count: 1
+  },
+  # ===========================
+  # 📕イベント報酬（個人イベント）
+  # ===========================
+  {
+    big_type: 3, small_type: 1, step: 1,
+    item_type: 3, item_each_id: 5, count: 5
+  },
+  {
+    big_type: 3, small_type: 1, step: 2,
+    item_type: 0, item_each_id: 3, count: 1
+  }
+]
+timelines.each do |tl|
+  Itemtimeline.find_or_create_by!(
+    big_type: tl[:big_type],
+    small_type: tl[:small_type],
+    step: tl[:step]
+  ) do |t|
+    t.item_type     = tl[:item_type]
+    t.item_each_id  = tl[:item_each_id]
+    t.count         = tl[:count]
+  end
 end
-Itemtimeline.find_or_create_by!(step: 2, item_type: 1, item_each_id: 1, count: 100) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
+# ===========================
+# 📚イベント辞書
+# ===========================
+Event.find_or_create_by!(
+  id: 1,
+  name: "紫鉄艦隊強化作戦",
+  event_type: "personal",
+  start_date: Date.new(2026, 7, 1),
+  end_date: Date.new(2026, 7, 15)
+) do |e|
+  e.description = "紫鉄艦隊を強化するための個人イベント。素材や限定アイテムが入手可能。"
 end
-Itemtimeline.find_or_create_by!(step: 3, item_type: 1, item_each_id: 2, count: 100) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
+Event.find_or_create_by!(
+  id: 2,
+  name: "六色連星合同演習",
+  event_type: "alliance",
+  start_date: Date.new(2026, 7, 10),
+  end_date: Date.new(2026, 7, 20)
+) do |e|
+  e.description = "同盟メンバーと協力して挑む合同演習イベント。限定艦艇やシールが獲得できる。"
 end
-Itemtimeline.find_or_create_by!(step: 4, item_type: 2, item_each_id: 1, count: 100) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
-end
-Itemtimeline.find_or_create_by!(step: 5, item_type: 2, item_each_id: 2, count: 100) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
-end
-Itemtimeline.find_or_create_by!(step: 6, item_type: 4, item_each_id: 1, count: 1) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
-end
-Itemtimeline.find_or_create_by!(step: 7, item_type: 4, item_each_id: 2, count: 1) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
-end
-Itemtimeline.find_or_create_by!(step: 8, item_type: 4, item_each_id: 3, count: 1) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
-end
-Itemtimeline.find_or_create_by!(step: 9, item_type: 4, item_each_id: 4, count: 1) do |timeline|
-  timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
-  timeline.small_type = 1 # 小分類（例: ログインボーナス）
+Event.find_or_create_by!(
+  id: 3,
+  name: "期間限定ガチャ：紫鉄・零式ピックアップ",
+  event_type: "gacha",
+  start_date: Date.new(2026, 7, 5),
+  end_date: Date.new(2026, 7, 12)
+) do |e|
+  e.description = "紫鉄・零式の排出率が上昇する期間限定ガチャ。レアガチャチケットが有効。"
 end
 
-
+puts "🌱 敵データのシードを開始します..."
 # ===========================
 # ===========================
 # 敵データ
 # ===========================
-puts "🌱 敵データのシードを開始します..."
+
 # ⚠️ 注意: データベースを何度もクリーンに叩き直したい場合は、
 # データの重複を防ぐために最初に削除処理を入れておくと開発がラクになります。
 EnemyBattleunit.destroy_all
