@@ -49,24 +49,22 @@
       <div style="font-size: 0.9em; color: #ffbc00; font-weight: bold; margin-bottom: 8px;">📢 開催中のイベント</div>
       <div id="event-display" style="font-size: 1.1em; font-weight: bold; color: #fff; min-height: 24px;">
         <!-- 常に span を出力し、クライアント側 JS が確実に取得できるようにする -->
-        <% if @active_events && @active_events.any? %>
+        <% if @active_events_raw.any? %>
           <span id="current-event-text"></span>
         <% else %>
           <span id="current-event-text" style="color: #aaa;">現在開催中のイベントはありません</span>
         <% end %>
       </div>
     </div>
-
-    <!-- JavaScriptデータ埋め込み：サーバー側で判定した @active_events をそのまま渡す -->
+    <!-- JavaScriptへイベントデータを渡す -->
     <script>
-      window.eventList = <%= (@active_events || []).to_json %>;
+      window.eventList = <%= @active_events_raw.to_json %>;
     </script>
 
     <button id="open-encyclopedia-btn" style="padding: 10px 20px; background: #1890ff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
       🚢 艦艇図鑑を開く
     </button>
-
-    <div id="encyclopedia-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 1000; justify-content: center; align-items: center;">
+    <div id="encyclopedia-overlay">
       <div style="background: #222; width: 80%; height: 80%; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; color: #fff; position: relative;">
           
         <button id="close-encyclopedia-btn" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.5em; cursor: pointer;">&times;</button>
@@ -78,7 +76,7 @@
         </div>
           
         <!-- 2段階目: 艦艇詳細 (図鑑の中に引っ越し、初期値は display: none で非表示化) -->
-        <div id="ship-detail-content" style="display: none; gap: 20px; min-height: 300px; flex: 1; margin-top: 10px; flex-direction: column;">
+        <div id="ship-detail-content">
             
           <button id="detail-back-btn" style="align-self: flex-start; padding: 8px 16px; background-color: #555; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px; font-weight: bold;">← 戻る</button>
 
@@ -86,8 +84,8 @@
           </div>
 
           <div id="detail-tab-sidebar" style="display: flex; flex-direction: column; gap: 10px; border-left: 1px solid #444; padding-left: 15px; justify-content: flex-start;">
-            <button class="detail-tab-btn active" data-tab="status" style="padding: 10px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px; cursor: pointer; white-space: nowrap;">📊 ステータス</button>
-            <button class="detail-tab-btn" data-tab="gacha" style="padding: 10px; background: #222; color: #aaa; border: 1px solid #333; border-radius: 4px; cursor: pointer; white-space: nowrap;">🎲 入手方法</button>
+            <button class="detail-tab-btn active" data-tab="status">📊 ステータス</button>
+            <button class="detail-tab-btn" data-tab="gacha">🎲 入手方法</button>
           </div>
 
         </div>

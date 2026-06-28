@@ -28,6 +28,40 @@
 .user-info .stat {
   color: #a8c0ff;
 }
+/* 艦艇図鑑オーバーレイ */
+#encyclopedia-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+#ship-detail-content {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 300px;
+  margin-top: 10px;
+}
+.detail-tab-btn {
+  padding: 10px;
+  background: #222;
+  color: #aaa;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.detail-tab-btn.active {
+  background: #333;
+  color: #fff;
+  border-color: #555;
+}
 /* 出撃ボタン1 */
 .sortie-button {
   position: fixed;

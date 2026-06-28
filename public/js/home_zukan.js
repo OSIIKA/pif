@@ -7,19 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 1. 図鑑ボタンを押したら、データを引っ張ってきてモーダルを開く
   if (openBtn && overlay) {
+    // 図鑑を開くボタンを押したら、オーバーレイを表示する
     openBtn.addEventListener('click', async () => {
-      overlay.style.display = 'flex'; // オーバーレイを表示
+      overlay.style.display = 'flex';
 
       // すでにリストが読み込まれていたら、何度もAPIを叩かないようにする（エコ設計）
       if (listContainer && listContainer.children.length === 0) {
         try {
-          // 先ほど作ったコントローラーの窓口（API）にデータを買いに行く
+          // APIから艦艇辞書を取得する
           const response = await fetch('/api/ships');
           if (!response.ok) throw new Error('データの取得に失敗しました');
-          
-          const ships = await response.json(); // JSONデータをJavaScriptの配列に変換
+          // JSON艦艇辞書データをJavaScriptの配列に変換
+          const ships = await response.json();
 
-          // データベースから届いた艦艇データを1つずつカードにして画面に並べる（簡易情報のみ）
+          // 艦艇一覧をカードとして表示する
           listContainer.innerHTML = ships.map(ship => `
             <div class="ship-card" data-id="${ship.id}" style="background: #333; border: 1px solid #444; border-radius: 6px; padding: 15px; text-align: center; cursor: pointer;">
               <img src="${ship.image_url || '/images/default-ship.png'}" alt="${ship.name}" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 10px;">
@@ -28,18 +29,19 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `).join('');
 
-          // カードクリック時に詳細モーダルを開くイベントを設定
+          // カードクリックで詳細画面へ移動
           listContainer.querySelectorAll('.ship-card').forEach(card => {
             card.addEventListener('click', () => {
               const shipId = parseInt(card.dataset.id);
               const selectedShip = ships.find(s => s.id === shipId);
 
               if (selectedShip) {
+                // 詳細表示に使うDOMを取得する
                 const mainPanel = document.getElementById('detail-main-panel');
                 const listContainer = document.getElementById('encyclopedia-list');
                 const detailContent = document.getElementById('ship-detail-content');
 
-                // ── 内部関数①：ステータスタブのHTMLを組み立てる ──
+                // ステータスタブのHTMLを組み立てる関数
                 const renderStatusTab = () => {
                   return `
                     <div style="text-align: center; margin-bottom: 20px;">
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   `;
                 };
 
-                // ── 内部関数②：入手方法（ガチャ）タブのHTMLを組み立てる ──
+                // 入手方法（ガチャ）タブのHTMLを組み立てる関数
                 const renderGachaTab = () => {
                   // データベースのフラグから確率の文字列を生成（空 or 偽なら「排出なし」）
                   const normalProb = selectedShip.normal ? `${selectedShip.normal}%` : '排出なし';
@@ -96,49 +98,41 @@ document.addEventListener('DOMContentLoaded', () => {
                   `;
                 };
 
-                // 初期状態として「ステータス」タブの内容を表示
+                
                 if (mainPanel && detailContent) {
-                  // リスト表示を非表示、詳細表示を表示
-                  if (listContainer) listContainer.style.display = 'none';
+                  if (listContainer)
+                  // リスト一覧を非表示
+                  listContainer.style.display = 'none';
+                  // 詳細枠を表示
                   detailContent.style.display = 'flex';
-                  
+                  // 最初にステータスタブを表示する
                   mainPanel.innerHTML = renderStatusTab();
                   
-                  // タブボタンの選択状態をリセット（ステータスをアクティブに）
+                  // タブボタンの見た目を「ステータスをアクティブ」に揃える
                   const tabButtons = document.querySelectorAll('.detail-tab-btn');
                   tabButtons.forEach(btn => {
                     if (btn.dataset.tab === 'status') {
-                      btn.style.background = '#333';
-                      btn.style.color = '#fff';
-                      btn.style.borderColor = '#555';
+                      btn.classList.add("active");
                     } else {
-                      btn.style.background = '#222';
-                      btn.style.color = '#aaa';
-                      btn.style.borderColor = '#333';
+                      btn.classList.remove("active");
                     }
                   });
 
-                  // タブのクリックイベントをバインド
-                  tabButtons.forEach(button => {
-                    // 既存のイベントリスナーが重複しないよう、クローン化などでなくシンプルに毎回上書き
-                    button.onclick = (e) => {
-                      // スタイル切り替え
-                      tabButtons.forEach(b => {
-                        b.style.background = '#222';
-                        b.style.color = '#aaa';
-                        b.style.borderColor = '#333';
-                      });
-                      e.target.style.background = '#333';
-                      e.target.style.color = '#fff';
-                      e.target.style.borderColor = '#555';
-
+                  // タブクリックで中身を切り替える
+                  tabButtons.forEach(btn => {
+                    // 既存のイベントリスナーが重複しないよう毎回上書き
+                    btn.addEventListener('click', () => {
+                      // まず全タブを「非選択の見た目」に戻す
+                      tabButtons.forEach(b => b.classList.remove('active'));
+                      // クリックされたタブだけ「選択中の見た目」にする
+                      btn.classList.add('active');
                       // コンテンツ切り替え
-                      if (e.target.dataset.tab === 'status') {
+                      if (btn.dataset.tab === 'status') {
                         mainPanel.innerHTML = renderStatusTab();
-                      } else if (e.target.dataset.tab === 'gacha') {
+                      } else if (btn.dataset.tab === 'gacha') {
                         mainPanel.innerHTML = renderGachaTab();
                       }
-                    };
+                    });
                   });
                 }
               }
