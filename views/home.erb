@@ -93,99 +93,97 @@
       </div>
     </div>
 
-    <a href="/alliance" style="display: inline-block; padding: 10px 20px; background-color: #52c41a; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; margin: 5px;">
+    <a href="/alliance" class="menu-btn menu-alliance">
       🛡️ 同盟
     </a>
-    <a href="/gacha" style="display: inline-block; padding: 10px 20px; background-color: #1890ff; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; margin: 5px;">
+    <a href="/gacha" class="menu-btn menu-gacha">
       🎲 ガチャ
     </a>
-    <a href="/base" style="display: inline-block; padding: 12px 30px; background-color: #434343; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">
+    <a href="/base" class="menu-btn menu-base">
       🏢 基地
     </a>
-    <a href="/fleet" style="display: inline-block; padding: 12px 30px; background-color: #096dd9; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">
+    <a href="/fleet" class="menu-btn menu-fleet">
       ⚓ 艦隊
     </a>
-    
-    <div id="sortie-overlay" class="sortie-overlay">
-      <div class="sortie-overlay-content">
+    <!-- 出撃メニュー -->
+    <div id="sortie-overlay" class="overlay">
+      <div class="overlay-content">
         <h2>出撃メニュー</h2>
         <button class="sortie-menu-button" data-mode="story">ストーリー（バトル含む）</button>
         <button class="sortie-menu-button" data-mode="battle">バトル（素材集め）</button>
         <button class="sortie-menu-button" data-mode="event">イベント（準備中）</button>
-        <button id="sortie-close" class="sortie-close-button">閉じる</button>
+        <button id="sortie-close" class="close-btn">閉じる</button>
       </div>
     </div>
-    <div id="story-overlay" class="story-overlay">
-      <div class="story-overlay-content">
+    <!-- ストーリー選択 -->
+    <div id="story-overlay" class="overlay">
+      <div class="overlay-content">
         <h2>ストーリー選択</h2>
         <form action="/home/story" method="post">
           <button type="submit" name="story" value="0" class="story-button">第0話（バトル）</button>
           <button type="submit" name="story" value="1" class="story-button">第1話（バトル）</button>
         </form>
-        <button id="story-close" class="story-close-button">閉じる</button>
+        <button id="story-close" class="close-btn">閉じる</button>
       </div>
     </div>
-    <div id="event-overlay" class="sortie-overlay" style="display: none;">
-      <div class="sortie-overlay-content">
+    <!-- イベント選択 -->
+    <div id="event-overlay" class="overlay">
+      <div class="overlay-content">
         <h2>イベント選択</h2>
-        <div class="event-list" style="margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <div class="event-list">
           <% if @personal_events.empty? && @alliance_events.empty? %>
-            <p style="color: #aaa;">現在開催中のイベントはありません</p>
+            <p class="no-event">現在開催中のイベントはありません</p>
           <% else %>
             <% @personal_events.each do |evt| %>
-              <button class="story-button" data-event-id="<%= evt[:id] %>" style="background-color: #722ed1; color: #fff;"><%= evt[:name] %></button>
+              <button class="story-button" data-event-id="<%= evt[:id] %>"><%= evt[:name] %></button>
             <% end %>
             <% @alliance_events.each do |evt| %>
-              <button class="story-button" data-event-id="<%= evt[:id] %>" style="background-color: #389e0d; color: #fff;"><%= evt[:name] %></button>
+              <button class="story-button" data-event-id="<%= evt[:id] %>"><%= evt[:name] %></button>
             <% end %>
           <% end %>
         </div>
-        <button id="event-close" class="sortie-close-button">戻る</button>
+        <button id="event-close" class="close-btn">戻る</button>
       </div>
     </div>
-    <button id="sortie-button" class="sortie-button">出撃</button>
+    <button id="sortie-button" class="sortie-menu-button">出撃</button>
 
-    <div id="chat-preview-bar" style="max-width: 600px; margin: 20px auto; padding: 12px 15px; background-color: #141414; border: 1px solid #333; border-radius: 6px; color: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;">
-      <div style="display: flex; gap: 10px; align-items: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; flex: 1; font-size: 14px;">
-        <span style="color: #1890ff; font-weight: bold; flex-shrink: 0;">💬 全体チャット:</span>
+    <div id="chat-preview-bar" class="chat-preview-bar">
+      <div class="chat-preview-text">
+        <span class="chat-label">💬 全体チャット:</span>
         <% if @global_chats.empty? %>
-          <span style="color: #555;">まだ発言はありません。</span>
+          <span class="chat-empty">まだ発言はありません。</span>
         <% else %>
           <% last_chat = @global_chats.last %>
-          <span style="color: #52c41a; font-weight: bold; flex-shrink: 0;"><%= last_chat.user.name %>:</span>
-          <span style="color: #ddd; overflow: hidden; text-overflow: ellipsis;"><%= last_chat.body %></span>
+          <span class="chat-user"><%= last_chat.user.name %>:</span>
+          <span class="chat-body"><%= last_chat.body %></span>
         <% end %>
       </div>
-      <span style="color: #666; font-size: 12px; margin-left: 10px; flex-shrink: 0;">タップして開く ➔</span>
+      <span class="chat-open-hint">タップして開く ➔</span>
     </div>
 
-    <div id="chat-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 2000; justify-content: center; align-items: center;">
-      <div style="max-width: 600px; width: 90%; padding: 20px; background-color: #141414; border: 1px solid #333; border-radius: 8px; color: #fff; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
-    
-        <button id="chat-close-btn" style="position: absolute; top: 12px; right: 15px; background: none; border: none; color: #aaa; font-size: 22px; cursor: pointer; padding: 5px;">✕</button>
-    
-        <h3 style="margin-top: 0; margin-bottom: 15px; color: #1890ff;">💬 日本語全体チャット</h3>
+    <div id="chat-overlay" class="overlay">
+      <div class="overlay-content">
+        <button id="chat-close-btn" class="close-btn">✕</button>
 
-        <div id="chat-history-scroll" style="height: 300px; overflow-y: auto; background-color: #000; padding: 12px; border-radius: 4px; border: 1px solid #222; margin-bottom: 15px;">
+        <h3 class="chat-title">💬 日本語全体チャット</h3>
+
+        <div id="chat-history-scroll" class="chat-history">
           <% if @global_chats.empty? %>
-            <p style="color: #555; text-align: center; margin-top: 130px;">まだ発言はありません。最初のメッセージをどうぞ！</p>
+            <p class="chat-empty-center">まだ発言はありません。最初のメッセージをどうぞ！</p>
           <% else %>
             <% @global_chats.each do |chat| %>
-              <div style="margin-bottom: 10px; font-size: 14px; line-height: 1.4;">
-                <span style="color: #52c41a; font-weight: bold;"><%= chat.user.name %></span>
-                <span style="color: #666; font-size: 11px; margin-left: 5px;"><%= chat.created_at.strftime('%m/%d %H:%M') %></span>
-                <div style="color: #ddd; margin-left: 10px; word-wrap: break-word;"><%= chat.body %></div>
+              <div class="chat-entry">
+                <span class="chat-user"><%= chat.user.name %></span>
+                <span class="chat-time"><%= chat.created_at.strftime('%m/%d %H:%M') %></span>
+                <div class="chat-body"><%= chat.body %></div>
               </div>
             <% end %>
           <% end %>
         </div>
 
-        <form action="/home/chat" method="post" style="display: flex; gap: 10px; margin: 0;">
-          <input type="text" name="chat_body" placeholder="メッセージを入力（最大100文字）" maxlength="100" required 
-                style="flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #444; background: #222; color: #fff; font-size: 14px;">
-          <button type="submit" style="padding: 10px 20px; background-color: #1890ff; color: #fff; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px;">
-            送信
-          </button>
+        <form action="/home/chat" method="post" class="chat-form">
+          <input type="text" name="chat_body" maxlength="100" required class="chat-input">
+          <button type="submit" class="chat-send-btn">送信</button>
         </form>
       </div>
     </div>
