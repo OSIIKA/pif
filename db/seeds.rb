@@ -17,7 +17,30 @@ User.find_or_create_by!(id: 1) do |u|
   u.alliance_role = 0
 end
 # ===========================
-# 📚敵・味方データ
+# 📚スキル辞書
+# ===========================
+Skill.find_or_create_by!(id: 1, name: "攻撃力上昇", effect_type: "atk_up") do |s|
+  s.value = 10
+  s.description = "攻撃力が10上昇する基本スキル。"
+end
+Skill.find_or_create_by!(id: 2, name: "攻撃力強化・改", effect_type: "atk_up") do |s|
+  s.value = 20
+  s.description = "攻撃力が20上昇する強化版スキル。"
+end
+Skill.find_or_create_by!(id: 3, name: "攻撃力強化・零式", effect_type: "atk_up") do |s|
+  s.value = 30
+  s.description = "紫鉄艦隊の象徴的スキル。攻撃力が30上昇する。"
+end
+Skill.find_or_create_by!(id: 4, name: "速度上昇", effect_type: "speed_up") do |s|
+  s.value = 5
+  s.description = "速度が5上昇する。機動力が向上する。"
+end
+Skill.find_or_create_by!(id: 5, name: "AI戦術補助", effect_type: "special") do |s|
+  s.value = 1
+  s.description = "Mk.628系ユニットが持つ特殊スキル。戦術補助を行う。"
+end
+# ===========================
+# 📚敵・味方辞書
 # ===========================
 ships = [
   # ===========================
@@ -116,40 +139,61 @@ ships = [
   }
 ]
 ships.each do |ship|
-  Allfreet.create!(ship)
+  Allfreet.find_or_create_by!(ship)
 end
 # ===========================
-# アイテムデータ
+# 📚アイテム辞書
 # ===========================
-Item.find_or_create_by!(name: "紫鉄", type: 0, each_id: 1, rarity: 1) do |item|
+Item.find_or_create_by!(id: 1, name: "紫鉄", category: 1, rarity: 1) do |item|
   item.description = "ガチャを引くための基本アイテム。"
 end
-Item.find_or_create_by!(name: "レアガチャチケット", type: 1, each_id: 1, rarity: 1) do |item|
+Item.find_or_create_by!(id: 2, name: "レアガチャチケット", category: 2, rarity: 2) do |item|
   item.description = "レアガチャを1回引くことができるチケット。"
 end
-Item.find_or_create_by!(name: "期間限定ガチャチケット", type: 1, each_id: 2, rarity: 2) do |item|
+Item.find_or_create_by!(id: 3, name: "期間限定ガチャチケット", category: 2, rarity: 2) do |item|
   item.description = "期間限定のレアガチャを1回引くことができるチケット。"
 end
-Item.find_or_create_by!(name: "レアガチャシール", type: 2, each_id: 1, rarity: 1) do |item|
+Item.find_or_create_by!(id: 4, name: "レアガチャシール", category: 2, rarity: 2) do |item|
   item.description = "レア作戦のガチャシール。一定数で限定艦船と交換可能。"
 end
-Item.find_or_create_by!(name: "期間限定ガチャシール", type: 2, each_id: 2, rarity: 2) do |item|
+Item.find_or_create_by!(id: 5, name: "期間限定ガチャシール", category: 2, rarity: 2) do |item|
   item.description = "期間限定作戦のガチャシール。一定数で限定艦船と交換可能。"
 end
-Item.find_or_create_by!(name: "Mk.628", type: 4, each_id: 1, rarity: 3) do |item|
-  item.description = "基地に配置可能なキャラクター1"
+# ===========================
+# 📚キャラクター辞書
+# ===========================
+Character.find_or_create_by!(id: 1, name: "北上湊", affiliation: 1, rarity: 1, skill_id: 1) do |c|
+  c.bio = "紫鉄艦隊を率いる若き司令官。冷静沈着で判断力に優れる。"
 end
-Item.find_or_create_by!(name: "Mk.628-2", type: 4, each_id: 2, rarity: 3) do |item|
-  item.description = "基地に配置可能なキャラクター2"
+Character.find_or_create_by!(id: 2, name: "磯秋", affiliation: 1, rarity: 1, skill_id: 1) do |c|
+  c.bio = "磯秋の経歴・プロフィール。"
 end
-Item.find_or_create_by!(name: "磯秋", type: 4, each_id: 3, rarity: 3) do |item|
-  item.description = "基地に配置可能なキャラクター3"
+Character.find_or_create_by!(id: 3, name: "Mk.628", affiliation: 1, rarity: 1, skill_id: 1) do |c|
+  c.bio = "Mk.628の経歴・プロフィール。"
 end
-Item.find_or_create_by!(name: "北上湊", type: 4, each_id: 4, rarity: 3) do |item|
-  item.description = "基地に配置可能なキャラクター4"
+Character.find_or_create_by!(id: 4, name: "Mk.628-2", affiliation: 1, rarity: 1, skill_id: 1) do |c|
+  c.bio = "Mk.628-2の経歴・プロフィール。"
 end
 # ===========================
-# アイテム配布データ
+# 📚武器辞書
+# ===========================
+Weapon.find_or_create_by!(id: 1, name: "紫鉄砲", rarity: 1, skill_id: 1) do |w|
+  w.info = "紫鉄艦隊の標準装備。扱いやすく汎用性が高い。"
+end
+Weapon.find_or_create_by!(id: 2, name: "紫鉄砲・改", rarity: 2, skill_id: 2) do |w|
+  w.info = "試作型を改修した強化版。攻撃力が向上している。"
+end
+Weapon.find_or_create_by!(id: 3, name: "紫鉄砲・零式", rarity: 3, skill_id: 3) do |w|
+  w.info = "紫鉄艦隊の象徴となる高性能武器。限定ガチャでのみ入手可能。"
+end
+Weapon.find_or_create_by!(id: 4, name: "Mk.628支援砲", rarity: 2, skill_id: 4) do |w|
+  w.info = "Mk.628が使用する支援砲。命中精度が高く、補助効果を持つ。"
+end
+Weapon.find_or_create_by!(id: 5, name: "Mk.628-2高速砲", rarity: 3, skill_id: 5) do |w|
+  w.info = "Mk.628-2専用の高速射撃武器。連射性能が大幅に向上している。"
+end
+# ===========================
+# 📚アイテム配布データ
 # ===========================
 Itemtimeline.find_or_create_by!(step: 1, item_type: 0, item_each_id: 1, count: 100) do |timeline|
   timeline.big_type = 1 # 大分類（例: ガチャ関連アイテム）
@@ -188,33 +232,6 @@ Itemtimeline.find_or_create_by!(step: 9, item_type: 4, item_each_id: 4, count: 1
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
 
-
-# ステージ1の敵（2体）
-Allfreet.find_or_create_by!(id: 1, stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, speed: 10, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 2, stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, speed: 12, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-# ステージ2の敵（3体）
-Allfreet.find_or_create_by!(id: 3, stage: 2, name: "敵3", hp: 150, max_hp: 150, atk: 40, speed: 15, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 4, stage: 2, name: "敵4", hp: 150, max_hp: 150, atk: 40, speed: 11, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 5, stage: 2, name: "敵5", hp: 200, max_hp: 200, atk: 50, speed: 9,  skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
-# レアガチャに入る敵（？）
-Allfreet.find_or_create_by!(id: 6, stage: 0, name: "Mk.628", hp: 200, max_hp: 200, atk: 50, speed: 25, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-Allfreet.find_or_create_by!(id: 7, stage: 0, name: "デプリクト", hp: 250, max_hp: 250, atk: 60, speed: 30, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-Allfreet.find_or_create_by!(id: 8, stage: 0, name: "Mk.628α", hp: 300, max_hp: 300, atk: 70, speed: 28, skill1_id: 1, info: "てんぷれ", normal: 0, rare: 100, rarity: 3)
-# 味方データ
-Allfreet.find_or_create_by!(id: 9, name: "味方1", hp: 100, max_hp: 100, atk: 25, speed: 18, skill1_id: 2, info: "てんぷれーと", normal: 100, rare: 100, rarity: 1)
-Allfreet.find_or_create_by!(id: 10, name: "味方2", hp: 100, max_hp: 100, atk: 25, speed: 20, skill1_id: 2, info: "てんぷれーと", normal: 40, rare: 150, rarity: 2)
-Allfreet.find_or_create_by!(id: 11, name: "味方3", hp: 100, max_hp: 100, atk: 25, speed: 22, skill1_id: 2, info: "てんぷれーと", normal: 20, rare: 40, rarity: 3)
-# ===========================
-# スキルデータ
-# ===========================
-puts "🌱 スキルデータのシードを開始します..."
-Skill.destroy_all
-
-Skill.find_or_create_by!(id: 1, name: "応急修理", effect_type: "heal_all", value: 20, description: "味方全体のHPを20%回復する。")
-Skill.find_or_create_by!(id: 2, name: "右翼火力増強", effect_type: "buff_rightmost_atk", value: 30, description: "味方艦のうち最も右側に位置する艦の攻撃力を30%上昇させる。")
-Skill.find_or_create_by!(id: 3, name: "妨害電波", effect_type: "debuff_enemy_atk", value: 15, description: "敵全体の攻撃力を15%減少させる。")
-Skill.find_or_create_by!(id: 4, name: "先制爆撃", effect_type: "debuff_enemy_hp", value: 10, description: "敵全体のHPを10%減少させる。")
-Skill.find_or_create_by!(id: 5, name: "電磁シールド", effect_type: "shield_random_ally", value: 25, description: "ランダムな味方艦のHPにシールド（発動した艦のHPの25%）を付与する。")
 
 # ===========================
 # ===========================
