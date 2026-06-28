@@ -11,15 +11,20 @@ get '/home' do
   # 所持艦（object_id = 0）を取得
   @freets = @user.user_items
                  .where(object_id: 0)
-                 .includes(:allfreet)  # 辞書をJOIN
                  .map do |item|
-                   master = item.allfreet
-                   # 装備武器（UserItem）
+                   # 艦艇辞書参照メソッドを参照
+                   master = item.master
+
+                   # 装備武器（UserItem → Weapons辞書）
                    weapon_item = item.weapon_id ? UserItem.find_by(id: item.weapon_id) : nil
-                   weapon_name = weapon_item&.allfreet&.name || "なし"
-                   # 装備キャラ（UserItem）
+                   weapon_master = weapon_item ? Weapon.find(weapon_item.item_id) : nil
+                   weapon_name = weapon_master&.name || "なし"
+
+                   # 装備キャラ（UserItem → Characters辞書）
                    char_item = item.character_id ? UserItem.find_by(id: item.character_id) : nil
-                   char_name = char_item&.allfreet&.name || "なし"
+                   char_master = char_item ? Character.find(char_item.item_id) : nil
+                   char_name = char_master&.name || "なし"
+
                    {
                      id: item.id,
                      level: item.level,
