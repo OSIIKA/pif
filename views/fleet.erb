@@ -57,7 +57,9 @@
         <div style="border: 2px solid #ffbc00; background: rgba(255, 188, 0, 0.05); padding: 15px; border-radius: 8px; width: 220px; text-align: center;">
           <span style="color: #ffbc00; font-size: 0.8em; font-weight: bold; display: block; margin-bottom: 5px;">★ 旗艦 ★</span>
           <% if @flagship %>
-            <strong style="color: #fff;"><%= @flagship.allfreet.name %></strong> <span style="font-size: 0.8em; color: #aaa;">(Lv.<%= @flagship.level %>)</span>
+            <% master = @flagship.dictionary %>
+            <strong style="color: #fff;"><%= master.name %></strong>
+            <span style="font-size: 0.8em; color: #aaa;">(Lv.<%= @flagship.level %>)</span>
             <form action="/fleet/set_ship" method="post" style="margin-top: 8px;">
               <input type="hidden" name="fleet_num" value="<%= @current_fleet_num %>">
               <input type="hidden" name="slot_type" value="flagship">
@@ -165,7 +167,7 @@
               <div class="modal-ship-card" data-name="<%= master = ms.dictionary %>" onclick="submitModalSelection(<%= ms.id %>)"
                    style="background: #222; border: 1px solid #444; padding: 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;">
                 <div>
-                  <strong style="color: #fff; font-size: 1em;"><%= ms.allfreet.name %></strong>
+                  <strong style="color: #fff; font-size: 1em;"><%= master.name %></strong>
                   <span style="color: #ffbc00; font-size: 0.85em; margin-left: 10px;">Lv.<%= ms.level %></span>
                 </div>
                 <span style="font-size: 0.8em; color: #007bff; background: rgba(0,123,255,0.1); padding: 3px 8px; border-radius: 3px;">配備</span>
