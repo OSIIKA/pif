@@ -1,3 +1,7 @@
+# 📄 controllers/alliance_controller.rb
+# ===========================
+# 📚同盟画面GET
+# ===========================
 get '/alliance' do
   # 💡 ログインしているユーザーのデータを取得（セッション管理の仕様に合わせて調整してください）
   @user = User.find_by(id: session[:user])
