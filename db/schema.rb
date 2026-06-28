@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 32) do
     t.integer "atk"
     t.integer "speed"
     t.string "info"
+    t.string "image_url"
+    t.string "object_url"
     t.integer "skill_id"
     t.integer "rarity", default: 1
     t.integer "normal", default: 0
@@ -112,7 +114,6 @@ ActiveRecord::Schema.define(version: 32) do
     t.integer "big_type", null: false
     t.integer "small_type", null: false
     t.integer "step", null: false
-    t.string "reward_name"
     t.integer "item_type", null: false
     t.integer "item_each_id", null: false
     t.integer "count", null: false

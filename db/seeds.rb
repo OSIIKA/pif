@@ -1,12 +1,29 @@
 # 📄 db/seeds.rb
-require_relative '../app'
 # ===========================
 # ファイル概要
+# Sinatra + ActiveRecord + PostgreSQL の環境で、
+# 初期データを投入するためのシードファイルです。
+# シード順は以下の通りです。
+# 📚ユーザー（システム）データ
+# 📚スキル辞書
+# 📚敵・味方辞書
+# 📚アイテム辞書
+# 📚キャラクター辞書
+# 📚武器辞書
+# 📚アイテム配布データ
+# 📚イベント辞書
+# 📚敵個体辞書
+# 📚敵艦隊編成辞書
+# 📚ストーリーデータ
+# ===========================
+# Sinatraアプリを読み込む（DB接続を確立）
+require_relative "../app"
+# モデルを読み込む
+Dir[File.expand_path("../app/models/*.rb", __dir__)].each { |file| require file }
+# ===========================
 # 📚ユーザー（システム）データ
 # ===========================
-# ===========================
-# 📚ユーザー（システム）データ
-# ===========================
+puts "🌱 ユーザー（システム）データのシードを開始します..."
 # すでに存在する場合はスキップし、なければ ID: 1で作成する
 User.find_or_create_by!(id: 1) do |u|
   u.name = "システム"
@@ -414,11 +431,10 @@ puts "🌱 台本からのストーリーデータのインポートが完了し
 # 🚨 PostgreSQLの自動採番カウンター（シーケンス）を現在の最大IDに同期する
 # ==========================================
 if ActiveRecord::Base.connection.adapter_name.downcase.include?('postgresql')
-  # usersテーブルのカウンターを、現在の最大ID（1）の次（2）に強制進業する
-  ActiveRecord::Base.connection.execute("SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1))")
-  # 他のテーブルも同様に必要に応じてシーケンスをリセットする
-  ActiveRecord::Base.connection.execute("SELECT setval('myfreets_id_seq', COALESCE((SELECT MAX(id) FROM myfreets), 1))")
-  ActiveRecord::Base.connection.execute("SELECT setval('allfreets_id_seq', COALESCE((SELECT MAX(id) FROM allfreets), 1))")
-  ActiveRecord::Base.connection.execute("SELECT setval('stories_id_seq', COALESCE((SELECT MAX(id) FROM stories), 1))")
-  ActiveRecord::Base.connection.execute("SELECT setval('skills_id_seq', COALESCE((SELECT MAX(id) FROM skills), 1))")
+  ActiveRecord::Base.connection.tables.each do |table|
+    seq = "#{table}_id_seq"
+    ActiveRecord::Base.connection.execute(
+      "SELECT setval('#{seq}', COALESCE((SELECT MAX(id) FROM #{table}), 1))"
+    ) rescue nil
+  end
 end
