@@ -8,7 +8,7 @@ get '/shop' do
   redirect '/users/new' if @user.nil?
 
   # 🛒 ショップの商品一覧を取得（Weaponモデルから全ての武器を取得）
-  @weapons = Weapon.all.order(:rarity, :id) # レアリティ順、ID順でソート
+  @shop_items = Weapon.all.order(:rarity, :id) # レアリティ順、ID順でソート
 
   # views/shop.erb を読み込んで画面に表示する
   erb :shop

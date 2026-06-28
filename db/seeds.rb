@@ -203,20 +203,20 @@ end
 # ===========================
 # 📚武器辞書
 # ===========================
-Weapon.find_or_create_by!(id: 1, name: "紫鉄砲", rarity: 1, skill_id: 1) do |w|
-  w.info = "紫鉄艦隊の標準装備。扱いやすく汎用性が高い。"
+Weapon.find_or_create_by!(id: 1, name: "紫鉄砲", rarity: 1, price: 100, skill_id: 1) do |w|
+  w.description = "紫鉄艦隊の標準装備。扱いやすく汎用性が高い。"
 end
-Weapon.find_or_create_by!(id: 2, name: "紫鉄砲・改", rarity: 2, skill_id: 2) do |w|
-  w.info = "試作型を改修した強化版。攻撃力が向上している。"
+Weapon.find_or_create_by!(id: 2, name: "紫鉄砲・改", rarity: 2, price: 200, skill_id: 2) do |w|
+  w.description = "試作型を改修した強化版。攻撃力が向上している。"
 end
-Weapon.find_or_create_by!(id: 3, name: "紫鉄砲・零式", rarity: 3, skill_id: 3) do |w|
-  w.info = "紫鉄艦隊の象徴となる高性能武器。限定ガチャでのみ入手可能。"
+Weapon.find_or_create_by!(id: 3, name: "紫鉄砲・零式", rarity: 3, price: 300, skill_id: 3) do |w|
+  w.description = "紫鉄艦隊の象徴となる高性能武器。限定ガチャでのみ入手可能。"
 end
-Weapon.find_or_create_by!(id: 4, name: "Mk.628支援砲", rarity: 2, skill_id: 4) do |w|
-  w.info = "Mk.628が使用する支援砲。命中精度が高く、補助効果を持つ。"
+Weapon.find_or_create_by!(id: 4, name: "Mk.628支援砲", rarity: 2, price: 200, skill_id: 4) do |w|
+  w.description = "Mk.628が使用する支援砲。命中精度が高く、補助効果を持つ。"
 end
-Weapon.find_or_create_by!(id: 5, name: "Mk.628-2高速砲", rarity: 3, skill_id: 5) do |w|
-  w.info = "Mk.628-2専用の高速射撃武器。連射性能が大幅に向上している。"
+Weapon.find_or_create_by!(id: 5, name: "Mk.628-2高速砲", rarity: 3, price: 300, skill_id: 5) do |w|
+  w.description = "Mk.628-2専用の高速射撃武器。連射性能が大幅に向上している。"
 end
 # ===========================
 # 📚アイテム配布データ

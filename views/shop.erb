@@ -10,3 +10,37 @@
   <!-- JS（deferで安全に読み込む） -->
   <script src="/js/shop.js" defer></script>
 </head>
+<body>
+  <header>
+    <h1>🛒 ショップ</h1>
+  </header>
+  <main>
+    <div class="user-info">
+      <% if @user %>
+        <div class="user-name">ユーザー: <strong><%= @user.name %></strong></div>
+        <div class="user-stats">
+          <span class="stat">Lv:<%= @user.level %></span>
+          <span class="stat">Exp:<%= @user.exp %></span>
+        </div>
+        <span style="margin-left: 20px; background: #222; border: 1px solid #555; padding: 2px 8px; border-radius: 4px; color: #ffbc00;">
+          🔩 紫鉄: <strong style="font-size: 1.1em; color: #fff;"><%= @iron_count %></strong> 個
+        </span>
+      <% else %>
+        <p>ログインしてください</p>
+      <% end %>
+    </div>
+
+    <!-- ショップ商品リスト -->
+    <div id="shop-items-container" style="max-width: 600px; margin: 15px auto;">
+      <% @shop_items.each do |item| %>
+        <div class="shop-item" data-item-id="<%= item.id %>" style="border: 1px solid #555; padding: 10px; margin-bottom: 10px; border-radius: 4px; background-color: #222;">
+          <h3 style="margin-top: 0;"><%= item.name %></h3>
+          <p><%= item.description %></p>
+          <p>価格: <strong><%= item.price %> 🔩</strong></p>
+          <button class="buy-button" data-item-id="<%= item.id %>" style="background-color: #1890ff; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">購入</button>
+        </div>
+      <% end %>
+    </div>
+  </main>
+</body>
+</html>
