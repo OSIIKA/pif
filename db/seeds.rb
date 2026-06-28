@@ -279,17 +279,10 @@ Event.find_or_create_by!(
 ) do |e|
   e.description = "紫鉄・零式の排出率が上昇する期間限定ガチャ。レアガチャチケットが有効。"
 end
-
+# ===========================
+# 📚敵個体辞書
+# ===========================
 puts "🌱 敵データのシードを開始します..."
-# ===========================
-# ===========================
-# 敵データ
-# ===========================
-
-# ⚠️ 注意: データベースを何度もクリーンに叩き直したい場合は、
-# データの重複を防ぐために最初に削除処理を入れておくと開発がラクになります。
-EnemyBattleunit.destroy_all
-EnemyFreet.destroy_all
 # 1. 敵個体の作成 (EnemyFreet)
 # ステージ番号_第何艦隊_個体番号 という命名ルールで変数を作ると、後から見たときにどの敵がどこに出てくるのかが一目瞭然になります！
 enemy_zako_1_1_1 = EnemyFreet.create!(allfreet_id: 1, level: 3)
@@ -303,10 +296,9 @@ enemy_zako_2_2_1 = EnemyFreet.create!(allfreet_id: 4, level: 3)
 enemy_zako_2_2_2 = EnemyFreet.create!(allfreet_id: 4, level: 4)
 enemy_zako_2_2_3 = EnemyFreet.create!(allfreet_id: 4, level: 4)
 enemy_boss_2_2 = EnemyFreet.create!(allfreet_id: 5, level: 8)
-# 2. 敵艦隊（塊）の配置 (EnemyBattleunit)
-# ストーリーの `battle: 1` と連動させるため、`battle_stage_id: 1` にします。
-# 敵はマップの右側（col: 4〜5 付近）に湧かせると、左側から出撃する味方と対峙できて一気にゲームらしくなります！
-
+# ===========================
+# 📚敵艦隊編成辞書
+# ===========================
 EnemyBattleunit.create!(
   battle_stage_id: 1,
   col: 5,  # 右端の列
@@ -316,7 +308,6 @@ EnemyBattleunit.create!(
   flagship_id:   enemy_boss_1_1.id # 旗艦
   # 随伴3〜6は指定しない（nilになる）ことで、3隻編成の艦隊になります！
 )
-
 EnemyBattleunit.create!(
   battle_stage_id: 2,
   col: 4,
@@ -335,10 +326,9 @@ EnemyBattleunit.create!(
   sub_ship_3_id: enemy_zako_2_2_3.id,
   flagship_id:   enemy_boss_2_2.id
 )
-
 puts "✨ 敵データのシードが完了しました！（EnemyFreet / EnemyBattleunit 登録完了）"
 # ===========================
-# ストーリーデータ
+# 📚ストーリーデータ
 # ===========================
 # 既存データを一度お掃除
 Story.delete_all
