@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 34) do
+ActiveRecord::Schema.define(version: 32) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,13 +22,8 @@ ActiveRecord::Schema.define(version: 34) do
     t.integer "max_hp"
     t.integer "atk"
     t.integer "speed"
-    t.integer "skill1_id"
-    t.integer "skill2_id"
-    t.integer "skill3_id"
-    t.integer "weapon1_id"
-    t.integer "weapon2_id"
-    t.integer "weapon3_id"
     t.string "info"
+    t.integer "skill_id"
     t.integer "rarity", default: 1
     t.integer "normal", default: 0
     t.integer "rare", default: 0
@@ -51,6 +46,14 @@ ActiveRecord::Schema.define(version: 34) do
     t.index ["name"], name: "index_alliances_on_name", unique: true
   end
 
+  create_table "characters", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "bio"
+    t.integer "affiliation", null: false
+    t.integer "rarity", null: false
+    t.integer "skill_id", null: false
+  end
+
   create_table "chats", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "body", null: false
@@ -59,7 +62,9 @@ ActiveRecord::Schema.define(version: 34) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["alliance_id"], name: "index_chats_on_alliance_id"
+    t.index ["category", "created_at"], name: "index_chats_on_category_and_created_at"
     t.index ["category"], name: "index_chats_on_category"
+    t.index ["created_at"], name: "index_chats_on_created_at"
   end
 
   create_table "enemy_battleunits", force: :cascade do |t|
@@ -84,30 +89,34 @@ ActiveRecord::Schema.define(version: 34) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "events", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.string "event_type"
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "items", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
-    t.integer "type", null: false
-    t.integer "each_id", null: false
+    t.integer "category", null: false
     t.integer "rarity", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "itemtimelines", force: :cascade do |t|
     t.integer "big_type", null: false
     t.integer "small_type", null: false
     t.integer "step", null: false
+    t.string "reward_name"
     t.integer "item_type", null: false
     t.integer "item_each_id", null: false
     t.integer "count", null: false
     t.index ["item_type", "item_each_id"], name: "index_itemtimelines_on_item_type_and_item_each_id"
-  end
-
-  create_table "myfreets", force: :cascade do |t|
-    t.string "name"
-    t.integer "hp"
-    t.integer "max_hp"
-    t.integer "atk"
-    t.string "info"
   end
 
   create_table "skills", force: :cascade do |t|
@@ -115,8 +124,6 @@ ActiveRecord::Schema.define(version: 34) do
     t.string "effect_type", null: false
     t.integer "value", default: 0
     t.text "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "stories", force: :cascade do |t|
@@ -159,48 +166,43 @@ ActiveRecord::Schema.define(version: 34) do
   create_table "user_items", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "item_id", null: false
+    t.integer "object_id", default: 0, null: false
     t.integer "count", default: 0, null: false
+    t.integer "level", default: 1, null: false
+    t.integer "exp", default: 0, null: false
+    t.integer "weapon_id"
+    t.integer "character_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id", "item_id"], name: "index_user_items_on_user_id_and_item_id", unique: true
-  end
-
-  create_table "user_lanks", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "text"
-    t.integer "event1", null: false
-    t.integer "event2", null: false
-    t.integer "required_exp", default: 0
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "user_myfreets", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "myfreet_id"
-    t.integer "level"
-    t.integer "exp"
   end
 
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
-    t.string "mail"
+    t.string "mail", null: false
     t.string "password_digest"
+    t.string "uid"
+    t.string "provider"
     t.integer "level", default: 1, null: false
     t.integer "exp", default: 0, null: false
     t.integer "alliance_id"
     t.integer "alliance_role", default: 0, null: false
     t.integer "user_lank_id", default: 1, null: false
-    t.string "uid"
-    t.string "provider"
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
   create_table "usersteps", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "limited_gacha_step", default: 1
-    t.integer "integer", default: 1
     t.index ["user_id"], name: "index_usersteps_on_user_id"
+  end
+
+  create_table "weapons", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "info"
+    t.integer "rarity", null: false
+    t.integer "skill_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

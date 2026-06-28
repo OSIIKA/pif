@@ -14,6 +14,8 @@ class CreateAllfreets < ActiveRecord::Migration[6.1]
       t.integer :atk
       t.integer :speed
       t.string :info
+      t.string :image_url#画像
+      t.string :object_url#3Dモデル
       # 艦艇が持つスキル
       t.integer :skill_id
       
@@ -22,6 +24,7 @@ class CreateAllfreets < ActiveRecord::Migration[6.1]
       t.integer :normal, default: 0
       t.integer :rare, default: 0
       t.integer :limited, default: 0
+      # 入手方法
       t.integer :story, default: 0
       t.integer :event, default: 0
     end

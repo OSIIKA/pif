@@ -1,7 +1,7 @@
 # 📄 db/seeds.rb の1行目に追記
 require_relative '../app'
 # ===========================
-# ユーザー（システム）データ
+# 📚ユーザー（システム）データ
 # ===========================
 # すでに存在する場合はスキップし、なければ ID: 1で作成する
 User.find_or_create_by!(id: 1) do |u|
@@ -15,6 +15,108 @@ User.find_or_create_by!(id: 1) do |u|
   u.exp = 0
   u.alliance_id = nil
   u.alliance_role = 0
+end
+# ===========================
+# 📚敵・味方データ
+# ===========================
+ships = [
+  # ===========================
+  # 📕味方データ
+  # ===========================
+  {
+    stage: 1,
+    name: "紫鉄（試作型）",
+    hp: 1200, max_hp: 1200, atk: 150, speed: 30,
+    info: "紫鉄艦隊の基礎となる試作艦。",
+    image_url: "/images/ships/shitetu_01.png",
+    object_url: "/objects/shitetu_01.glb",
+    skill_id: 1,
+    rarity: 1,
+    normal: 5, rare: 0, limited: 0, story: 1, event: 0
+  },
+  {
+    stage: 2,
+    name: "紫鉄・改",
+    hp: 1800, max_hp: 1800, atk: 220, speed: 35,
+    info: "試作型を改修した量産モデル。",
+    image_url: "/images/ships/shitetu_02.png",
+    object_url: "/objects/shitetu_02.glb",
+    skill_id: 2,
+    rarity: 2,
+    normal: 0, rare: 3, limited: 0, story: 0, event: 1
+  },
+  {
+    stage: 3,
+    name: "紫鉄・零式",
+    hp: 2500, max_hp: 2500, atk: 300, speed: 40,
+    info: "紫鉄艦隊の象徴となる高性能艦。",
+    image_url: "/images/ships/shitetu_03.png",
+    object_url: "/objects/shitetu_03.glb",
+    skill_id: 3,
+    rarity: 3,
+    normal: 0, rare: 0, limited: 1, story: 0, event: 0
+  },
+  # ===========================
+  # 📕敵データ
+  # ===========================
+  {
+    stage: 1,
+    name: "敵1",
+    hp: 100, max_hp: 100, atk: 25, speed: 10,
+    info: "てんぷれ",
+    image_url: "/images/ships/enemy_01.png",
+    object_url: "/objects/enemy_01.glb",
+    skill_id: 1,
+    rarity: 1,
+    normal: 100, rare: 100, limited: 0, story: 1, event: 0
+  },
+  {
+    stage: 1,
+    name: "敵2",
+    hp: 100, max_hp: 100, atk: 25, speed: 10,
+    info: "てんぷれ",
+    image_url: "/images/ships/enemy_02.png",
+    object_url: "/objects/enemy_02.glb",
+    skill_id: 1,
+    rarity: 1,
+    normal: 100, rare: 100, limited: 0, story: 1, event: 0
+  },
+  {
+    stage: 2,
+    name: "敵3",
+    hp: 100, max_hp: 100, atk: 25, speed: 10,
+    info: "てんぷれ",
+    image_url: "/images/ships/enemy_03.png",
+    object_url: "/objects/enemy_03.glb",
+    skill_id: 1,
+    rarity: 1,
+    normal: 100, rare: 100, limited: 0, story: 1, event: 0
+  },
+  {
+    stage: 2,
+    name: "敵4",
+    hp: 100, max_hp: 100, atk: 25, speed: 10,
+    info: "てんぷれ",
+    image_url: "/images/ships/enemy_04.png",
+    object_url: "/objects/enemy_04.glb",
+    skill_id: 1,
+    rarity: 1,
+    normal: 100, rare: 100, limited: 0, story: 1, event: 0
+  },
+  {
+    stage: 2,
+    name: "敵5",
+    hp: 100, max_hp: 100, atk: 25, speed: 10,
+    info: "てんぷれ",
+    image_url: "/images/ships/enemy_05.png",
+    object_url: "/objects/enemy_05.glb",
+    skill_id: 1,
+    rarity: 1,
+    normal: 100, rare: 100, limited: 0, story: 1, event: 0
+  }
+]
+ships.each do |ship|
+  Allfreet.create!(ship)
 end
 # ===========================
 # アイテムデータ
@@ -86,9 +188,7 @@ Itemtimeline.find_or_create_by!(step: 9, item_type: 4, item_each_id: 4, count: 1
   timeline.small_type = 1 # 小分類（例: ログインボーナス）
 end
 
-# ===========================
-# 敵・味方データ
-# ===========================
+
 # ステージ1の敵（2体）
 Allfreet.find_or_create_by!(id: 1, stage: 1, name: "敵1", hp: 100, max_hp: 100, atk: 25, speed: 10, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
 Allfreet.find_or_create_by!(id: 2, stage: 1, name: "敵2", hp: 120, max_hp: 120, atk: 30, speed: 12, skill1_id: 1, info: "てんぷれ", normal: 100, rare: 100, rarity: 1)
