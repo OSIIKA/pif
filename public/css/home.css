@@ -82,6 +82,7 @@
   transform: translateY(-2px);
 }
 
+.menu-shop     { background-color: #fa8c16; }
 .menu-alliance { background-color: #52c41a; }
 .menu-gacha    { background-color: #1890ff; }
 .menu-base     { background-color: #434343; }
