@@ -29,10 +29,11 @@
           <form action="/base/set_character" method="post" style="text-align: center; margin-top: 10px;">
             <input type="hidden" name="slot_num" value="<%= num %>">
           
-            <select name="each_id" style="width: 100px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #555;">
+            <select name="user_item_id" style="width: 100px; font-size: 0.8em; background: #222; color: #fff; border: 1px solid #555;">
               <option value="">➕ 選択</option>
               <% @available_characters.each do |ac| %>
-                <option value="<%= ac.each_id %>"><%= ac.name %></option>
+                <% master = ac.dictionary %>
+                <option value="<%= ac.id %>"><%= master.name %></option>
               <% end %>
             </select>
           

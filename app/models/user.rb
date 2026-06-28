@@ -48,9 +48,13 @@ class User < ActiveRecord::Base
     else "プラチナ"
     end
   end
+  # 紫鉄アイテムの所持数を返す
   def iron_count
-    iron_item = Item.find_by(type: 0, rarity: 1)
-    user_iron = iron_item ? user_items.find_by(item_id: iron_item.id) : nil
-    user_iron ? user_iron.count : 0
+    # 紫鉄の辞書（Item辞書）
+    iron_master = Item.find_by(category: 0, rarity: 1)
+    return 0 unless iron_master
+
+    # UserItem から紫鉄を検索
+    user_items.where(object_id: 3, item_id: iron_master.id).sum(:count)
   end
 end

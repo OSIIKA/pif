@@ -131,13 +131,13 @@
       <div class="overlay-content">
         <h2>イベント選択</h2>
         <div class="event-list">
-          <% if @personal_events.empty? && @alliance_events.empty? %>
+          <% if @active_personal.empty? && @active_alliance.empty? %>
             <p class="no-event">現在開催中のイベントはありません</p>
           <% else %>
-            <% @personal_events.each do |evt| %>
+            <% @active_personal.each do |evt| %>
               <button class="story-button" data-event-id="<%= evt[:id] %>"><%= evt[:name] %></button>
             <% end %>
-            <% @alliance_events.each do |evt| %>
+            <% @active_alliance.each do |evt| %>
               <button class="story-button" data-event-id="<%= evt[:id] %>"><%= evt[:name] %></button>
             <% end %>
           <% end %>

@@ -12,17 +12,14 @@ get '/home' do
   @freets = @user.user_items
                  .where(object_id: 0)
                  .map do |item|
-                   # 艦艇辞書参照メソッドを参照
-                   master = item.master
+                   master = item.dictionary  # ← ここが新設計の正しい辞書参照
 
-                   # 装備武器（UserItem → Weapons辞書）
-                   weapon_item = item.weapon_id ? UserItem.find_by(id: item.weapon_id) : nil
-                   weapon_master = weapon_item ? Weapon.find(weapon_item.item_id) : nil
+                   # 装備武器
+                   weapon_master = item.weapon_item&.dictionary
                    weapon_name = weapon_master&.name || "なし"
 
-                   # 装備キャラ（UserItem → Characters辞書）
-                   char_item = item.character_id ? UserItem.find_by(id: item.character_id) : nil
-                   char_master = char_item ? Character.find(char_item.item_id) : nil
+                   # 搭載キャラ
+                   char_master = item.character_item&.dictionary
                    char_name = char_master&.name || "なし"
 
                    {

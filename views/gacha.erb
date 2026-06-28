@@ -8,16 +8,26 @@
 
     <h1>🎲 ガチャシステム</h1>
     <%
-      # 🔩 大倉さん設計準拠：紫鉄 (type: 0, rarity: 1) の所持数を取得
-      iron_item = Item.find_by(type: 0, rarity: 1)
-      user_iron = (iron_item && @user) ? @user.user_items.find_by(item_id: iron_item.id) : nil
-      iron_count = user_iron ? user_iron.count : 0
+      # 🔩 紫鉄（汎用アイテム辞書）
+      iron_master = Item.find_by(category: 0, rarity: 1)
 
-      # 🎟️ 現在おまけで配られているはずの「ID: 3」のアイテム（期間限定ガチャチケット）の所持数を取得
-      ticket_item = Item.find_by(id: 3)
-      user_ticket = (ticket_item && @user) ? @user.user_items.find_by(item_id: ticket_item.id) : nil
-      ticket_count = user_ticket ? user_ticket.count : 0
-      ticket_name = ticket_item ? ticket_item.name : "期間限定ガチャチケット"
+      # UserItem から紫鉄の所持数を取得
+      iron_count = if iron_master
+                     @user.user_items.where(object_id: 3, item_id: iron_master.id).sum(:count)
+                   else
+                     0
+                   end
+
+      # 🎟️ 期間限定ガチャチケット（辞書ID: 3）
+      ticket_master = Item.find_by(id: 3)
+
+      ticket_count = if ticket_master
+                       @user.user_items.where(object_id: 3, item_id: ticket_master.id).sum(:count)
+                     else
+                       0
+                     end
+
+      ticket_name = ticket_master ? ticket_master.name : "期間限定ガチャチケット"
     %>
 
     <div style="background: #222; border: 1px solid #444; padding: 10px 15px; border-radius: 6px; margin-bottom: 15px; display: inline-flex; gap: 20px; font-weight: bold;">
