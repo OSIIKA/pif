@@ -139,7 +139,7 @@
     <% if @gacha_type == "rare" || @gacha_type == "limited" %>
       <%
         # 🟢 大倉さん設計：名前は一切使わず、type: 2 (シール) と rarity: 1 (レア用) で特定！
-        seal_item = Item.find_by(type: 2, rarity: 1)
+        seal_item = Item.find_by(category: 2, rarity: 1)
         user_seal = seal_item ? @user.user_items.find_by(item_id: seal_item.id) : nil
         seal_count = user_seal ? user_seal.count : 0
 
@@ -215,9 +215,11 @@
               sorted_bonuses = display_bonuses.sort_by { |b| [b.step < current_step ? 1 : 0, b.step] }
 
               sorted_bonuses.each do |bonus|
-                target_item = Item.find_by(type: bonus.item_type, each_id: bonus.item_each_id)
+                target_item = Item.find_by(category: bonus.item_type, id: bonus.item_each_id)
                 item_name = target_item ? target_item.name : "未知の物質"
-          
+                if target_item.nil?
+                  puts "⚠️ ボーナス対象アイテムが見つかりません: type=#{bonus.item_type}, id=#{bonus.item_each_id}"
+                end
                 # 🔍 獲得済みかどうかの判定フラグ
                 is_earned = bonus.step < current_step
           
@@ -270,10 +272,10 @@
             <% @gacha_schedules.each do |schedule| %>
               <tr style="border-bottom: 1px solid #333; background: rgba(255,255,255,0.02);">
                 <td style="padding: 8px; color: #66b0ff; white-space: nowrap;">
-                  Day <%= schedule[:start_day] %> 〜 <%= schedule[:end_day] %>
+                  <%= schedule.start_date.strftime("%Y年%m月%d日") %> 〜 <%= schedule.end_date.strftime("%Y年%m月%d日") %>
                 </td>
                 <td style="padding: 8px; color: #fff; font-weight: bold;">
-                  <%= schedule[:name] %>
+                  <%= schedule.name %>
                 </td>
               </tr>
             <% end %>

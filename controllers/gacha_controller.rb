@@ -1,4 +1,7 @@
-# ガチャ画面を表示するルート
+# 📄 controllers/gacha_controller.rb
+# ===========================
+# 📚ガチャ画面GET
+# ===========================
 get '/gacha' do
   # ログインしているユーザーを確保（安全装置）
   @user = User.find_by(id: session[:user])
@@ -9,29 +12,28 @@ get '/gacha' do
   @rolled_ship = nil
   # 📅 🟢 ここから追記：期間限定ガチャの動的スケジュール判定システム
   if @gacha_type == "limited"
-    # 1. 先送りゾーンに置いたリリース日からの経過日数を計算
-    # (※ RELEASE_DATE が app.rb 等で定義されている前提)
-    elapsed_days = (Date.today - RELEASE_DATE).to_i
-    
-    # 2. 「実質Seeds.rb」から、今の経過日数に合致するガチャを検索
-    active_schedule = GACHA_SCHEDULES.find do |s|
-      elapsed_days >= s[:start_day] && elapsed_days <= s[:end_day]
-    end
+    today = Date.today
+
+    # DB の events テーブルから「今日有効なガチャイベント」を検索
+    active_schedule = Event.find_by(
+      event_type: "gacha",
+      start_date: ..Date.today,
+      end_date: Date.today..
+    )
     
     if active_schedule
-      # 今日のガチャの名前とIDを画面に渡す！
-      @gacha_title = active_schedule[:name]
-      @limited_gacha_id = active_schedule[:id] # 例: "limited_fire"
-      # 🔄 画面（ERB）にスケジュール一覧を届ける
-      @gacha_schedules = GACHA_SCHEDULES
+      @gacha_title = active_schedule.name
+      @limited_gacha_id = active_schedule.id
     else
-      @gacha_title = "期間外の特別なガチャ"
-      @limited_gacha_id = "limited_default"
+      @gacha_title = "期間限定ガチャ（未開催）"
+      @limited_gacha_id = nil
     end
   else
     @gacha_title = "常設レアガチャ"
   end
   # 🟢 ここまで
+  # 📅 ガチャスケジュール一覧（開始日・終了日をそのまま表示）
+  @gacha_schedules = Event.where(event_type: "gacha").order(:start_date)
   # views/gacha.erb を読み込んで画面に表示する
   erb :gacha
 end
