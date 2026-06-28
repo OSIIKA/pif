@@ -45,19 +45,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 const renderStatusTab = () => {
                   return `
                     <div style="text-align: center; margin-bottom: 20px;">
+                      <!-- 艦艇画像と名前 -->
                       <img src="${selectedShip.image_url || '/images/default-ship.png'}" alt="${selectedShip.name}" style="width: 60%; height: auto; border-radius: 6px;">
                       <h3 style="font-size: 1.5em; margin: 10px 0 5px 0;">${selectedShip.name || '不明'}</h3>
                       <span style="background: #444; padding: 2px 8px; border-radius: 4px; font-size: 0.9em;">ステージ: ${selectedShip.stage || '不明'}</span>
                     </div>
+                    <!-- 艦艇ステータス -->
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                      <!-- 艦艇HP -->
                       <tr style="border-bottom: 1px solid #333;">
                         <td style="padding: 8px; color: #aaa;">HP</td>
                         <td style="padding: 8px; text-align: right; font-weight: bold;">${selectedShip.hp || '不明'} / ${selectedShip.max_hp || '不明'}</td>
                       </tr>
+                      <!-- 艦艇攻撃力 -->
                       <tr style="border-bottom: 1px solid #333;">
                         <td style="padding: 8px; color: #aaa;">攻撃力 (ATK)</td>
                         <td style="padding: 8px; text-align: right; font-weight: bold; color: #ff4d4f;">${selectedShip.atk || '不明'}</td>
                       </tr>
+                      <!-- 艦艇スピード -->
+                      <tr style="border-bottom: 1px solid #333;">
+                        <td style="padding: 8px; color: #aaa;">スピード (SPD)</td>
+                        <td style="padding: 8px; text-align: right; font-weight: bold; color: #40a9ff;">${selectedShip.speed || '不明'}</td>
+                      </tr>
+                      <!-- 艦艇レア度 -->
                       <tr style="border-bottom: 1px solid #333;">
                         <td style="padding: 8px; color: #aaa;">レア度</td>
                         <td style="padding: 8px; text-align: right;">${selectedShip.rarity || '不明'}</td>
