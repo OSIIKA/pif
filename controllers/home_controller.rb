@@ -35,14 +35,10 @@ get '/home' do
                      char_name: char_name
                    }
                  end
-  puts "🏠 ホーム画面の所持艦数: #{@freets.count}"
-  @freets.each do |ship|
-    puts "  - UserItem id=#{ship.id}, item_id=#{ship.item_id}"
-  end
   # セッションに巨大データを入れるのは危険なので廃止
   # session[:my_freets] = @freets
   # 所持艦一覧をターミナルに出力して確認（新設計対応）
-  puts "🟢 [HOME] 所持艦一覧（#{@freets.size}件）"
+  puts "🟢 [HOME] 所持艦一覧（#{@freets.count}件）"
   @freets.each do |f|
     puts "  - #{f[:name]} | HP: #{f[:hp]} | ATK: #{f[:atk]} | SPD: #{f[:speed]} | Lv: #{f[:level]}"
     puts "      武器: #{f[:weapon_name]} / キャラ: #{f[:char_name]}"
