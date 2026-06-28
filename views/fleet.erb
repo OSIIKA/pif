@@ -113,25 +113,22 @@
       
       <% if @my_ships.any? %>
         <% @my_ships.each do |my_freet| %>
+          <% master = my_freet.dictionary %>
           <div style="background: #222; border: 1px solid #444; border-top: 4px solid #096dd9; padding: 15px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-            
             <div style="display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 8px;">
-              <span style="color: #deff9a; font-weight: bold;">[<%= my_freet.allfreet.rarity_text %>]</span>
+              <span style="color: #deff9a; font-weight: bold;">[<%= master.rarity_text %>]</span>
               <span style="color: #096dd9; font-weight: bold;">Lv. <%= my_freet.level %></span>
             </div>
-
             <div style="font-size: 1.15em; font-weight: bold; margin-bottom: 12px; color: #fff;">
-              <%= my_freet.allfreet.name %>
+              <%= master.name %>
             </div>
-
             <div style="font-size: 0.9em; color: #ccc; line-height: 1.5; background: #1a1a1a; padding: 8px; border-radius: 4px;">
-              <div>❤️ HP: <%= my_freet.allfreet.max_hp %></div>
-              <div>⚔️ 攻撃: <%= my_freet.allfreet.atk %></div>
+              <div>❤️ HP: <%= master.hp %></div>
+              <div>⚔️ 攻撃: <%= master.atk %></div>
               <div style="font-size: 0.8em; color: #888; margin-top: 5px; border-top: 1px solid #333; padding-top: 5px;">
-                <%= my_freet.allfreet.info %>
+                <%= master.info %>
               </div>
             </div>
-
           </div>
         <% end %>
       <% else %>

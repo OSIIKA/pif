@@ -85,9 +85,11 @@ get '/auth/google_oauth2/callback' do
       default_units.each do |unit|
         UserItem.create!(
           user_id: user.id,
-          item_type: 0,        # 0 = Allfreet（艦艇）
-          item_each_id: unit.id,
-          count: 1             # 初期艦艇は1隻ずつ付与
+          object_id: 0,      # 艦艇
+          item_id: unit.id,  # Allfreet辞書ID
+          level: 1,
+          exp: 0,
+          count: 1
         )
       end
     else
@@ -147,8 +149,10 @@ get '/auth/twitter2/callback' do
       default_units.each do |unit|
         UserItem.create!(
           user_id: user.id,
-          item_type: 0,        # 0 = Allfreet（艦艇）
-          item_each_id: unit.id,
+          object_id: 0,      # 艦艇
+          item_id: unit.id,  # Allfreet辞書ID
+          level: 1,
+          exp: 0,
           count: 1             # 初期艦艇は1隻ずつ付与
         )
       end

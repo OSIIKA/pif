@@ -130,11 +130,13 @@ helpers do
       # ＝＝＝＝＝ 💾 ステップ3：引いたキャラをユーザーの所持品（myfreets）に保存する ＝＝＝＝＝
 
       # データベースへ保存
-      UserMyfreet.create(
+      UserItem.create!(
         user_id: @user.id,
-        myfreet_id: selected_ship.id,
+        object_id: 0,              # 艦艇
+        item_id: selected_ship.id, # Allfreet辞書ID
         level: 1,
-        exp: 0
+        exp: 0,
+        count: 1
       )
     end
 
