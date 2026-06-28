@@ -37,19 +37,17 @@ get '/gacha' do
   # views/gacha.erb を読み込んで画面に表示する
   erb :gacha
 end
-# 📄 controllers/gacha_controller.rb
-
-# ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-# ❶ 各ガチャ個別の入り口（ここでボーナス条件などを決める）
-# ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-
-# 🔵 通常ガチャの入り口
+# ===========================
+# 📕 通常ガチャ POST
+# ===========================
 post '/gacha/normal' do
   roll_count = params[:roll_count].to_i
   # 通常ガチャは10連ボーナスは無し（false）で実行！
   execute_gacha("normal", roll_count, false, nil)
 end
-# 🟡 レアガチャの入り口
+# ===========================
+# 📕 レアガチャ POST
+# ===========================
 post '/gacha/rare' do
   roll_count = params[:roll_count].to_i
   # 10連ガチャ（roll_countが10）のときだけ、ボーナスをON（true）にする！
@@ -58,7 +56,9 @@ post '/gacha/rare' do
   bonus_target = { rarity: 3 } # 例えば「レアリティ3のキャラだけが入った特別な箱」など
   execute_gacha("rare", roll_count, has_bonus, bonus_target)
 end
-# 🎃 期間限定ガチャの入り口（追加）
+# ===========================
+# 📕 期間限定ガチャ POST
+# ===========================
 post '/gacha/limited' do
   roll_count = params[:roll_count].to_i
   # レアガチャと同じく、10連（roll_countが10）のときだけボーナスをON！
@@ -68,10 +68,12 @@ post '/gacha/limited' do
   
   # 🟢 タイプを "limited" にして共通処理へ丸投げ！
   execute_gacha("limited", roll_count, has_bonus, bonus_target)
+  # 🟢 ここを追加：スケジュール一覧をセット
+  @gacha_schedules = Event.where(event_type: "gacha").order(:start_date)
 end
 
 # ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-# ❷ 共通のガチャ実行メソッド（ここで実際の抽選と保存を行う）
+# 📚 共通のガチャ実行メソッド（ここで実際の抽選と保存を行う）
 # ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 helpers do
   def execute_gacha(gacha_type, roll_count, bonus_active, bonus_condition)
@@ -146,7 +148,7 @@ helpers do
     if gacha_type == "rare"
       # 🟢 大倉さん設計：名前や生のIDは一切使わず、属性の組み合わせでアイテムを特定！
       # type: 2 (シール) かつ、レアガチャ用を示す rarity: 1 のアイテムを探す
-      seal_item = Item.find_by(type: 2, rarity: 1)
+      seal_item = Item.find_by(category: 2, rarity: 1)
       
       if seal_item
         user_item = @user.user_items.find_or_initialize_by(item_id: seal_item.id)
@@ -157,7 +159,7 @@ helpers do
     if gacha_type == "limited"
       # 🟢 大倉さん設計：名前や生のIDは一切使わず、属性の組み合わせでアイテムを特定！
       # type: 2 (シール) かつ、期間限定ガチャ用を示す rarity: 2 のアイテムを探す
-      seal_item = Item.find_by(type: 2, rarity: 2)
+      seal_item = Item.find_by(category: 2, rarity: 2)
       
       if seal_item
         user_item = @user.user_items.find_or_initialize_by(item_id: seal_item.id)
@@ -178,7 +180,7 @@ helpers do
     
       if timeline_bonus
         # タイムラインに設定されている外部キー（item_id）を使って、配るアイテムを特定
-        bonus_item = Item.find_by(type: timeline_bonus.item_type, each_id: timeline_bonus.item_each_id)      
+        bonus_item = Item.find_by(category: timeline_bonus.item_type, id: timeline_bonus.item_each_id)
         if bonus_item
           # ユーザーの所持品から対象アイテムを探す（なければ新枠作成）
           user_bonus = @user.user_items.find_or_initialize_by(item_id: bonus_item.id)
