@@ -33,6 +33,10 @@ get '/fleet' do
 
   # ユーザーが所持している艦艇一覧（UserItem.object_id = 0）
   @my_ships = @user.user_items.where(object_id: 0)
+  puts "📦 所持艦数: #{@my_ships.count}"
+  @my_ships.each do |ship|
+    puts "  - UserItem id=#{ship.id}, item_id=#{ship.item_id}, level=#{ship.level}"
+  end
   
   # 4. 艦隊画面（fleet.erb）を表示
   erb :fleet

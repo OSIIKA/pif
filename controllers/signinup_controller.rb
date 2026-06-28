@@ -147,6 +147,7 @@ get '/auth/twitter2/callback' do
         end
       end
       default_units.each do |unit|
+        puts "🛠 初期艦付与: unit.id=#{unit.id}, unit.name=#{unit.name}"
         UserItem.create!(
           user_id: user.id,
           object_id: 0,      # 艦艇
@@ -155,6 +156,7 @@ get '/auth/twitter2/callback' do
           exp: 0,
           count: 1             # 初期艦艇は1隻ずつ付与
         )
+        puts "✅ 初期艦付与成功: id=#{item.id}, item_id=#{item.item_id}, object_id=#{item.object_id}"
       end
     else
       # もし保存に失敗したら、セッションにエラー内容を詰めて新規登録画面に戻す
