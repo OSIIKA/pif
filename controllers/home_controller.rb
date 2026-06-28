@@ -5,6 +5,8 @@ get '/home' do
     # ユーザー認証チェック（削除禁止）
     @user = User.find_by(id: session[:user])
     redirect '/users/login' unless @user
+    # 紫鉄アイテム所持数（count）
+    @iron_count = @user.iron_count
 
     # 所持艦（object_id = 0）を取得
     @freets = @user.user_items

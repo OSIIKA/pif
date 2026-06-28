@@ -4,11 +4,13 @@
   <meta charset="UTF-8">
   <title>紫鉄艦隊</title>
   <link rel="icon" href="/img/favicon.ico">
+  <!-- CSS（キャッシュ対策） -->
   <link rel="stylesheet" href="/css/style.css?v=1">
-  <link rel="stylesheet" href="/css/home.css">
-  <script src="/js/home.js"></script>
-  <script src="/js/home_chat.js"></script>
-  <script src="/js/home_zukan.js"></script>
+  <link rel="stylesheet" href="/css/home.css?v=1">
+  <!-- JS（deferで安全に読み込む） -->
+  <script src="/js/home.js" defer></script>
+  <script src="/js/home_chat.js" defer></script>
+  <script src="/js/home_zukan.js" defer></script>
 </head>
 <body>
   <header>
@@ -17,33 +19,26 @@
   <main>
     <div class="user-info">
       <% if @user %>
+        <!-- ユーザー名表示・編集フォーム -->
         <div class="user-name" style="display: flex; align-items: center; gap: 10px;">
           <span id="name-text" style="font-size: 1.2em; font-weight: bold; color: #fff;"><%= @user.name %></span>
-          
+          <!-- 編集フォーム -->
           <form id="name-edit-form" action="/users/update_name" method="post" style="display: none; align-items: center; gap: 5px; margin: 0;">
             <input type="text" name="name" value="<%= @user.name %>" required maxlength="20" style="background: #222; color: #fff; border: 1px solid #555; padding: 5px 10px; border-radius: 4px; font-size: 1em;">
             <button type="submit" style="background-color: #1890ff; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-weight: bold;">保存</button>
             <button type="button" id="cancel-name-btn" style="background-color: #555; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">取消</button>
           </form>
-
+          <!-- 決定ボタン -->
           <button type="button" id="edit-name-btn" style="background: transparent; border: none; color: #1890ff; cursor: pointer; font-size: 0.9em; padding: 0;">[編集]</button>
         </div>
+        <!-- ユーザーステータス表示 -->
         <div class="user-stats">
           <span class="stat">Lv:<%= @user.level %></span>
           <span class="stat">Exp:<%= @user.exp %></span>
         </div>
-        <%
-          # 🟢 大倉さん設計準拠：名前は使わず、type: 0, rarity: 1 で「紫鉄」を狙い撃ちして取得
-          iron_item = Item.find_by(type: 0, rarity: 1)
-          user_iron = iron_item ? @user.user_items.find_by(item_id: iron_item.id) : nil
-          iron_count = user_iron ? user_iron.count : 0
-        %>
-        <div style="font-weight: bold; margin-bottom: 10px;">
-  
-          <span style="margin-left: 20px; background: #222; border: 1px solid #555; padding: 2px 8px; border-radius: 4px; color: #ffbc00;">
-            🔩 紫鉄: <strong style="font-size: 1.1em; color: #fff;"><%= iron_count %></strong> 個
-          </span>
-        </div>
+        <span style="margin-left: 20px; background: #222; border: 1px solid #555; padding: 2px 8px; border-radius: 4px; color: #ffbc00;">
+          🔩 紫鉄: <strong style="font-size: 1.1em; color: #fff;"><%= @iron_count %></strong> 個
+        </span>
       <% else %>
         <p>ログインしてください</p>
       <% end %>

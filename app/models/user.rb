@@ -48,4 +48,9 @@ class User < ActiveRecord::Base
     else "プラチナ"
     end
   end
+  def iron_count
+    iron_item = Item.find_by(type: 0, rarity: 1)
+    user_iron = iron_item ? user_items.find_by(item_id: iron_item.id) : nil
+    user_iron ? user_iron.count : 0
+  end
 end
