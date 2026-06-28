@@ -1,3 +1,4 @@
+# config.ru
 require 'bundler'
 Bundler.require
 

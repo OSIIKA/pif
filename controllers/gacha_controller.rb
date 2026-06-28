@@ -41,27 +41,34 @@ end
 # 📕 通常ガチャ POST
 # ===========================
 post '/gacha/normal' do
+  # 👤 ログインユーザーの取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' if @user.nil?
   roll_count = params[:roll_count].to_i
   # 通常ガチャは10連ボーナスは無し（false）で実行！
   execute_gacha("normal", roll_count, false, nil)
-  erb :gacha
 end
 # ===========================
 # 📕 レアガチャ POST
 # ===========================
 post '/gacha/rare' do
+  # 👤 ログインユーザーの取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' if @user.nil?
   roll_count = params[:roll_count].to_i
   # 10連ガチャ（roll_countが10）のときだけ、ボーナスをON（true）にする！
   has_bonus = (roll_count == 10)
   # 🟢 10連ボーナスが発生した時に「狙い撃ちしたい条件」をここで指定して渡す！
   bonus_target = { rarity: 3 } # 例えば「レアリティ3のキャラだけが入った特別な箱」など
   execute_gacha("rare", roll_count, has_bonus, bonus_target)
-  erb :gacha
 end
 # ===========================
 # 📕 期間限定ガチャ POST
 # ===========================
 post '/gacha/limited' do
+  # 👤 ログインユーザーの取得
+  @user = User.find_by(id: session[:user])
+  redirect '/users/login' if @user.nil?
   roll_count = params[:roll_count].to_i
   # レアガチャと同じく、10連（roll_countが10）のときだけボーナスをON！
   has_bonus = (roll_count == 10)
@@ -77,7 +84,6 @@ post '/gacha/limited' do
   @gacha_schedules.each do |ev|
     puts "  - #{ev.name} | #{ev.start_date} 〜 #{ev.end_date}"
   end
-  erb :gacha
 end
 
 # ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -225,6 +231,8 @@ helpers do
     end
     # 🟢 ここを追記：ガチャを引いた後も、選んでいたガチャの種類を画面に覚えさせる
     @gacha_type = gacha_type
+    # 📅 ガチャスケジュール一覧（開始日・終了日をそのまま表示）
+    @gacha_schedules = Event.where(event_type: "gacha").order(:start_date)
     # 共通の結果表示画面（gacha.erb）を呼び出す
     erb :gacha
   end
@@ -234,7 +242,7 @@ end
   post '/gacha/exchange' do
     # ログインチェック（念のため）
     @user = User.find_by(id: session[:user])
-    redirect '/login' if @user.nil?
+    redirect '/users/login' if @user.nil?
     
     # 画面から送られてきた「交換したいキャラのID」と「ガチャタイプ」を取得
     character_id = params[:target_character_id]
