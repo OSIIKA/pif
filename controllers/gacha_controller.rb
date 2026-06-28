@@ -47,6 +47,7 @@ post '/gacha/normal' do
   roll_count = params[:roll_count].to_i
   # 通常ガチャは10連ボーナスは無し（false）で実行！
   execute_gacha("normal", roll_count, false, nil)
+  erb :gacha
 end
 # ===========================
 # 📕 レアガチャ POST
@@ -61,6 +62,7 @@ post '/gacha/rare' do
   # 🟢 10連ボーナスが発生した時に「狙い撃ちしたい条件」をここで指定して渡す！
   bonus_target = { rarity: 3 } # 例えば「レアリティ3のキャラだけが入った特別な箱」など
   execute_gacha("rare", roll_count, has_bonus, bonus_target)
+  erb :gacha
 end
 # ===========================
 # 📕 期間限定ガチャ POST
@@ -84,6 +86,7 @@ post '/gacha/limited' do
   @gacha_schedules.each do |ev|
     puts "  - #{ev.name} | #{ev.start_date} 〜 #{ev.end_date}"
   end
+  erb :gacha
 end
 
 # ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
@@ -233,8 +236,6 @@ helpers do
     @gacha_type = gacha_type
     # 📅 ガチャスケジュール一覧（開始日・終了日をそのまま表示）
     @gacha_schedules = Event.where(event_type: "gacha").order(:start_date)
-    # 共通の結果表示画面（gacha.erb）を呼び出す
-    erb :gacha
   end
 end
 
