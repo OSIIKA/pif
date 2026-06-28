@@ -8,7 +8,7 @@ class CreateWeapons < ActiveRecord::Migration[6.1]
       t.text    :description
       t.integer :rarity, null: false
       t.integer :price, default: 0, null: false
-
+      t.integer :category, null: false
       # 1武器1スキル
       t.integer :skill_id, null: false
 
