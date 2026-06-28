@@ -76,14 +76,19 @@ get '/auth/google_oauth2/callback' do
     user.exp = 0
     
     if user.save
-      # 新規登録成功時に、初期ユニット（1, 2, 3）をプレゼントする処理（既存の新規登録と同じ）
+      # 初期ユニット（1, 2, 3）をプレゼント
       default_units = [1, 2, 3].map do |i|
         Allfreet.find_or_create_by(id: i) do |f|
           f.name = "ユニット#{i}"
         end
       end
       default_units.each do |unit|
-        UserMyfreet.create(user_id: user.id, myfreet_id: unit.id, level: 1, exp: 0)
+        UserItem.create!(
+          user_id: user.id,
+          item_type: 0,        # 0 = Allfreet（艦艇）
+          item_each_id: unit.id,
+          count: 1             # 初期艦艇は1隻ずつ付与
+        )
       end
     else
       # 💡 変更：ターミナルに出すだけでなく、セッションにエラー内容を詰めて「新規登録画面」に戻す
@@ -140,7 +145,12 @@ get '/auth/twitter2/callback' do
         end
       end
       default_units.each do |unit|
-        UserMyfreet.create(user_id: user.id, myfreet_id: unit.id, level: 1, exp: 0)
+        UserItem.create!(
+          user_id: user.id,
+          item_type: 0,        # 0 = Allfreet（艦艇）
+          item_each_id: unit.id,
+          count: 1             # 初期艦艇は1隻ずつ付与
+        )
       end
     else
       # もし保存に失敗したら、セッションにエラー内容を詰めて新規登録画面に戻す

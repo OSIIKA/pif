@@ -37,6 +37,7 @@ User.find_or_create_by!(id: 1) do |u|
   u.alliance_id = nil
   u.alliance_role = 0
 end
+puts "✨ ユーザー（システム）データのシードが完了しました！"
 # ===========================
 # 📚スキル辞書
 # ===========================
