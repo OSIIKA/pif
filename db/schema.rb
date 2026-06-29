@@ -53,6 +53,8 @@ ActiveRecord::Schema.define(version: 32) do
     t.text "bio"
     t.integer "affiliation", null: false
     t.integer "rarity", null: false
+    t.integer "price", default: 0, null: false
+    t.integer "category", null: false
     t.integer "skill_id", null: false
   end
 
@@ -104,8 +106,9 @@ ActiveRecord::Schema.define(version: 32) do
   create_table "items", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
-    t.integer "category", null: false
     t.integer "rarity", null: false
+    t.integer "price", default: 0, null: false
+    t.integer "category", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

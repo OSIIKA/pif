@@ -9,7 +9,15 @@ class Character < ActiveRecord::Base
     else "不明勢力"
     end
   end
-
+  # カテゴリ名を返す（必要なら拡張）
+  def category_name
+    case category
+    when 1 then "通常キャラクター"
+    when 2 then "ガチャキャラクター"
+    when 3 then "イベントキャラクター"
+    else "その他"
+    end
+  end
   # レアリティ表記
   def rarity_text
     case rarity
