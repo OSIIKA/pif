@@ -16,7 +16,7 @@ class CreateAllfreets < ActiveRecord::Migration[6.1]
       t.string :info
       t.string :image_url#画像
       t.string :object_url#3Dモデル
-      # 艦艇が持つスキル
+      # # 1艦艇1スキル
       t.integer :skill_id
       
       # ガチャに関する情報（今のところ不変のため辞書扱い）

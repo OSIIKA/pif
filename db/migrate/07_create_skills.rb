@@ -6,6 +6,7 @@ class CreateSkills < ActiveRecord::Migration[6.1]
     create_table :skills do |t|
       t.string :name, null: false
       t.string :effect_type, null: false
+      t.json :effect_params
       t.integer :value, default: 0
       t.text :description
     end
