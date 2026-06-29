@@ -40,9 +40,14 @@ puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#
 
 puts "=== ROUTES ==="
 puts "=== Sinatra が認識している全ルート ==="
+# メソッド、ファイル名、パスを出力する
 Sinatra::Application.routes.each do |method, routes|
   routes.each do |route|
-    puts "#{method} #{route[0].inspect}"
+    pattern = route[0]                     # Mustermann::Sinatra オブジェクト
+    file    = route[2][:file] rescue "?"   # 定義ファイル（存在しない場合は ?）
+    line    = route[2][:line] rescue "?"   # 行番号（任意）
+
+    puts "#{method} [#{file}:#{line}] #{pattern}"
   end
 end
 

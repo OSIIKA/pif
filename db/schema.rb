@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 32) do
     t.string "name", null: false
     t.text "bio"
     t.integer "affiliation", null: false
+    t.text "description", default: "descriptionはショップでの説明文です。後でSeeds.rbに記載してください。", null: false
     t.integer "rarity", null: false
     t.integer "price", default: 0, null: false
     t.integer "category", null: false

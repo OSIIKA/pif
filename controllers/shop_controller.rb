@@ -18,7 +18,7 @@ get '/shop' do
   puts "🟢 [SHOP] 所持紫鉄: #{@iron_count}個"
   puts "🟢 [SHOP] 商品一覧（#{@shop_items.count}件）"
   @shop_items.each do |item|
-    puts "  - #{item.name} | レアリティ: #{item.rarity} | 価格: #{item.price} | カテゴリ: #{item.category_name}"
+    puts "  - #{item.name} | レアリティ: #{item.rarity} | 価格: #{item.price} | カテゴリ: #{item.category}"
   end
   # views/shop.erb を読み込んで画面に表示する
   erb :shop
