@@ -44,11 +44,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 // ステータスタブのHTMLを組み立てる関数
                 const renderStatusTab = () => {
                   return `
-                    <div style="text-align: center; margin-bottom: 20px;">
-                      <!-- 艦艇画像と名前 -->
-                      <img src="${selectedShip.image_url || '/images/default-ship.png'}" alt="${selectedShip.name}" style="width: 60%; height: auto; border-radius: 6px;">
-                      <h3 style="font-size: 1.5em; margin: 10px 0 5px 0;">${selectedShip.name || '不明'}</h3>
-                      <span style="background: #444; padding: 2px 8px; border-radius: 4px; font-size: 0.9em;">ステージ: ${selectedShip.stage || '不明'}</span>
+                    <div class="text-center mb-3">
+                      <!-- 💡 表示切り替え用のスタイリッシュなボタングループ -->
+                      <div class="btn-group mb-3" role="group" aria-label="表示切り替え">
+                        <button type="button" id="btn-view-image" class="btn btn-primary btn-sm active">🖼️ 画像</button>
+                        <button type="button" id="btn-view-3d" class="btn btn-outline-primary btn-sm">📦 3Dモデル</button>
+                      </div>
+
+                      <!-- 🎥 メディア表示コンテナ（ここを切り替える） -->
+                      <div id="ship-media-container" class="border rounded p-2 bg-dark d-flex align-items-center justify-content-center" style="min-height: 250px;">
+                        <img src="/${selectedShip.image_url}" alt="${selectedShip.name}" class="img-fluid" style="max-height: 240px;">
+                        <h3 style="font-size: 1.5em; margin: 10px 0 5px 0;">${selectedShip.name || '不明'}</h3>
+                      </div>
                     </div>
                     <!-- 艦艇ステータス -->
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
