@@ -1,8 +1,8 @@
 # app.rb
 # 現在発生している問題点について相談する場所、ここから
-# あなたはviews\shop.erbをここから閲覧できますか？
+# 
 # あなたの回答
-# いいえ、私はローカル環境のファイルシステムにアクセスできないため、views\shop.erbを直接閲覧することはできません。
+# 
 # ここまで
 
 # Sinatraアプリケーションのエントリーポイント
@@ -46,7 +46,7 @@ use Rack::Session::Pool, expire_after: 2592000, secret: ENV.fetch('SESSION_SECRE
 set :port, ENV.fetch('PORT', 4567) # 環境変数PORTが存在しない場合は4567をデフォルトに設定
 puts "ーーーーーーーーーーーーーVScodeの場合: http://localhost:#{settings.port} ーーーーーーーーーーーーーーーーーーーー"
 puts "📁 controllers require list:"
-puts "  - #{File.basename(file)}"
+puts "  - #{File.basename(file.name)}"
 puts "=== ROUTES ==="
 puts "=== Sinatra が認識している全ルート ==="
 # メソッド、ファイル名、パスを出力する
