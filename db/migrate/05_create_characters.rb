@@ -8,6 +8,8 @@ class CreateCharacters < ActiveRecord::Migration[6.1]
       t.text    :bio                      # 経歴・プロフィール
       t.integer :affiliation, null: false # 所属（数値→モデルで文字に変換）
       t.integer :rarity, null: false      # レアリティ（ガチャ用）
+      t.integer :price, default: 0, null: false # 価格（ガチャ用）
+      t.integer :category, null: false    # キャラカテゴリ（数値→モデル
       # 1キャラ1スキル（辞書に直付け）
       t.integer :skill_id, null: false
     end

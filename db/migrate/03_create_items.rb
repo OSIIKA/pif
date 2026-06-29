@@ -8,12 +8,14 @@ class CreateItems < ActiveRecord::Migration[6.1]
       t.string :name, null: false
       # 説明文
       t.text :description
-      # アイテムカテゴリ
-      # app/models/item.rbを参照
-      t.integer :category, null: false
       # レアリティ
       # app/models/item.rbを参照
       t.integer :rarity, null: false
+      # 価格
+      t.integer :price, default: 0, null: false
+      # アイテムカテゴリ
+      # app/models/item.rbを参照
+      t.integer :category, null: false
       # 念の為の timestamps
       t.timestamps
     end
